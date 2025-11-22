@@ -88,15 +88,15 @@ export function useNavData() {
         //   },
 
           // COMPANY
-          {
-            title: t('issure services'),
-            path: paths.dashboard.issureservices.root,
-            icon: ICONS.company,
-            children: [
-              { title: t('ROI guidance'), path: paths.dashboard.issureservices.roi },
-            ],
+          // {
+          //   title: t('issure services'),
+          //   path: paths.dashboard.issureservices.root,
+          //   icon: ICONS.company,
+          //   children: [
+          //     { title: t('ROI guidance'), path: paths.dashboard.issureservices.roi },
+          //   ],
 
-          },
+          // },
 
             // JOB
           // {
