@@ -42,12 +42,18 @@ const UserEditPage = lazy(() => import('src/pages/dashboard/user/edit'));
 // COMPANY PROFILE
 const CompanyProfilePage = lazy(() => import('src/pages/dashboard/company/profile'));
 
+
 // COMPANY
 const ROIGuidancePage = lazy(() => import('src/pages/dashboard/issure-services/roi'));
 const ROIFundFormPage = lazy(() => import('src/pages/dashboard/issure-services/roi-fund-form'));
 const AfterCompleteRoiStagePage = lazy(() => import('src/pages/dashboard/issure-services/view'));
 // WORKFLOW
 const ReactFlowPage = lazy(() => import('src/pages/dashboard/react-flow/board'));
+// Debenture Trustees
+const DocumentEditPage = lazy(() => import('src/pages/dashboard/documents-drafting/edit'))
+const NewDocumentPage = lazy(() => import('src/pages/dashboard/documents-drafting/new'));
+const DebentureTrusteesListPage = lazy(() => import('src/pages/dashboard/debenture-trustees/debenture-trustees-list'));
+const DebentureTrusteesDocumentDraftPage = lazy(() => import('src/pages/dashboard/debenture-trustees/debenture-trustees-document-draft'))
 // SCHEDULER
 const SchedulerNewPage = lazy(() => import('src/pages/dashboard/scheduler/new'));
 const SchedulerListPage = lazy(() => import('src/pages/dashboard/scheduler/list'));
@@ -159,6 +165,27 @@ export const dashboardRoutes = [
           { element: <ReactFlowPage />, index: true },
           { path: 'list', element: <ReactFlowPage /> },
           // { path: ':id', element: <InvoiceDetailsPage /> },
+          // { path: ':id/edit', element: <InvoiceEditPage /> },
+          // { path: 'new', element: <InvoiceCreatePage /> },
+        ],
+      },
+      {
+        path: 'documentdrafting',
+        children: [
+          { element: <NewDocumentPage />, index: true },
+          { path: 'new', element: <NewDocumentPage /> },
+          // { path: ':id', element: <InvoiceDetailsPage /> },
+          { path: ':id/edit', element: <DocumentEditPage /> },
+          // { path: 'new', element: <InvoiceCreatePage /> },
+        ],
+      },
+      {
+        path: 'debenturetrustees',
+        children: [
+          { element: <DebentureTrusteesListPage />, index: true },
+
+          { path: 'debenture-trustees-list', element: <DebentureTrusteesListPage /> },
+          { path: ':id', element: <DebentureTrusteesDocumentDraftPage /> },
           // { path: ':id/edit', element: <InvoiceEditPage /> },
           // { path: 'new', element: <InvoiceCreatePage /> },
         ],

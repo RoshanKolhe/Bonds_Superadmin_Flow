@@ -35,8 +35,8 @@ export const endpoints = {
   kanban: '/api/kanban',
   calendar: '/api/calendar',
   auth: {
-    me: '/me',
-    login: '/login',
+    me: '/auth/me',
+    login: '/auth/super-admin-login',
     register: '/register',
   },
   mail: {
@@ -61,14 +61,24 @@ export const endpoints = {
     details: (id) => `/schedulers/${id}`,
   },
 
-   companyInfo: {
+  companyInfo: {
     list: '/api/kyc/issuer_kyc/company-info/',
     filterList: (filter) => `/api/kyc/issuer_kyc/company-info/?filter=${filter}`,
-    details: (id) => `/api/kyc/issuer_kyc/company-info//${id}`,
+    details: (id) => `/api/kyc/issuer_kyc/company-info/${id}`,
   },
   designation: {
     list: '/designations',
     filterList: (filter) => `/designations?filter=${filter}`,
     details: (id) => `/designations/${id}`,
+  },
+  roles: {
+    list: '/roles',
+    filterList: (filter) => `/roles?filter=${filter}`,
+    details: (id) => `/roles/${id}`,
+  },
+  documentType: {
+    list: '/document-types',
+    filterList: (filter) => `/document-types?filter=${filter}`,
+    details: (id) => `/document-types/${id}`,
   }
 };
