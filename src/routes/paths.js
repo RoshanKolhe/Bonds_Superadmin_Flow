@@ -135,6 +135,12 @@ export const paths = {
       //   edit: `${ROOTS.DASHBOARD}/company/${MOCK_ID}/edit`,
       // },
     },
+    companyProfiles: {
+      root: `${ROOTS.DASHBOARD}/companyProfiles`,
+      new: `${ROOTS.DASHBOARD}/companyProfiles/new`,
+      list: `${ROOTS.DASHBOARD}/companyProfiles/list`,
+      details: (id) => `${ROOTS.DASHBOARD}/companyProfiles/${id}`,
+    },
     issureservices: {
       root: `${ROOTS.DASHBOARD}/issureservices`,
       roi: `${ROOTS.DASHBOARD}/issureservices/roi`,

@@ -5,19 +5,19 @@ import { fetcher, endpoints } from 'src/utils/axios';
 
 // ----------------------------------------------------------------------
 
-export function useGetDocumentTypes() {
-    const URL = endpoints.documentType.list;
+export function useGetCompanyProfiles() {
+    const URL = endpoints.companyProfiles.list;
 
     const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
 
     const memoizedValue = useMemo(
         () => ({
-            documentTypes: data?.data?.documents || [],
-            totalCount: data?.data?.count || 0,
-            documentTypesLoading: isLoading,
-            documentTypesError: error,
-            documentTypesValidating: isValidating,
-            documentTypesEmpty: !isLoading && !data?.length,
+            companyProfiles: data?.data?.profiles || [],
+            totalCount: data?.data?.count || [],
+            companyProfilesLoading: isLoading,
+            companyProfilesError: error,
+            companyProfilesValidating: isValidating,
+            companyProfilesEmpty: !isLoading && (!data?.data?.profiles?.length),
         }),
         [data, error, isLoading, isValidating]
     );
@@ -27,17 +27,17 @@ export function useGetDocumentTypes() {
 
 // ----------------------------------------------------------------------
 
-export function useGetDocumentType(id) {
-    const URL = id ? [endpoints.documentType.details(id)] : null;
+export function useGetCompanyProfile(id) {
+    const URL = id ? [endpoints.companyProfiles.details(id)] : null;
 
     const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
 
     const memoizedValue = useMemo(
         () => ({
-            documentType: data || null,
-            documentTypeLoading: isLoading,
-            documentTypeError: error,
-            documentTypeValidating: isValidating,
+            companyProfile: data || [],
+            companyProfileLoading: isLoading,
+            companyProfileError: error,
+            companyProfileValidating: isValidating,
         }),
         [data, error, isLoading, isValidating]
     );
@@ -47,8 +47,8 @@ export function useGetDocumentType(id) {
 
 // ----------------------------------------------------------------------
 
-export function useFilterDocumentTypes(queryString) {
-    const URL = queryString ? endpoints.documentType.filterList(queryString) : null;
+export function useFilterCompanyProfiles(queryString) {
+    const URL = queryString ? endpoints.companyProfiles.filterList(queryString) : null;
 
     const { data, isLoading, error, isValidating } = useSWR(URL, fetcher, {
         keepPreviousData: true,
@@ -56,12 +56,12 @@ export function useFilterDocumentTypes(queryString) {
 
     return useMemo(
         () => ({
-            filteredDocumentTypes: data?.data?.documents || [],
+            filteredCompanyProfiles: data?.data?.profiles || [],
             totalCount: data?.data?.count || 0,
             filterLoading: isLoading,
             filterError: error,
             filterValidating: isValidating,
-            filterEmpty: !isLoading && (!data?.data?.documents?.length),
+            filterEmpty: !isLoading && (!data?.data?.profiles?.length),
         }),
         [data, error, isLoading, isValidating]
     );

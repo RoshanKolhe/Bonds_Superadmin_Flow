@@ -6,8 +6,8 @@ import { _mock } from './_mock';
 // ----------------------------------------------------------------------
 
 export const USER_STATUS_OPTIONS = [
-  { value: '1', label: 'Sync' },
-  { value: '0', label: 'Not Sync' },
+  // { value: '1', label: 'Sync' },
+  // { value: '0', label: 'Not Sync' },
   // { value: 'banned', label: 'Banned' },
   // { value: 'rejected', label: 'Rejected' },
 ];

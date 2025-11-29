@@ -80,5 +80,10 @@ export const endpoints = {
     list: '/document-types',
     filterList: (filter) => `/document-types?filter=${filter}`,
     details: (id) => `/document-types/${id}`,
+  },
+  companyProfiles: {
+    list: '/company-profiles',
+    filterList: (filter) => `/company-profiles?filter=${filter}`,
+    details: (id) => `/company-profiles/${id}`,
   }
 };

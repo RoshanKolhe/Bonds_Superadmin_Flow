@@ -38,6 +38,10 @@ const UserListPage = lazy(() => import('src/pages/dashboard/user/list'));
 const UserAccountPage = lazy(() => import('src/pages/dashboard/user/account'));
 const UserCreatePage = lazy(() => import('src/pages/dashboard/user/new'));
 const UserEditPage = lazy(() => import('src/pages/dashboard/user/edit'));
+// COMPANY PROFILES FOR KYC
+const CompanyProfileListPage = lazy(()=> import('src/pages/dashboard/company-profiles/list'));
+const CompanyProfliesDetailsPage = lazy(()=> import('src/pages/dashboard/company-profiles/details'))
+
 
 // COMPANY PROFILE
 const CompanyProfilePage = lazy(() => import('src/pages/dashboard/company/profile'));
@@ -129,6 +133,14 @@ export const dashboardRoutes = [
         children: [
           { element: <CompanyProfilePage />, index: true },
           { path: 'profile', element: <CompanyProfilePage /> },
+        ],
+      },
+         {
+        path: 'companyProfiles',
+        children: [
+          { element: <CompanyProfileListPage />, index: true },
+          { path: 'list', element: <CompanyProfileListPage/> },
+          {path:':id', element:<CompanyProfliesDetailsPage/>}
         ],
       },
       {

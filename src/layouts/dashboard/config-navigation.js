@@ -87,6 +87,19 @@ export function useNavData() {
           //     // { title: t('account'), path: paths.dashboard.user.account },
           //   ],
           // },
+          {
+            title: t('profiles'),
+            path: paths.dashboard.user.root,
+            icon: ICONS.user,
+            children: [
+              // { title: t('profile'), path: paths.dashboard.user.root },
+              // { title: t('cards'), path: paths.dashboard.user.cards },
+              { title: t('list'), path: paths.dashboard.companyProfiles.list },
+              // { title: t('create'), path: paths.dashboard.user.new },
+              // { title: t('edit'), path: paths.dashboard.user.demo.edit },
+              // { title: t('account'), path: paths.dashboard.user.account },
+            ],
+          },
           // {
           //   title: t('Document Drafting'),
           //   path: paths.dashboard.documentdrafting.root,
