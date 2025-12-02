@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
 import Tab from '@mui/material/Tab';
@@ -45,6 +45,7 @@ import CompanyProfilesTableRow from '../company-profiles-table-row';
 import CompanyProfileTableToolbar from '../company-profiles-table-toolbar';
 import CompanyProfileTableFiltersResult from '../company-profiles-table-filters-result';
 import { useFilterCompanyProfiles, useGetCompanyProfiles } from 'src/api/company-profiles';
+import { buildFilter } from 'src/utils/filters';
 
 
 
@@ -74,19 +75,24 @@ export default function CompanyProfileListView() {
 
   const settings = useSettingsContext();
   const router = useRouter();
+  const [tableData, setTableData] = useState([]);
+  const [filters, setFilters] = useState(defaultFilters);
   const confirm = useBoolean();
 
-  const baseFilter = {
-    where: {
-      and: [
-        { isDeleted: false },
-      ],
-    },
-    skip: table.page * table.rowsPerPage,
-    limit: table.rowsPerPage,
-  };
+  const filter = buildFilter({
+    page: table.page,
+    rowsPerPage: table.rowsPerPage,
+    order: table.order,
+    orderBy: table.orderBy,
+    startDate: filters.startDate,
+    endDate: filters.endDate,
+    validSortFields: ['companyName', 'CIN', 'GSTIN'],
+    searchTextValue: filters.name,
+    status: filters.status,
 
-  const { filteredCompanyProfiles, totalCount, } = useFilterCompanyProfiles(encodeURIComponent(JSON.stringify(baseFilter)));
+  })
+
+  const { filteredCompanyProfiles, totalCount, } = useFilterCompanyProfiles(encodeURIComponent(JSON.stringify(filter)));
 
   const handleViewRow = useCallback(
     (id) => {
@@ -102,13 +108,12 @@ export default function CompanyProfileListView() {
     [router]
   );
 
-  const [filters, setFilters] = useState(defaultFilters);
 
-  const dataFiltered = filteredCompanyProfiles || [];
+
 
   const denseHeight = table.dense ? 52 : 72;
   const canReset = !isEqual(defaultFilters, filters);
-  const notFound = (!dataFiltered.length && canReset) || !dataFiltered.length;
+  const notFound = (!filteredCompanyProfiles.length && canReset) || !filteredCompanyProfiles.length;
 
   const handleFilters = useCallback(
     (name, value) => {
@@ -118,20 +123,14 @@ export default function CompanyProfileListView() {
     [table]
   );
 
-  const handleDeleteRow = useCallback(
-    (id) => {
-      table.onUpdatePageDeleteRow(filteredCompanyProfiles.length);
-    },
-    [filteredCompanyProfiles.length, table]
-  );
 
   const handleDeleteRows = useCallback(() => {
     table.onUpdatePageDeleteRows({
-      totalRows: filteredCompanyProfiles.length,
+      totalRows: tableData.length,
       totalRowsInPage: filteredCompanyProfiles.length,
-      totalRowsFiltered: dataFiltered.length,
+      totalRowsFiltered: filteredCompanyProfiles.length,
     });
-  }, [dataFiltered.length, filteredCompanyProfiles.length, table]);
+  }, [filteredCompanyProfiles.length, table, tableData]);
 
   const handleFilterStatus = useCallback(
     (event, newValue) => {
@@ -145,6 +144,11 @@ export default function CompanyProfileListView() {
   }, []);
 
 
+  useEffect(() => {
+    if (filteredCompanyProfiles) {
+      setTableData(filteredCompanyProfiles);
+    }
+  }, [filteredCompanyProfiles]);
 
   return (
     <>
@@ -181,7 +185,7 @@ export default function CompanyProfileListView() {
               filters={filters}
               onFilters={handleFilters}
               onResetFilters={handleResetFilters}
-              results={dataFiltered.length}
+              results={filteredCompanyProfiles.length}
               sx={{ p: 2.5, pt: 0 }}
             />
           )}
@@ -190,11 +194,11 @@ export default function CompanyProfileListView() {
             <TableSelectedAction
               dense={table.dense}
               numSelected={table.selected.length}
-              rowCount={filteredCompanyProfiles.length}
+              rowCount={tableData.length}
               onSelectAllRows={(checked) =>
                 table.onSelectAllRows(
                   checked,
-                  filteredCompanyProfiles.map((row) => row.id)
+                  tableData.map((row) => row.id)
                 )
               }
               action={
@@ -213,26 +217,25 @@ export default function CompanyProfileListView() {
                   order={table.order}
                   orderBy={table.orderBy}
                   headLabel={TABLE_HEAD}
-                  rowCount={filteredCompanyProfiles.length}
+                  rowCount={tableData.length}
                   numSelected={table.selected.length}
                   onSort={table.onSort}
                   onSelectAllRows={(checked) =>
                     table.onSelectAllRows(
                       checked,
-                      filteredCompanyProfiles.map((row) => row.id)
+                      tableData.map((row) => row.id)
                     )
                   }
                   showCheckbox={false}
                 />
 
                 <TableBody>
-                  {dataFiltered.map((row) => (
+                  {filteredCompanyProfiles.map((row) => (
                     <CompanyProfilesTableRow
                       key={row.id}
                       row={row}
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
-                      onDeleteRow={() => handleDeleteRow(row.id)}
                       onViewRow={() => handleViewRow(row.id)}
                       onEditRow={() => handleEditRow(row.id)}
                     />
@@ -241,7 +244,7 @@ export default function CompanyProfileListView() {
 
                   <TableEmptyRows
                     height={denseHeight}
-                    emptyRows={emptyRows(table.page, table.rowsPerPage, filteredCompanyProfiles.length)}
+                    emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
                   />
 
                   <TableNoData notFound={notFound} />

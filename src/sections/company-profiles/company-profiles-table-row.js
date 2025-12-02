@@ -20,9 +20,15 @@ import { ConfirmDialog } from 'src/components/custom-dialog';
 import { format } from 'date-fns';
 
 // ----------------------------------------------------------------------
+const STATUS_DISPLAY = {
+  0: { label: 'Pending', color: 'warning' },
+  1: { label: 'Under Review', color: 'info' },
+  2: { label: 'Approved', color: 'success' },
+  3: { label: 'Rejected', color: 'error' },
+};
 
-export default function CompanyProfilesTableRow({ row, selected, onEditRow,onViewRow, onSelectRow, onDeleteRow }) {
-  const { companyName, CIN, GSTIN, isActive, createdAt } = row;
+export default function CompanyProfilesTableRow({ row, selected, onEditRow, onViewRow, onSelectRow, onDeleteRow }) {
+  const { companyName, CIN, GSTIN, kycApplications, createdAt } = row;
 
   const confirm = useBoolean();
 
@@ -52,9 +58,9 @@ export default function CompanyProfilesTableRow({ row, selected, onEditRow,onVie
         <TableCell>
           <Label
             variant="soft"
-            color={Number(isActive) === 1 ? 'success' : 'error'}
+            color={STATUS_DISPLAY[Number(kycApplications?.status)]?.color || 'default'}
           >
-            {Number(isActive) === 1 ? 'Active' : 'In-active'}
+            {STATUS_DISPLAY[Number(kycApplications?.status)]?.label || 'Unknown'}
           </Label>
         </TableCell>
         <TableCell>
@@ -73,8 +79,8 @@ export default function CompanyProfilesTableRow({ row, selected, onEditRow,onVie
 
         <TableCell align="right" sx={{ px: 1, whiteSpace: 'nowrap' }}>
           <Tooltip title="Details" placement="top" arrow>
-            <IconButton  onClick={onViewRow}>
-              <Iconify icon="solar:eye-bold" /> 
+            <IconButton onClick={onViewRow}>
+              <Iconify icon="solar:eye-bold" />
             </IconButton>
           </Tooltip>
 

@@ -21,10 +21,10 @@ const icon = (name) => (
 const ICONS = {
   job: icon('ic_job'),
   blog: icon('ic_blog'),
+  company: icon('ic_company'),
   chat: icon('ic_chat'),
   mail: icon('ic_mail'),
   user: icon('ic_user'),
-  company: icon('ic_label'),
   file: icon('ic_file'),
   lock: icon('ic_lock'),
   tour: icon('ic_tour'),
@@ -88,17 +88,9 @@ export function useNavData() {
           //   ],
           // },
           {
-            title: t('profiles'),
-            path: paths.dashboard.user.root,
-            icon: ICONS.user,
-            children: [
-              // { title: t('profile'), path: paths.dashboard.user.root },
-              // { title: t('cards'), path: paths.dashboard.user.cards },
-              { title: t('list'), path: paths.dashboard.companyProfiles.list },
-              // { title: t('create'), path: paths.dashboard.user.new },
-              // { title: t('edit'), path: paths.dashboard.user.demo.edit },
-              // { title: t('account'), path: paths.dashboard.user.account },
-            ],
+            title: t('Company Profiles'),
+            path: paths.dashboard.companyProfiles.list,
+            icon: ICONS.company,
           },
           // {
           //   title: t('Document Drafting'),
@@ -381,17 +373,21 @@ export function useNavData() {
           //     // { title: t('account'), path: paths.dashboard.user.account },
           //   ],
           // },
-
-          { title: t('Create Document'), path: paths.dashboard.documentdrafting.new, icon: ICONS.document },
           {
-            title: t('Debenture Trustees'),
-            path: paths.dashboard.debenturetrustees.root,
-            icon: ICONS.user,
+            title: t('Trustee Documents'),
+            path: paths.dashboard.user.root,
+            icon: ICONS.document,
             children: [
-              { title: t('List'), path: paths.dashboard.debenturetrustees.debenturetrusteeslist },
-
+              // { title: t('profile'), path: paths.dashboard.user.root },
+              { title: t('list'), path: paths.dashboard.debenturetrustees.debenturetrusteeslist, },
+              { title: t('Create'), path: paths.dashboard.documentdrafting.new },
+              // { title: t('edit'), path: paths.dashboard.user.demo.edit },
+              // { title: t('account'), path: paths.dashboard.user.account },
             ],
           },
+
+
+
 
 
 

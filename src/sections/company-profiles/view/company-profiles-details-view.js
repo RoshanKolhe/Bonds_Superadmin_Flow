@@ -19,7 +19,7 @@ export default function CompanyProfilesDetailsView() {
   const settings = useSettingsContext();
   const { id } = useParams();
 
-  const {companyProfile} = useGetCompanyProfile(id);
+  const { companyProfile } = useGetCompanyProfile(id);
   console.log(companyProfile);
 
   return (
@@ -29,10 +29,11 @@ export default function CompanyProfilesDetailsView() {
           { name: 'Dashboard', href: paths.dashboard.root },
           { name: 'Details', href: paths.dashboard.companyProfiles.root },
           {
-            name: companyProfile?.createdAt
+            name: companyProfile?.data?.companyName || 'Company Profile'
+
           },
         ]}
-      sx={{ mb: { xs: 3, md: 5 } }}
+        sx={{ mb: { xs: 3, md: 5 } }}
       />
 
       <CompanyProfileDetails data={companyProfile} />

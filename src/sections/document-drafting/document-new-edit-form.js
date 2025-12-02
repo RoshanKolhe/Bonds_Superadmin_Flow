@@ -27,6 +27,66 @@ const requiredOptions = [
 ];
 
 
+const fieldTypes = [
+  { label: 'Text', value: 'text' },
+  { label: 'Select', value: 'select' }
+]
+
+
+function OptionsField({ name }) {
+  const { control, watch } = useFormContext();
+  const { fields, append, remove } = useFieldArray({ control, name });
+
+  // Watch this field options array
+  const optionValues = watch(name) || [];
+
+  // Auto-add first option if none exist
+  useEffect(() => {
+    if (optionValues.length === 0 && fields.length === 0) {
+      append({ option: "", value: "" });
+    }
+  }, [optionValues.length, fields.length, append]);
+
+  return (
+    <Grid container spacing={2} sx={{ p: 2, background: "#f6f6f6", borderRadius: 1 }}>
+
+      {fields.map((item, index) => {
+        const path = `${name}[${index}]`;
+        return (
+          <Grid container spacing={2} key={item.id} alignItems="center">
+            <Grid item xs={5}>
+              <RHFTextField name={`${path}.option`} label="Option" />
+            </Grid>
+
+            <Grid item xs={5}>
+              <RHFTextField name={`${path}.value`} label="Option Value" />
+            </Grid>
+            {optionValues?.length > 1 &&
+              <Grid item xs={2}>
+                <IconButton color="error" onClick={() => remove(index)}>
+                  <Iconify icon="mdi:trash-outline" />
+                </IconButton>
+              </Grid>
+            }
+          </Grid>
+        );
+      })}
+
+      <Grid item xs={12}>
+        <Button
+          variant="outlined"
+          size="small"
+          type="button"
+          onClick={() => append({ option: "", value: "" })}
+        >
+          + Add Option
+        </Button>
+      </Grid>
+    </Grid>
+  );
+}
+
+
 
 
 function RenderFields({ name }) {
@@ -35,15 +95,15 @@ function RenderFields({ name }) {
 
   const values = watch(name);
 
-
   useEffect(() => {
     if (!values?.length) {
       append({
-
+        fieldType: "",
         fieldName: "",
         fieldValue: "",
         description: "",
         isRequired: true,
+        options: [],
       });
     }
   }, [values, append]);
@@ -52,36 +112,43 @@ function RenderFields({ name }) {
     <Grid container direction="column" spacing={2} sx={{ mt: 2 }}>
       {fields.map((field, index) => {
         const fieldPath = `${name}[${index}]`;
+        const isfieldType = watch(`${fieldPath}.fieldType`);
+
+
 
         return (
-          <Grid
-            key={field.id}
-            item
-            xs={12}
-            sx={{ p: 2, backgroundColor: "#f6f6f6", borderRadius: 1 }}
-          >
+          <Grid key={field.id} item xs={12} sx={{ p: 2, backgroundColor: "#f6f6f6", borderRadius: 1 }}>
             <Grid container spacing={2}>
+
               {/* Label */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <RHFTextField name={`${fieldPath}.fieldName`} label="Label" />
               </Grid>
 
               {/* Value */}
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <RHFTextField name={`${fieldPath}.fieldValue`} label="Value" />
               </Grid>
-              <Grid item xs={12} sm={6}>
+
+              {/* Description */}
+              <Grid item xs={12} sm={4}>
                 <RHFTextField name={`${fieldPath}.description`} label="Description" />
               </Grid>
 
-              {/* Required Checkbox */}
-              <Grid item xs={12} sm={6}>
-                <RHFSelect
-                  name={`${fieldPath}.isRequired`}
-                  label="Required"
+              {/* Field Type */}
+              <Grid item xs={12} sm={4}>
+                <RHFSelect name={`${fieldPath}.fieldType`} label="Field Type">
+                  {fieldTypes.map((option) => (
+                    <MenuItem key={String(option.value)} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </RHFSelect>
+              </Grid>
 
-                  fullWidth
-                >
+              {/* Required */}
+              <Grid item xs={12} sm={4}>
+                <RHFSelect name={`${fieldPath}.isRequired`} label="Required" fullWidth>
                   {requiredOptions.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
                       {option.label}
@@ -90,24 +157,31 @@ function RenderFields({ name }) {
                 </RHFSelect>
               </Grid>
 
+              {/* Delete Field Button */}
               {values?.length > 1 && (
-                <Grid item xs={12} sm={1}>
-                  <IconButton
-                    color="error"
-                    onClick={() => remove(index)}
-                    sx={{ ml: "auto" }}
-                  >
+                <Grid item xs={12} sm={2} display="flex" alignItems="center" justifyContent="flex-end">
+                  <IconButton color="error" onClick={() => remove(index)}>
                     <Iconify icon="mdi:trash-outline" width={22} />
                   </IconButton>
                 </Grid>
               )}
+
+              {/* Dynamic options if type = select */}
+              {isfieldType === "select" && (
+                <Grid item xs={12} sx={{ mt: 2 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                    Select Options
+                  </Typography>
+
+                  <OptionsField name={`${fieldPath}.options`} />
+                </Grid>
+              )}
             </Grid>
           </Grid>
-
         );
       })}
 
-      {/* Add Field Button */}
+      {/* Add New Field Button */}
       <Grid item>
         <Button
           variant="outlined"
@@ -115,19 +189,22 @@ function RenderFields({ name }) {
           type="button"
           onClick={() =>
             append({
+              fieldType: "",
               fieldName: "",
               fieldValue: "",
               description: "",
               isRequired: true,
+              options: [],
             })
           }
         >
           + Add Field
         </Button>
       </Grid>
-    </Grid >
+    </Grid>
   );
 }
+
 
 
 export default function DocumentFields({ currentFields }) {
@@ -143,8 +220,24 @@ export default function DocumentFields({ currentFields }) {
         Yup.object().shape({
           fieldName: Yup.string().required("Field label is required"),
           fieldValue: Yup.string().required("Field value is required"),
-          description: Yup.string().required("description is required"),
+          description: Yup.string().required("Description is required"),
+          fieldType: Yup.string()
+            .oneOf(["text", "select"], "Invalid field type")
+            .required("Field type is required"),
           isRequired: Yup.boolean().default(true),
+          options: Yup.array().when("fieldType", {
+            is: "select",
+            then: (schema) =>
+              schema
+                .of(
+                  Yup.object().shape({
+                    option: Yup.string().required("Option label is required"),
+                    value: Yup.string().required("Option value is required"),
+                  })
+                )
+                .min(1, "At least one option is required"),
+            otherwise: (schema) => schema.optional().notRequired(),
+          }),
         })
       )
       .min(1, "At least one field is required"),
@@ -172,14 +265,18 @@ export default function DocumentFields({ currentFields }) {
           fieldName: item.fieldName || "",
           fieldValue: item.fieldValue || "",
           description: item.description || "",
+          fieldType: item.fieldType || "text",
           isRequired: item.isRequired ?? true,
+          options: item.options || [],
         }))
         : [
           {
             fieldName: "",
             fieldValue: "",
             description: "",
+            fieldType: "text",
             isRequired: true,
+            options: [],
           },
         ],
     }),
@@ -215,7 +312,7 @@ export default function DocumentFields({ currentFields }) {
     }
   }, [nameValue, methods]);
 
-
+  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { router } = useRouter();
 
@@ -230,7 +327,15 @@ export default function DocumentFields({ currentFields }) {
           fieldName: item.fieldName,
           fieldValue: item.fieldValue,
           description: item.description,
+          fieldType: item.fieldType,
           isRequired: item.isRequired,
+          options:
+            item.fieldType === "select"
+              ? item.options.map((opt) => ({
+                option: opt.option,
+                value: opt.value,
+              }))
+              : [],
         })),
       };
 
@@ -244,7 +349,9 @@ export default function DocumentFields({ currentFields }) {
       enqueueSnackbar(
         currentFields ? 'Document updated successfully!' : 'Document created successfully!'
       );
-      // router.push(paths.dashboard.debenturetrustees.debenturetrusteeslist);
+
+      navigate(paths.dashboard.debenturetrustees.debenturetrusteeslist);
+
     } catch (error) {
       console.error(error);
 
@@ -272,22 +379,32 @@ export default function DocumentFields({ currentFields }) {
     <FormProvider methods={methods} onSubmit={onSubmit}>
 
       <Grid container spacing={2} sx={{ mb: 3, mt: 1 }}>
-        <Grid item xs={12} md={4}>
-          <RHFAutocomplete
-            name="roles"
-            label="Select Roles"
-            autoHighlight
-            multiple
-            disableClearable={false}
-            options={getRoles}
-            getOptionLabel={(option) => option?.label || ''}
-            filterOptions={(x) => x}
-            isOptionEqualToValue={(option, value) => option?.id === value?.id}
-          />
+        <Grid container spacing={2} sx={{ mt: 1 }}>
+          <Grid item xs={12} md={6}>
+            <RHFAutocomplete
+              name="roles"
+              label="Select Roles"
+              autoHighlight
+              multiple
+              disableClearable={false}
+              options={getRoles}
+              getOptionLabel={(option) => option?.label || ''}
+              filterOptions={(x) => x}
+              isOptionEqualToValue={(option, value) => option?.id === value?.id}
+              fullWidth
+            />
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <RHFTextField
+              name="name"
+              label="Document Type"
+              fullWidth
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <RHFTextField name="name" label="Document Type" fullWidth />
-        </Grid>
+
+
 
         <Grid item xs={12} >
           <RHFTextField
@@ -300,8 +417,7 @@ export default function DocumentFields({ currentFields }) {
         </Grid>
       </Grid>
 
-
-      <Typography variant="h6">Fields</Typography>
+      <Typography variant="h6">Placeholders</Typography>
 
       <RenderFields name="documentPlaceholders" />
       <Stack

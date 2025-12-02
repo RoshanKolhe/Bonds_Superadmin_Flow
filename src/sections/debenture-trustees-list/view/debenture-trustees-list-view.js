@@ -43,6 +43,7 @@ import DesignationTableRow from '../designation-table-row';
 import DesignationTableToolbar from '../Designation-table-toolbar';
 import DesignationTableFiltersResult from '../designation-table-filters-result';
 import { useFilterDocumentTypes } from 'src/api/document-type';
+import { buildFilter } from 'src/utils/filters';
 
 
 
@@ -72,28 +73,24 @@ export default function DebentureTrusteesListView() {
   const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
+  const [filters, setFilters] = useState(defaultFilters);
 
+  const filter = buildFilter({
+    page: table.page,
+    rowsPerPage: table.rowsPerPage,
+    order: table.order,
+    orderBy: table.orderBy,
+    startDate: filters.startDate,
+    endDate: filters.endDate,
+    validSortFields: ['name', 'CIN', 'GSTIN'],
+    searchTextValue: filters.name,
+    status: filters.status,
 
-  const baseFilter = {
-    where: {
-      and: [
-        { isDeleted: false },
+  })
 
-      ],
-    },
-    skip: table.page * table.rowsPerPage,
-    limit: table.rowsPerPage,
-  };
+  const { filteredDocumentTypes, totalCount, filterEmpty, filterLoading } = useFilterDocumentTypes(encodeURIComponent(JSON.stringify(filter)));
 
-
-  const { filteredDocumentTypes, totalCount, filterEmpty, filterLoading } =useFilterDocumentTypes(encodeURIComponent(JSON.stringify(baseFilter)));
-
-
-
-
-
-
-
+  
   const handleViewRow = useCallback(
     (id) => {
       router.push(paths.dashboard.category.details(id));
@@ -108,7 +105,7 @@ export default function DebentureTrusteesListView() {
     [router]
   );
 
-  const [filters, setFilters] = useState(defaultFilters);
+
 
 
 
@@ -159,19 +156,19 @@ export default function DebentureTrusteesListView() {
           heading="List"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Debenture trustees', href: paths.dashboard.debenturetrustees.debenturetrusteeslist },
+            { name: 'Trustee Document', href: paths.dashboard.debenturetrustees.debenturetrusteeslist },
             { name: 'List' },
           ]}
-          action={
-            <Button
-              component={RouterLink}
-              href={paths.dashboard.documentdrafting.new}
-              variant="contained"
-              startIcon={<Iconify icon="mingcute:add-line" />}
-            >
-              New Document
-            </Button>
-          }
+          // action={
+          //   <Button
+          //     component={RouterLink}
+          //     href={paths.dashboard.documentdrafting.new}
+          //     variant="contained"
+          //     startIcon={<Iconify icon="mingcute:add-line" />}
+          //   >
+          //     New Document
+          //   </Button>
+          // }
           sx={{
             mb: { xs: 3, md: 5 },
           }}
