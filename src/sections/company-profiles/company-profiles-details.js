@@ -9,6 +9,7 @@ import axiosInstance from 'src/utils/axios';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import Label from 'src/components/label';
 import { MultiFilePreview } from 'src/components/upload';
+import RejectReasonDialog from 'src/components/reject dialog box/reject-dialog-box';
 
 const STATUS_DISPLAY = {
   0: { label: 'Pending', color: 'warning' },
@@ -23,6 +24,9 @@ export default function CompanyProfileDetails({ data }) {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(false);
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
+
 
   const fields = [
     { name: 'email', label: 'Email', value: data?.data?.users?.email },
@@ -47,26 +51,25 @@ export default function CompanyProfileDetails({ data }) {
     if (data) reset(defaultValues);
   }, [data]);
 
-  const handleStatusUpdate = async (type) => {
+  const handleStatusUpdate = async (type, reason = null) => {
     try {
       setLoading(true);
 
       const payload = {
         applicationId: data?.data?.kycApplicationsId,
         status: type,
+        rejectReason: reason || null,   
       };
 
       await axiosInstance.patch('/auth/handle-kyc-application', payload);
 
       enqueueSnackbar(
-        `Company KYC ${String(type) === '2' ? 'Approved' : 'Rejected'} successfully`,
+        `Company KYC ${String(type) === '2' ? 'Approved' : 'Rejected'}`,
         {
           variant: String(type) === '2' ? 'success' : 'error',
         }
       );
 
-
-      // Optional auto redirect
       setTimeout(() => router.back(), 800);
 
     } catch (error) {
@@ -93,6 +96,18 @@ export default function CompanyProfileDetails({ data }) {
       setOpenPreview(true); // open image modal
     }
   };
+
+  const handleRejectSubmit = () => {
+    if (!rejectReason.trim()) {
+      enqueueSnackbar('Please enter a reason', { variant: 'warning' });
+      return;
+    }
+
+    handleStatusUpdate(3, rejectReason);
+    setRejectOpen(false);
+    setRejectReason('');
+  };
+
 
 
 
@@ -256,12 +271,12 @@ export default function CompanyProfileDetails({ data }) {
           <Button variant="outlined" onClick={() => router.back()} disabled={loading}>
             Close
           </Button>
-          
+
           <Button
             variant="contained"
             color="error"
-            onClick={() => handleStatusUpdate(3)}
-             disabled={loading || data?.data?.kycApplications?.status === 2}
+            onClick={() => setRejectOpen(true)}
+            disabled={loading || data?.data?.kycApplications?.status === 2}
           >
             Reject
           </Button>
@@ -270,12 +285,20 @@ export default function CompanyProfileDetails({ data }) {
             variant="contained"
             color="success"
             onClick={() => handleStatusUpdate(2)}
-             disabled={loading || data?.data?.kycApplications?.status === 2}
+            disabled={loading || data?.data?.kycApplications?.status === 2}
           >
             Approve
           </Button>
         </Stack>
       </FormProvider>
+      <RejectReasonDialog
+        open={rejectOpen}
+        onClose={() => setRejectOpen(false)}
+        reason={rejectReason}
+        setReason={setRejectReason}
+        onSubmit={handleRejectSubmit}
+      />
+
     </Box>
   );
 }
