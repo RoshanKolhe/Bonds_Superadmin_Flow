@@ -44,22 +44,40 @@ export default function BankDetailsCard({ bank, onViewRow }) {
       {/* Header */}
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Stack direction="row" spacing={2} alignItems="center">
-          <Iconify icon="mdi:bank" width={30} color="#2e5aac" />
+          <Iconify icon="mdi:bank" width={30} />
           <Box>
             <Typography variant="subtitle2" color="text.secondary">
               Bank Name
             </Typography>
 
             <Stack direction="row" spacing={1} alignItems="center">
-              <Typography variant="h6">{bank?.bankName}</Typography>
+              <Typography
+                variant="h6"
+                onClick={() =>
+                  navigate(paths.dashboard.trusteeProfiles.new, {
+                    state: { bankData: bank },
+                  })
+                }
+              >
+                {bank?.bankName}
+              </Typography>
 
-              {bank?.isPrimary === true && (
-                <Chip
-                  label="Primary"
-                  size="small"
-                  color="primary"
-                  icon={<Iconify icon="mdi:star" />}
-                />
+              {bank?.isPrimary && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    color: '#1d5ec7ff',
+                    px: 1.2,
+                    py: 0.4,
+                    borderRadius: '12px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                    width: 'fit-content',
+                  }}
+                >
+                  <Iconify icon="mdi:star" width={16} />
+                </Box>
               )}
             </Stack>
           </Box>
@@ -84,7 +102,7 @@ export default function BankDetailsCard({ bank, onViewRow }) {
         {/* Branch Name */}
         <Grid item xs={12} md={6}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <Iconify icon="mdi:home-city-outline" width={22} color="#5ac267" />
+            <Iconify icon="mdi:home-city-outline" width={22} />
             <Box>
               <Typography variant="caption" color="text.secondary">
                 Branch Name
@@ -97,7 +115,7 @@ export default function BankDetailsCard({ bank, onViewRow }) {
         {/* IFSC Code */}
         <Grid item xs={12} md={6}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <Iconify icon="mdi:web" width={22} color="#1565C0" />
+            <Iconify icon="mdi:web" width={22} />
             <Box>
               <Typography variant="caption" color="text.secondary">
                 IFSC Code
@@ -110,7 +128,7 @@ export default function BankDetailsCard({ bank, onViewRow }) {
         {/* Account Number */}
         <Grid item xs={12} md={6}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <Iconify icon="mdi:card-account-details" width={22} color="#9c27b0" />
+            <Iconify icon="mdi:card-account-details" width={22} />
             <Box>
               <Typography variant="caption" color="text.secondary">
                 Account Number
@@ -123,7 +141,7 @@ export default function BankDetailsCard({ bank, onViewRow }) {
         {/* Account Proof + Eye Icon */}
         <Grid item xs={12} md={6}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <Iconify icon="mdi:file-document-outline" width={22} color="#2e5aac" />
+            <Iconify icon="mdi:file-document-outline" width={22} />
 
             <Box flex={1}>
               <Typography variant="caption" color="text.secondary">
@@ -138,7 +156,10 @@ export default function BankDetailsCard({ bank, onViewRow }) {
 
                 <IconButton
                   size="small"
-                  onClick={() => window.open(bank?.bankAccountProof?.fileUrl, '_blank')}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.open(bank?.bankAccountProof?.fileUrl, '_blank');
+                  }}
                   sx={{ ml: 0.5 }}
                 >
                   <Iconify icon="mdi:eye" width={20} />

@@ -85,3 +85,26 @@ export function useGetSignatories(userId, stepperId) {
   };
 }
 
+export function useGetDocuments(trusteeId) {
+  const URL =
+    trusteeId ? endpoints.trusteeKyc.getDocuments(String(trusteeId))
+      : null;
+
+  const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
+    keepPreviousData: true,
+  });
+
+  const refreshDocuments = () => {
+    mutate(); // <-- trigger re-fetch
+  };
+
+  return {
+    documents: data?.documents || [],   // <-- ALWAYS ARRAY
+    loading: isLoading,
+    error,
+    validating: isValidating,
+    empty: !isLoading && (!data?.documents || data.documents.length === 0),
+    refreshDocuments,
+  };
+}
+

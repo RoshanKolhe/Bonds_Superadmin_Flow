@@ -24,6 +24,8 @@ import { useGetDetails } from 'src/api/trusteeKyc';
 import { useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify';
 import { useLocation } from 'react-router';
+import { Card } from '@mui/material';
+import RejectReasonDialog from './reject-signatory';
 
 // ----------------------------------------------------------------------
 
@@ -33,6 +35,9 @@ export default function KYCBankDetails({ trusteeProfile }) {
   const { state } = useLocation();
   const bankDetails = state?.bankData || null;
   console.log('📌 Received bankData:', bankDetails);
+
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
 
   console.log('KYCBankDetails userId', userId);
   const router = useRouter();
@@ -82,6 +87,44 @@ export default function KYCBankDetails({ trusteeProfile }) {
     const file = acceptedFiles[0];
     if (file) {
       setValue('addressProof', file, { shouldValidate: true });
+    }
+  };
+
+  const handleApprove = async () => {
+    try {
+      await axiosInstance.patch('/trustee-profiles/bank-account-verification', {
+        status: 1,
+        accountId: bankDetails?.id,
+        reason: '',
+      });
+
+      enqueueSnackbar('Bank Approved Successfully!', { variant: 'success' });
+      router.back(); // or refresh page
+    } catch (err) {
+      enqueueSnackbar('Approval failed', { variant: 'error' });
+    }
+  };
+
+  const handleRejectSubmit = async () => {
+    if (!rejectReason) {
+      enqueueSnackbar('Please enter a reason', { variant: 'warning' });
+      return;
+    }
+
+    try {
+      await axiosInstance.patch('/trustee-profiles/bank-account-verification', {
+        status: 2,
+        accountId: bankDetails?.id,
+        reason: rejectReason,
+      });
+
+      enqueueSnackbar('Bank Rejected', { variant: 'success' });
+
+      setRejectOpen(false);
+      setRejectReason('');
+      router.back();
+    } catch (err) {
+      enqueueSnackbar('Rejection failed', { variant: 'error' });
     }
   };
 
@@ -192,7 +235,7 @@ export default function KYCBankDetails({ trusteeProfile }) {
   return (
     <Container>
       <FormProvider methods={methods} onSubmit={onSubmit}>
-        <Paper
+        <Card
           sx={{
             p: { xs: 2, md: 4 },
             borderRadius: 2,
@@ -411,7 +454,51 @@ export default function KYCBankDetails({ trusteeProfile }) {
               </Grid>
             </Grid>
           </Box>
-        </Paper>
+          {/* ACTION BUTTONS - Bottom Right */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: 2,
+              mt: 3,
+            }}
+          >
+            {/* REJECT BUTTON */}
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => setRejectOpen(true)}
+              disabled={bankDetails?.status === 1 || bankDetails?.status === 2}
+              sx={{
+                opacity: bankDetails?.status === 1 || bankDetails?.status === 2 ? 0.4 : 1,
+              }}
+            >
+              Reject
+            </Button>
+
+            {/* APPROVE BUTTON */}
+            <Button
+              variant="contained"
+              color="success"
+              onClick={handleApprove}
+              disabled={bankDetails?.status === 1 || bankDetails?.status === 2}
+              sx={{
+                opacity: bankDetails?.status === 1 || bankDetails?.status === 2 ? 0.4 : 1,
+              }}
+            >
+              Approve
+            </Button>
+          </Box>
+
+          {/* Reject Reason Dialog */}
+          <RejectReasonDialog
+            open={rejectOpen}
+            onClose={() => setRejectOpen(false)}
+            reason={rejectReason}
+            setReason={setRejectReason}
+            onSubmit={handleRejectSubmit}
+          />
+        </Card>
       </FormProvider>
     </Container>
   );

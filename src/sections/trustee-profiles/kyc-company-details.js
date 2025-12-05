@@ -18,15 +18,16 @@ import {
 import Iconify from 'src/components/iconify';
 import { enqueueSnackbar } from 'notistack';
 import axiosInstance from 'src/utils/axios';
-import { useGetSignatories } from 'src/api/trusteeKyc';
+import { useGetDocuments, useGetSignatories } from 'src/api/trusteeKyc';
 
 import RejectReasonDialog from './reject-signatory';
+import Label from 'src/components/label';
 
 export default function KYCSignatories({ trusteeProfile }) {
-  const userId = trusteeProfile?.usersId;
+  const trusteeId = trusteeProfile?.id;
   const stepperId = trusteeProfile?.kycApplications?.currentProgress?.[3];
 
-  const { signatories = [], loading, mutate } = useGetSignatories(userId, stepperId);
+  const { documents = [], refreshDocuments } = useGetDocuments(trusteeId);
 
   const [rejectOpen, setRejectOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
@@ -42,7 +43,7 @@ export default function KYCSignatories({ trusteeProfile }) {
       });
 
       enqueueSnackbar('Document Approved', { variant: 'success' });
-      mutate(); // Refresh instantly
+      refreshDocuments(); // Refresh instantly
     } catch (err) {
       enqueueSnackbar('Approval failed', { variant: 'error' });
     }
@@ -63,7 +64,7 @@ export default function KYCSignatories({ trusteeProfile }) {
 
     try {
       await axiosInstance.patch('/trustee-profiles/document-verification', {
-        status: 0,
+        status: 2,
         documentId: selectedDocumentId,
         reason: rejectReason,
       });
@@ -72,7 +73,7 @@ export default function KYCSignatories({ trusteeProfile }) {
 
       setRejectOpen(false);
       setRejectReason('');
-      mutate(); // Refresh instantly
+      refreshDocuments(); // Refresh instantly
     } catch (err) {
       enqueueSnackbar('Rejection failed', { variant: 'error' });
     }
@@ -81,24 +82,19 @@ export default function KYCSignatories({ trusteeProfile }) {
   return (
     <Container>
       <Card sx={{ p: 3 }}>
-        <TableContainer>
+        <Typography variant="h5" sx={{ mb: 2, fontWeight: 700 }}>
+          Document Verification
+        </Typography>
+
+        <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>
-                  <b>Name</b>
+                  <b>Document Name</b>
                 </TableCell>
                 <TableCell>
-                  <b>PAN Preview</b>
-                </TableCell>
-                <TableCell>
-                  <b>Board Resolution</b>
-                </TableCell>
-                <TableCell>
-                  <b>SEBI Registration Certificate</b>
-                </TableCell>
-                <TableCell>
-                  <b>GST Certificate</b>
+                  <b>Preview Document</b>
                 </TableCell>
                 <TableCell>
                   <b>Status</b>
@@ -110,104 +106,57 @@ export default function KYCSignatories({ trusteeProfile }) {
             </TableHead>
 
             <TableBody>
-              {signatories.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell>{row.fullName}</TableCell>
+              {documents.map((doc) => (
+                <TableRow key={doc.id}>
+                  <TableCell>{doc.documents?.name || 'NA'}</TableCell>
+
                   <TableCell>
-                    {row.panCardFile?.fileUrl ? (
-                      <Button
-                        variant="outlined"
-                        onClick={() => window.open(row.panCardFile.fileUrl, '_blank')}
-                      >
-                        Preview PAN
-                      </Button>
-                    ) : (
-                      'NA'
-                    )}
+                    <Button
+                      variant="outlined"
+                      startIcon={<Iconify icon="mdi:eye" />}
+                      onClick={() => window.open(doc.documentsFile?.fileUrl, '_blank')}
+                    >
+                      Preview
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Label
+                      variant="soft"
+                      color={
+                        (doc.status === 1 && 'success') ||
+                        (doc.status === 0 && 'warning') ||
+                        (doc.status === 2 && 'error') ||
+                        'default'
+                      }
+                    >
+                      {doc.status === 1 ? 'Approved' : doc.status === 0 ? 'Pending' : 'Rejected'}
+                    </Label>
                   </TableCell>
 
-                  {/* BOARD RESOLUTION */}
-                  <TableCell>
-                    {row.boardResolutionFile?.fileUrl ? (
-                      <Button
-                        variant="outlined"
-                        onClick={() => window.open(row.boardResolutionFile.fileUrl, '_blank')}
-                      >
-                        Preview BR
-                      </Button>
-                    ) : (
-                      'NA'
-                    )}
-                  </TableCell>
-
-                  {/* SEBI Certificate */}
-                  <TableCell>
-                    {row.sebiRegistrationCertificateFile?.fileUrl ? (
-                      <Button
-                        variant="outlined"
-                        onClick={() =>
-                          window.open(row.sebiRegistrationCertificateFile.fileUrl, '_blank')
-                        }
-                      >
-                        Preview SEBI
-                      </Button>
-                    ) : (
-                      'NA'
-                    )}
-                  </TableCell>
-
-                  {/* GST Certificate */}
-                  <TableCell>
-                    {row.gstCertificateFile?.fileUrl ? (
-                      <Button
-                        variant="outlined"
-                        onClick={() => window.open(row.gstCertificateFile.fileUrl, '_blank')}
-                      >
-                        Preview GST
-                      </Button>
-                    ) : (
-                      'NA'
-                    )}
-                  </TableCell>
-
-                  {/* STATUS */}
-                  <TableCell>
-                    {row.status === 1 ? (
-                      <span style={{ color: 'green', fontWeight: 600 }}>Approved</span>
-                    ) : row.status === 0 ? (
-                      <span style={{ color: 'orange', fontWeight: 600 }}>Pending</span>
-                    ) : (
-                      <span style={{ color: 'red', fontWeight: 600 }}>Rejected</span>
-                    )}
-                  </TableCell>
-
-                  {/* ACTIONS */}
                   <TableCell align="right">
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                      {/* APPROVE */}
                       <IconButton
                         color="success"
-                        onClick={() => handleApprove(row.id)}
-                        disabled={row.status === 1}
+                        onClick={() => handleApprove(doc.id)}
+                        disabled={doc.status === 1 || doc.status === 2} // DISABLE for APPROVED or REJECTED
                         sx={{
-                          opacity: row.status === 1 ? 0.4 : 1,
-                          cursor: row.status === 1 ? 'not-allowed' : 'pointer',
+                          opacity: doc.status === 1 || doc.status === 2 ? 0.4 : 1,
+                          cursor: doc.status === 1 || doc.status === 2 ? 'not-allowed' : 'pointer',
                         }}
                       >
-                        <Iconify icon="eva:checkmark-circle-2-outline" />
+                        <Iconify icon="eva:checkmark-circle-2-outline" width={26} />
                       </IconButton>
 
-                      {/* REJECT */}
                       <IconButton
                         color="error"
-                        disabled={row.status === 1}
-                        onClick={() => handleRejectClick(row.id)}
+                        onClick={() => handleRejectClick(doc.id)}
+                        disabled={doc.status === 1 || doc.status === 2} // DISABLE for APPROVED or REJECTED
                         sx={{
-                          opacity: row.status === 1 ? 0.4 : 1,
-                          cursor: row.status === 1 ? 'not-allowed' : 'pointer',
+                          opacity: doc.status === 1 || doc.status === 2 ? 0.4 : 1,
+                          cursor: doc.status === 1 || doc.status === 2 ? 'not-allowed' : 'pointer',
                         }}
                       >
-                        <Iconify icon="eva:close-circle-outline" />
+                        <Iconify icon="eva:close-circle-outline" width={26} />
                       </IconButton>
                     </Box>
                   </TableCell>

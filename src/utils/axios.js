@@ -97,5 +97,6 @@ export const endpoints = {
       `/trustee-profiles/kyc-progress/${userId}?step=${encodeURIComponent(stepperId)}`,
     getSection: (stepperId, userId, route = '') =>
       `/trustee-profiles/kyc-get-data/${stepperId}/${userId}?route=${encodeURIComponent(route)}`,
+    getDocuments: (trusteeId) =>`/trustee-profiles/${trusteeId}/documents`
   },
 };

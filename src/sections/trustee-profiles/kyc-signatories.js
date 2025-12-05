@@ -19,6 +19,7 @@ import { useGetSignatories } from 'src/api/trusteeKyc';
 import RejectReasonDialog from './reject-signatory';
 import axiosInstance from 'src/utils/axios';
 import { enqueueSnackbar } from 'notistack';
+import Label from 'src/components/label';
 
 // ----------------------------------------------------------------------
 
@@ -96,7 +97,7 @@ export default function KYCSignatories({ trusteeProfile }) {
   );
 
   return (
-    <Container sx={{ position: 'relative'}}>
+    <Container sx={{ position: 'relative' }}>
       <Box
         sx={{
           boxShadow: '0px 0px 12px 0px #00000040',
@@ -195,15 +196,22 @@ export default function KYCSignatories({ trusteeProfile }) {
                     )}
                   </TableCell>
 
-                  {/* Status */}
                   <TableCell>
-                    {row.status === 1 ? (
-                      <span style={{ color: 'green', fontWeight: 600 }}>Approved</span>
-                    ) : row.status === 2 ? (
-                      <span style={{ color: 'red', fontWeight: 600 }}>Rejected</span>
-                    ) : (
-                      <span style={{ color: 'orange', fontWeight: 600 }}>Under Review</span>
-                    )}
+                    <Label
+                      variant="soft"
+                      color={
+                        (row.status === 1 && 'success') ||
+                        (row.status === 0 && 'warning') ||
+                        (row.status === 2 && 'error') ||
+                        'default'
+                      }
+                    >
+                      {row.status === 1
+                        ? 'Approved'
+                        : row.status === 2
+                        ? 'Rejected'
+                        : 'Under Review'}
+                    </Label>
                   </TableCell>
 
                   {/* ACTIONS */}

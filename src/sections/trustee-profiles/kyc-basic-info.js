@@ -385,104 +385,104 @@ export default function KYCBasicInfo({ trusteeProfile }) {
                   name="cin"
                   placeholder="Enter your CIN"
                   disabled
-                  InputProps={{
-                    endAdornment: (
-                      <Button
-                        variant="contained"
-                        size="small"
-                        sx={{
-                          bgcolor: '#00328A',
-                          color: 'white',
-                          textTransform: 'none',
-                          fontWeight: 600,
-                          borderRadius: '6px',
-                          ml: 1,
-                          minHeight: '32px',
-                          lineHeight: 1,
-                          px: 2,
-                          '&:hover': { bgcolor: '#00328A' },
-                        }}
-                        onClick={async () => {
-                          const cinValue = getValues('cin');
+                  // InputProps={{
+                  //   endAdornment: (
+                  //     <Button
+                  //       variant="contained"
+                  //       size="small"
+                  //       sx={{
+                  //         bgcolor: '#00328A',
+                  //         color: 'white',
+                  //         textTransform: 'none',
+                  //         fontWeight: 600,
+                  //         borderRadius: '6px',
+                  //         ml: 1,
+                  //         minHeight: '32px',
+                  //         lineHeight: 1,
+                  //         px: 2,
+                  //         '&:hover': { bgcolor: '#00328A' },
+                  //       }}
+                  //       onClick={async () => {
+                  //         const cinValue = getValues('cin');
 
-                          if (!cinValue) {
-                            enqueueSnackbar('Please enter a CIN before fetching.', {
-                              variant: 'warning',
-                            });
-                            return;
-                          }
+                  //         if (!cinValue) {
+                  //           enqueueSnackbar('Please enter a CIN before fetching.', {
+                  //             variant: 'warning',
+                  //           });
+                  //           return;
+                  //         }
 
-                          try {
-                            const response = await axiosInstance.post('/extraction/company-info', {
-                              CIN: cinValue,
-                            });
+                  //         try {
+                  //           const response = await axiosInstance.post('/extraction/company-info', {
+                  //             CIN: cinValue,
+                  //           });
 
-                            const data = response?.data?.data;
+                  //           const data = response?.data?.data;
 
-                            if (response.data.success && data) {
-                              // ⭐ Correct mapping based on your API response
+                  //           if (response.data.success && data) {
+                  //             // ⭐ Correct mapping based on your API response
 
-                              setValue('companyName', data.companyName || '', {
-                                shouldValidate: true,
-                                shouldDirty: true,
-                              });
+                  //             setValue('companyName', data.companyName || '', {
+                  //               shouldValidate: true,
+                  //               shouldDirty: true,
+                  //             });
 
-                              setValue('gstin', data.gstin || '', {
-                                shouldValidate: true,
-                                shouldDirty: true,
-                              });
+                  //             setValue('gstin', data.gstin || '', {
+                  //               shouldValidate: true,
+                  //               shouldDirty: true,
+                  //             });
 
-                              setValue(
-                                'dateOfIncorporation',
-                                data.dateOfIncorporation
-                                  ? new Date(data.dateOfIncorporation)
-                                  : null,
-                                { shouldValidate: true, shouldDirty: true }
-                              );
+                  //             setValue(
+                  //               'dateOfIncorporation',
+                  //               data.dateOfIncorporation
+                  //                 ? new Date(data.dateOfIncorporation)
+                  //                 : null,
+                  //               { shouldValidate: true, shouldDirty: true }
+                  //             );
 
-                              setValue('city', data.cityOfIncorporation || '', {
-                                shouldValidate: true,
-                                shouldDirty: true,
-                              });
+                  //             setValue('city', data.cityOfIncorporation || '', {
+                  //               shouldValidate: true,
+                  //               shouldDirty: true,
+                  //             });
 
-                              setValue('state', data.stateOfIncorporation || '', {
-                                shouldValidate: true,
-                                shouldDirty: true,
-                              });
+                  //             setValue('state', data.stateOfIncorporation || '', {
+                  //               shouldValidate: true,
+                  //               shouldDirty: true,
+                  //             });
 
-                              setValue('country', data.countryOfIncorporation || 'India', {
-                                shouldValidate: true,
-                                shouldDirty: true,
-                              });
+                  //             setValue('country', data.countryOfIncorporation || 'India', {
+                  //               shouldValidate: true,
+                  //               shouldDirty: true,
+                  //             });
 
-                              setValue('panNumber', data.companyPanNumber || '', {
-                                shouldValidate: true,
-                                shouldDirty: true,
-                              });
+                  //             setValue('panNumber', data.companyPanNumber || '', {
+                  //               shouldValidate: true,
+                  //               shouldDirty: true,
+                  //             });
 
-                              enqueueSnackbar('CIN details extracted successfully', {
-                                variant: 'success',
-                              });
-                            } else {
-                              throw new Error(
-                                response.data.message || 'Failed to extract CIN details'
-                              );
-                            }
-                          } catch (error) {
-                            console.error('Error extracting CIN:', error);
-                            enqueueSnackbar(
-                              error?.response?.data?.message ||
-                                'Failed to fetch CIN data. Please check CIN and try again.',
-                              { variant: 'error' }
-                            );
-                          }
-                        }}
-                        disabled
-                      >
-                        Fetch
-                      </Button>
-                    ),
-                  }}
+                  //             enqueueSnackbar('CIN details extracted successfully', {
+                  //               variant: 'success',
+                  //             });
+                  //           } else {
+                  //             throw new Error(
+                  //               response.data.message || 'Failed to extract CIN details'
+                  //             );
+                  //           }
+                  //         } catch (error) {
+                  //           console.error('Error extracting CIN:', error);
+                  //           enqueueSnackbar(
+                  //             error?.response?.data?.message ||
+                  //               'Failed to fetch CIN data. Please check CIN and try again.',
+                  //             { variant: 'error' }
+                  //           );
+                  //         }
+                  //       }}
+                  //       disabled
+                  //     >
+                  //       Fetch
+                  //     </Button>
+                  //   ),
+                  // }}
                 />
               </Box>
               <Box sx={{ mb: 3 }}>
