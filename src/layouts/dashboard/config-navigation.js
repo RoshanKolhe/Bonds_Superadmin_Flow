@@ -92,6 +92,11 @@ export function useNavData() {
             path: paths.dashboard.companyProfiles.list,
             icon: ICONS.company,
           },
+          {
+            title: t('trustee profiles'),
+            path: paths.dashboard.trusteeProfiles.list,
+            icon: ICONS.company,
+          },
           // {
           //   title: t('Document Drafting'),
           //   path: paths.dashboard.documentdrafting.root,

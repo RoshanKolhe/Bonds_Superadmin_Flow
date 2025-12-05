@@ -1,7 +1,3 @@
-
-
-
-
 //
 import axios from 'axios';
 // config
@@ -85,5 +81,21 @@ export const endpoints = {
     list: '/company-profiles',
     filterList: (filter) => `/company-profiles?filter=${filter}`,
     details: (id) => `/company-profiles/${id}`,
-  }
+  },
+  trusteeProfiles: {
+    list: '/trustee-profiles',
+    filterList: (filter) => `/trustee-profiles?filter=${filter}`,
+    details: (id) => `/trustee-profiles/${id}`,
+  },
+  trusteeEntityType: {
+    list: '/trustee-entity-types',
+    filterList: (filter) => `/trustee-entity-types?filter=${filter}`,
+    details: (id) => `/trustee-entity-types/${id}`,
+  },
+  trusteeKyc: {
+    kycProgress: (userId, stepperId) =>
+      `/trustee-profiles/kyc-progress/${userId}?step=${encodeURIComponent(stepperId)}`,
+    getSection: (stepperId, userId, route = '') =>
+      `/trustee-profiles/kyc-get-data/${stepperId}/${userId}?route=${encodeURIComponent(route)}`,
+  },
 };

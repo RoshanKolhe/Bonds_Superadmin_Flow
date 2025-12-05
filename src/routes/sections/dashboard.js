@@ -42,10 +42,12 @@ const UserEditPage = lazy(() => import('src/pages/dashboard/user/edit'));
 const CompanyProfileListPage = lazy(()=> import('src/pages/dashboard/company-profiles/list'));
 const CompanyProfliesDetailsPage = lazy(()=> import('src/pages/dashboard/company-profiles/details'))
 
+// TRUSTEE PROFILE FOR KYC
+const TrusteeProfileListPage = lazy(() => import('src/pages/dashboard/trustee-profiles/list'));
+const TrusteeProfliesDetailsPage = lazy(()=> import('src/pages/dashboard/trustee-profiles/details'));
 
 // COMPANY PROFILE
 const CompanyProfilePage = lazy(() => import('src/pages/dashboard/company/profile'));
-
 
 // COMPANY
 const ROIGuidancePage = lazy(() => import('src/pages/dashboard/issure-services/roi'));
@@ -141,6 +143,14 @@ export const dashboardRoutes = [
           { element: <CompanyProfileListPage />, index: true },
           { path: 'list', element: <CompanyProfileListPage/> },
           {path:':id', element:<CompanyProfliesDetailsPage/>}
+        ],
+      },
+      {
+        path: 'trusteeProfiles',
+        children: [
+          { element: <TrusteeProfileListPage />, index: true },
+          { path: 'list', element: <TrusteeProfileListPage/> },
+          {path:':id', element:<TrusteeProfliesDetailsPage/>}
         ],
       },
       {
