@@ -13,9 +13,8 @@ import { useGetTrusteeProfile } from 'src/api/trustee-profiles';
 // ⬇️ Your 4 pages
 import KYCBasicInfo from '../kyc-basic-info';
 import KYCCompanyDetails from '../kyc-company-details';
-import KYCBankDetails from '../kyc-bank-details';
 import KYCSignatories from '../kyc-signatories';
-import CompanyBankPage from '../bank-detail-view';
+import TrusteeBankPage from '../bank-detail-view';
 
 // ----------------------------------------------------------------------
 
@@ -64,7 +63,7 @@ export default function TrusteeProfilesDetailsView() {
       {currentTab === 'details' && <KYCCompanyDetails trusteeProfile={trusteeProfile.data} />}
 
       {/* {currentTab === 'bank' && <KYCBankDetails trusteeProfile={trusteeProfile.data} />} */}
-      {currentTab === 'bank' && <CompanyBankPage trusteeProfile={trusteeProfile.data} />}
+      {currentTab === 'bank' && <TrusteeBankPage trusteeProfile={trusteeProfile.data} />}
 
       {currentTab === 'signatories' && <KYCSignatories trusteeProfile={trusteeProfile.data} />}
     </Container>

@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { paths } from 'src/routes/paths';
 import { useGetDetails } from 'src/api/trusteeKyc';
-import BankDetailsView from './trustee-bank-cards';
 import KYCBankDetails from './kyc-bank-details';
+import BankDetailsCard from './trustee-bank-cards';
 
-export default function CompanyBankPage({ trusteeProfile }) {
+export default function TrusteeBankPage({ trusteeProfile }) {
   const navigate = useNavigate();
 
   const userId = trusteeProfile?.usersId;
@@ -38,10 +38,10 @@ export default function CompanyBankPage({ trusteeProfile }) {
       {/* Header */}
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
-          Company Bank Details
+          Trustee Bank Details
         </Typography>
 
-        <Button variant="contained" onClick={() => navigate(paths.dashboard.company.new)}>
+        <Button variant="contained" onClick={() => navigate(paths.dashboard.trusteeProfiles.new)}>
           + Create Bank Details
         </Button>
       </Stack>
@@ -55,7 +55,7 @@ export default function CompanyBankPage({ trusteeProfile }) {
         <Grid container spacing={3}>
           {bankList.map((item) => (
             <Grid key={item.id} item xs={12} md={6}>
-              <BankDetailsView bank={item} onViewRow={() => handleViewRow(item)} />
+              <BankDetailsCard bank={item} onViewRow={() => handleViewRow(item)} />
             </Grid>
           ))}
         </Grid>

@@ -45,6 +45,7 @@ const CompanyProfliesDetailsPage = lazy(()=> import('src/pages/dashboard/company
 // TRUSTEE PROFILE FOR KYC
 const TrusteeProfileListPage = lazy(() => import('src/pages/dashboard/trustee-profiles/list'));
 const TrusteeProfliesDetailsPage = lazy(()=> import('src/pages/dashboard/trustee-profiles/details'));
+const TrusteeProfileNewPage = lazy(()=> import('src/pages/dashboard/trustee-profiles/new'))
 
 // COMPANY PROFILE
 const CompanyProfilePage = lazy(() => import('src/pages/dashboard/company/profile'));
@@ -150,6 +151,7 @@ export const dashboardRoutes = [
         children: [
           { element: <TrusteeProfileListPage />, index: true },
           { path: 'list', element: <TrusteeProfileListPage/> },
+          { path: 'new', element: <TrusteeProfileNewPage/> },
           {path:':id', element:<TrusteeProfliesDetailsPage/>}
         ],
       },

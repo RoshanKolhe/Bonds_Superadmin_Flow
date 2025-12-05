@@ -23,16 +23,19 @@ import axiosInstance from 'src/utils/axios';
 import { useGetDetails } from 'src/api/trusteeKyc';
 import { useEffect, useState } from 'react';
 import Iconify from 'src/components/iconify';
+import { useLocation } from 'react-router';
 
 // ----------------------------------------------------------------------
 
 export default function KYCBankDetails({ trusteeProfile }) {
   const userId = trusteeProfile?.usersId;
   const stepperId = trusteeProfile?.kycApplications?.currentProgress?.[2];
+  const { state } = useLocation();
+  const bankDetails = state?.bankData || null;
+  console.log('📌 Received bankData:', bankDetails);
 
   console.log('KYCBankDetails userId', userId);
   const router = useRouter();
-  const { Details: bankDetails } = useGetDetails(userId, stepperId);
 
   // ---------------- VALIDATION ----------------
   const NewSchema = Yup.object().shape({
@@ -249,6 +252,17 @@ export default function KYCBankDetails({ trusteeProfile }) {
               )}
             </Box>
           </Box>
+          {/* <RHFFileUploadBox
+            name="addressProof"
+            label={`Upload ${documentType === 'cheque' ? 'Cheque' : 'Bank Statement'}`}
+            icon="mdi:file-document-outline"
+            color="#1e88e5"
+            acceptedTypes="pdf,xls,docx,jpeg"
+            maxSizeMB={10}
+            existing={existingProof}
+            onDrop={(files) => handleDrop(files)}
+            disabled
+          /> */}
 
           {/* ---------------- BANK FIELDS ---------------- */}
           <Box sx={{ py: 4 }}>
@@ -329,7 +343,12 @@ export default function KYCBankDetails({ trusteeProfile }) {
                   </Box>
 
                   <Box>
-                    <RHFTextField name="bankName" label="Bank Name" placeholder="Enter Bank Name" disabled/>
+                    <RHFTextField
+                      name="bankName"
+                      label="Bank Name"
+                      placeholder="Enter Bank Name"
+                      disabled
+                    />
                   </Box>
                   <Box>
                     <RHFTextField

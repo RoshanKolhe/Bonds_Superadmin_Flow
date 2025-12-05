@@ -1,8 +1,11 @@
 import PropTypes from 'prop-types';
 import { Card, Box, Typography, Stack, Divider, Chip, Grid, IconButton } from '@mui/material';
 import Iconify from 'src/components/iconify';
+import { useNavigate } from 'react-router';
+import { paths } from 'src/routes/paths';
 
-export default function BankDetailsView({ bank, onViewRow }) {
+export default function BankDetailsCard({ bank, onViewRow }) {
+  const navigate = useNavigate();
   if (!bank) return null;
 
   const STATUS = {
@@ -32,6 +35,11 @@ export default function BankDetailsView({ bank, onViewRow }) {
         flexDirection: 'column',
         gap: 2,
       }}
+      onClick={() =>
+        navigate(paths.dashboard.trusteeProfiles.new, {
+          state: { bankData: bank },
+        })
+      }
     >
       {/* Header */}
       <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -128,7 +136,11 @@ export default function BankDetailsView({ bank, onViewRow }) {
               >
                 {bankProof[bank?.bankAccountProofType]?.label || 'Unknown'}
 
-                <IconButton size="small" onClick={() => onViewRow(bank)} sx={{ ml: 0.5 }}>
+                <IconButton
+                  size="small"
+                  onClick={() => window.open(bank?.bankAccountProof?.fileUrl, '_blank')}
+                  sx={{ ml: 0.5 }}
+                >
                   <Iconify icon="mdi:eye" width={20} />
                 </IconButton>
               </Typography>
@@ -140,6 +152,6 @@ export default function BankDetailsView({ bank, onViewRow }) {
   );
 }
 
-BankDetailsView.propTypes = {
+BankDetailsCard.propTypes = {
   onViewRow: PropTypes.func,
 };
