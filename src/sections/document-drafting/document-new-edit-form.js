@@ -6,7 +6,7 @@ import {
 } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSnackbar } from 'src/components/snackbar';
-import { Grid, Button, Typography, Checkbox, FormControlLabel, IconButton, Stack, MenuItem } from "@mui/material";
+import { Grid, Button, Typography, Checkbox, FormControlLabel, IconButton, Stack, MenuItem, Card } from "@mui/material";
 import * as Yup from "yup";
 import FormProvider, { RHFAutocomplete, RHFEditor, RHFSelect, RHFTextField } from "src/components/hook-form";
 import Iconify from "src/components/iconify";
@@ -376,6 +376,7 @@ export default function DocumentFields({ currentFields }) {
 
 
   return (
+    <Card sx={{p:4}}>
     <FormProvider methods={methods} onSubmit={onSubmit}>
 
       <Grid container spacing={2} sx={{ mb: 3, mt: 1 }}>
@@ -402,18 +403,15 @@ export default function DocumentFields({ currentFields }) {
               fullWidth
             />
           </Grid>
-        </Grid>
+          <Grid item xs={12} >
+            <RHFTextField
+              name="description"
+              label="Description"
+              multiline
+              rows={4}
 
-
-
-        <Grid item xs={12} >
-          <RHFTextField
-            name="description"
-            label="Description"
-            multiline
-            rows={4}
-
-          />
+            />
+          </Grid>
         </Grid>
       </Grid>
 
@@ -432,5 +430,6 @@ export default function DocumentFields({ currentFields }) {
 
 
     </FormProvider >
+    </Card>
   );
 }
