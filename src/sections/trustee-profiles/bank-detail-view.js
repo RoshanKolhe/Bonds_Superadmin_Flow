@@ -40,10 +40,10 @@ export default function TrusteeBankPage({ trusteeProfile }) {
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
           Trustee Bank Details
         </Typography>
-
+{/* 
         <Button variant="contained" onClick={() => navigate(paths.dashboard.trusteeProfiles.new)}>
           + Create Bank Details
-        </Button>
+        </Button> */}
       </Stack>
 
       {/* No Bank Found */}
