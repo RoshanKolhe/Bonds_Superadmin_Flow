@@ -8,7 +8,7 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title>Issuer: Login</title>
+        <title>SuperAdmin: Login</title>
       </Helmet>
 
       <JwtLoginView />
