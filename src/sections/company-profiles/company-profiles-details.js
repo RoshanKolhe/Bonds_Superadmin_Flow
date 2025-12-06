@@ -80,6 +80,7 @@ export default function CompanyProfileDetails({ data }) {
       setLoading(false);
     }
   };
+  
 
 
   const [openPreview, setOpenPreview] = useState(false);

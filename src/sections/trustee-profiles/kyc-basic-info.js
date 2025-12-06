@@ -12,7 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { Card } from '@mui/material';
+import { Card, Divider } from '@mui/material';
 // assets
 import { countries } from 'src/assets/data';
 // components
@@ -25,10 +25,19 @@ import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hook';
 import { useGetKycProgress } from 'src/api/trusteeKyc';
 import { useGetTrusteeEntityTypes } from 'src/api/entityType';
+import RejectReasonDialog from 'src/components/reject dialog box/reject-dialog-box';
 
 // ----------------------------------------------------------------------
 
-export default function KYCBasicInfo({ trusteeProfile }) {  
+const STATUS_DISPLAY = {
+  0: { label: 'Pending', color: 'warning' },
+  1: { label: 'Under Review', color: 'info' },
+  2: { label: 'Approved', color: 'success' },
+  3: { label: 'Rejected', color: 'error' },
+};
+
+
+export default function KYCBasicInfo({ trusteeProfile }) {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
 
@@ -39,6 +48,9 @@ export default function KYCBasicInfo({ trusteeProfile }) {
   // State to store mapped API values
   const [sectorOptions, setSectorOptions] = useState([]);
   const [entityOptions, setEntityOptions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [rejectReason, setRejectReason] = useState('');
 
   const { EntityTypes, EntityTypesEmpty } = useGetTrusteeEntityTypes();
 
@@ -106,6 +118,50 @@ export default function KYCBasicInfo({ trusteeProfile }) {
     }),
     [humanInteraction]
   );
+
+
+  // Status Update Patch cll for approved the trustee
+  const handleStatusUpdate = async (type, reason = null) => {
+    try {
+      setLoading(true);
+
+      const payload = {
+        applicationId: trusteeProfile?.kycApplicationsId,
+        status: type,
+        rejectReason: reason || null,
+      };
+
+      await axiosInstance.patch('/auth/handle-kyc-application', payload);
+
+      enqueueSnackbar(
+        `Trustee KYC ${String(type) === '2' ? 'Approved' : 'Rejected'}`,
+        {
+          variant: String(type) === '2' ? 'success' : 'error',
+        }
+      );
+
+      setTimeout(() => router.back(), 800);
+
+    } catch (error) {
+      enqueueSnackbar(error?.response?.data?.message || 'Something went wrong', {
+        variant: 'error',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Reject Box
+  const handleRejectSubmit = () => {
+    if (!rejectReason.trim()) {
+      enqueueSnackbar('Please enter a reason', { variant: 'warning' });
+      return;
+    }
+
+    handleStatusUpdate(3, rejectReason);
+    setRejectOpen(false);
+    setRejectReason('');
+  };
 
   const methods = useForm({
     resolver: yupResolver(NewUserSchema),
@@ -225,23 +281,23 @@ export default function KYCBasicInfo({ trusteeProfile }) {
       // Build extracted PAN object
       const extractedPan = extractedPanDetails
         ? {
-            extractedTrusteeName: extractedPanDetails.extractedCompanyName || '',
-            extractedPanNumber: extractedPanDetails.extractedPanNumber || '',
-            extractedDateOfBirth: extractedPanDetails.extractedDateOfBirth || '',
-          }
+          extractedTrusteeName: extractedPanDetails.extractedCompanyName || '',
+          extractedPanNumber: extractedPanDetails.extractedPanNumber || '',
+          extractedDateOfBirth: extractedPanDetails.extractedDateOfBirth || '',
+        }
         : {
-            extractedTrusteeName: formData.panHoldersName,
-            extractedPanNumber: formData.panNumber,
-            extractedDateOfBirth: dobStr,
-          };
+          extractedTrusteeName: formData.panHoldersName,
+          extractedPanNumber: formData.panNumber,
+          extractedDateOfBirth: dobStr,
+        };
 
       // Build submitted PAN object
       const submittedPan = humanEdited
         ? {
-            submittedTrusteeName: formData.panHoldersName,
-            submittedPanNumber: formData.panNumber,
-            submittedDateOfBirth: dobStr,
-          }
+          submittedTrusteeName: formData.panHoldersName,
+          submittedPanNumber: formData.panNumber,
+          submittedDateOfBirth: dobStr,
+        }
         : {};
 
       // FINAL API PAYLOAD — 100% MATCHES THE API FORMAT YOU GAVE
@@ -332,8 +388,8 @@ export default function KYCBasicInfo({ trusteeProfile }) {
       dateOfBirth: pan?.submittedDateOfBirth
         ? dayjs(pan.submittedDateOfBirth).toDate()
         : pan?.extractedDateOfBirth
-        ? dayjs(pan.extractedDateOfBirth).toDate()
-        : null,
+          ? dayjs(pan.extractedDateOfBirth).toDate()
+          : null,
       panHoldersName: pan?.submittedTrusteeName || pan?.extractedTrusteeName || '',
 
       // entity type
@@ -385,104 +441,104 @@ export default function KYCBasicInfo({ trusteeProfile }) {
                   name="cin"
                   placeholder="Enter your CIN"
                   disabled
-                  // InputProps={{
-                  //   endAdornment: (
-                  //     <Button
-                  //       variant="contained"
-                  //       size="small"
-                  //       sx={{
-                  //         bgcolor: '#00328A',
-                  //         color: 'white',
-                  //         textTransform: 'none',
-                  //         fontWeight: 600,
-                  //         borderRadius: '6px',
-                  //         ml: 1,
-                  //         minHeight: '32px',
-                  //         lineHeight: 1,
-                  //         px: 2,
-                  //         '&:hover': { bgcolor: '#00328A' },
-                  //       }}
-                  //       onClick={async () => {
-                  //         const cinValue = getValues('cin');
+                // InputProps={{
+                //   endAdornment: (
+                //     <Button
+                //       variant="contained"
+                //       size="small"
+                //       sx={{
+                //         bgcolor: '#00328A',
+                //         color: 'white',
+                //         textTransform: 'none',
+                //         fontWeight: 600,
+                //         borderRadius: '6px',
+                //         ml: 1,
+                //         minHeight: '32px',
+                //         lineHeight: 1,
+                //         px: 2,
+                //         '&:hover': { bgcolor: '#00328A' },
+                //       }}
+                //       onClick={async () => {
+                //         const cinValue = getValues('cin');
 
-                  //         if (!cinValue) {
-                  //           enqueueSnackbar('Please enter a CIN before fetching.', {
-                  //             variant: 'warning',
-                  //           });
-                  //           return;
-                  //         }
+                //         if (!cinValue) {
+                //           enqueueSnackbar('Please enter a CIN before fetching.', {
+                //             variant: 'warning',
+                //           });
+                //           return;
+                //         }
 
-                  //         try {
-                  //           const response = await axiosInstance.post('/extraction/company-info', {
-                  //             CIN: cinValue,
-                  //           });
+                //         try {
+                //           const response = await axiosInstance.post('/extraction/company-info', {
+                //             CIN: cinValue,
+                //           });
 
-                  //           const data = response?.data?.data;
+                //           const data = response?.data?.data;
 
-                  //           if (response.data.success && data) {
-                  //             // ⭐ Correct mapping based on your API response
+                //           if (response.data.success && data) {
+                //             // ⭐ Correct mapping based on your API response
 
-                  //             setValue('companyName', data.companyName || '', {
-                  //               shouldValidate: true,
-                  //               shouldDirty: true,
-                  //             });
+                //             setValue('companyName', data.companyName || '', {
+                //               shouldValidate: true,
+                //               shouldDirty: true,
+                //             });
 
-                  //             setValue('gstin', data.gstin || '', {
-                  //               shouldValidate: true,
-                  //               shouldDirty: true,
-                  //             });
+                //             setValue('gstin', data.gstin || '', {
+                //               shouldValidate: true,
+                //               shouldDirty: true,
+                //             });
 
-                  //             setValue(
-                  //               'dateOfIncorporation',
-                  //               data.dateOfIncorporation
-                  //                 ? new Date(data.dateOfIncorporation)
-                  //                 : null,
-                  //               { shouldValidate: true, shouldDirty: true }
-                  //             );
+                //             setValue(
+                //               'dateOfIncorporation',
+                //               data.dateOfIncorporation
+                //                 ? new Date(data.dateOfIncorporation)
+                //                 : null,
+                //               { shouldValidate: true, shouldDirty: true }
+                //             );
 
-                  //             setValue('city', data.cityOfIncorporation || '', {
-                  //               shouldValidate: true,
-                  //               shouldDirty: true,
-                  //             });
+                //             setValue('city', data.cityOfIncorporation || '', {
+                //               shouldValidate: true,
+                //               shouldDirty: true,
+                //             });
 
-                  //             setValue('state', data.stateOfIncorporation || '', {
-                  //               shouldValidate: true,
-                  //               shouldDirty: true,
-                  //             });
+                //             setValue('state', data.stateOfIncorporation || '', {
+                //               shouldValidate: true,
+                //               shouldDirty: true,
+                //             });
 
-                  //             setValue('country', data.countryOfIncorporation || 'India', {
-                  //               shouldValidate: true,
-                  //               shouldDirty: true,
-                  //             });
+                //             setValue('country', data.countryOfIncorporation || 'India', {
+                //               shouldValidate: true,
+                //               shouldDirty: true,
+                //             });
 
-                  //             setValue('panNumber', data.companyPanNumber || '', {
-                  //               shouldValidate: true,
-                  //               shouldDirty: true,
-                  //             });
+                //             setValue('panNumber', data.companyPanNumber || '', {
+                //               shouldValidate: true,
+                //               shouldDirty: true,
+                //             });
 
-                  //             enqueueSnackbar('CIN details extracted successfully', {
-                  //               variant: 'success',
-                  //             });
-                  //           } else {
-                  //             throw new Error(
-                  //               response.data.message || 'Failed to extract CIN details'
-                  //             );
-                  //           }
-                  //         } catch (error) {
-                  //           console.error('Error extracting CIN:', error);
-                  //           enqueueSnackbar(
-                  //             error?.response?.data?.message ||
-                  //               'Failed to fetch CIN data. Please check CIN and try again.',
-                  //             { variant: 'error' }
-                  //           );
-                  //         }
-                  //       }}
-                  //       disabled
-                  //     >
-                  //       Fetch
-                  //     </Button>
-                  //   ),
-                  // }}
+                //             enqueueSnackbar('CIN details extracted successfully', {
+                //               variant: 'success',
+                //             });
+                //           } else {
+                //             throw new Error(
+                //               response.data.message || 'Failed to extract CIN details'
+                //             );
+                //           }
+                //         } catch (error) {
+                //           console.error('Error extracting CIN:', error);
+                //           enqueueSnackbar(
+                //             error?.response?.data?.message ||
+                //               'Failed to fetch CIN data. Please check CIN and try again.',
+                //             { variant: 'error' }
+                //           );
+                //         }
+                //       }}
+                //       disabled
+                //     >
+                //       Fetch
+                //     </Button>
+                //   ),
+                // }}
                 />
               </Box>
               <Box sx={{ mb: 3 }}>
@@ -827,8 +883,42 @@ export default function KYCBasicInfo({ trusteeProfile }) {
               />
             </Grid>
           </Grid>
+
+
+
+          {/* -------- Action Buttons -------- */}
+          <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 4 }}>
+            <Button variant="outlined" onClick={() => router.back()} disabled={loading}>
+              Close
+            </Button>
+
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => setRejectOpen(true)}
+              disabled={loading || trusteeProfile?.kycApplications?.status === 2}
+            >
+              Reject
+            </Button>
+
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => handleStatusUpdate(2)}
+              disabled={loading || trusteeProfile?.kycApplications?.status === 2}
+            >
+              Approve
+            </Button>
+          </Stack>
         </Card>
       </FormProvider>
+      <RejectReasonDialog
+        open={rejectOpen}
+        onClose={() => setRejectOpen(false)}
+        reason={rejectReason}
+        setReason={setRejectReason}
+        onSubmit={handleRejectSubmit}
+      />
     </Container>
   );
 }
