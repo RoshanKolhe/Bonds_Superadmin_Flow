@@ -61,29 +61,29 @@ export function useGetDetails(userId, stepperId) {
   };
 }
 
-export function useGetSignatories(userId, stepperId) {
-  const URL =
-    userId && stepperId
-      ? endpoints.trusteeKyc.getSection(stepperId, userId, '')
-      : null;
+// export function useGetSignatories(userId, stepperId) {
+//   const URL =
+//     userId && stepperId
+//       ? endpoints.trusteeKyc.getSection(stepperId, userId, '')
+//       : null;
 
-  const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
-    keepPreviousData: true,
-  });
+//   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
+//     keepPreviousData: true,
+//   });
 
-  const refreshSignatories = () => {
-    mutate(); // <-- trigger re-fetch
-  };
+//   const refreshSignatories = () => {
+//     mutate(); // <-- trigger re-fetch
+//   };
 
-  return {
-    signatories: data?.data || [],   // <-- ALWAYS ARRAY
-    loading: isLoading,
-    error,
-    validating: isValidating,
-    empty: !isLoading && (!data?.data || data.data.length === 0),
-    refreshSignatories,
-  };
-}
+//   return {
+//     signatories: data?.data || [],   // <-- ALWAYS ARRAY
+//     loading: isLoading,
+//     error,
+//     validating: isValidating,
+//     empty: !isLoading && (!data?.data || data.data.length === 0),
+//     refreshSignatories,
+//   };
+// }
 
 export function useGetDocuments(trusteeId) {
   const URL =
@@ -105,6 +105,52 @@ export function useGetDocuments(trusteeId) {
     validating: isValidating,
     empty: !isLoading && (!data?.documents || data.documents.length === 0),
     refreshDocuments,
+  };
+}
+
+export function useGetBankDetails(trusteeId) {
+  const URL =
+    trusteeId ? endpoints.trusteeKyc.getBankDetails(String(trusteeId))
+      : null;
+
+  const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
+    keepPreviousData: true,
+  });
+
+  const refreshDocuments = () => {
+    mutate(); // <-- trigger re-fetch
+  };
+
+  return {
+    bankDetails: data?.bankDetails || [],   // <-- ALWAYS ARRAY
+    loading: isLoading,
+    error,
+    validating: isValidating,
+    empty: !isLoading && (!data?.bankDetails || data.bankDetails.length === 0),
+    refreshDocuments,
+  };
+}
+
+export function useGetSignatories(trusteeId) {
+  const URL =
+    trusteeId ? endpoints.trusteeKyc.getTrusteeSignatories(String(trusteeId))
+      : null;
+
+  const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
+    keepPreviousData: true,
+  });
+
+  const refreshSignatories = () => {
+    mutate(); // <-- trigger re-fetch
+  };
+
+  return {
+    signatories: data?.signatories || [],   // <-- ALWAYS ARRAY
+    loading: isLoading,
+    error,
+    validating: isValidating,
+    empty: !isLoading && (!data?.signatories || data.signatories.length === 0),
+    refreshSignatories,
   };
 }
 

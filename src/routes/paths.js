@@ -162,6 +162,7 @@ export const paths = {
     debenturetrustees: {
       root: `${ROOTS.DASHBOARD}/debenturetrustees`,
       new: `${ROOTS.DASHBOARD}/debenturetrustees/new`,
+      edit: (id) => `${ROOTS.DASHBOARD}/debenturetrustees/${id}/edit`,
       debenturetrusteeslist: `${ROOTS.DASHBOARD}/debenturetrustees/debenture-trustees-list`,
       draft: (id) => `${ROOTS.DASHBOARD}/debenturetrustees/${id}`,
     },

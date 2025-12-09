@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
-import { DocumentCreateView } from 'src/sections/debenture-trustees-list/view';
+
+import DebentureTrusteeCreateView from 'src/sections/debenture-trustees-list/view/debenture-trustee-create-view';
 
 // sections
 
@@ -13,7 +14,7 @@ export default function NewDebentureTrusteesPage() {
         <title> Dashboard: Create Debenture Trustees</title>
       </Helmet>
 
-      <DocumentCreateView />
+      <DebentureTrusteeCreateView />
     </>
   );
 }

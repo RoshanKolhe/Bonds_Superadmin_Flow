@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Box, Grid, Paper, Stack, Avatar, Divider, Button, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import { Box, Grid, Paper, Stack, Avatar, Divider, Button, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, Card } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useForm } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
@@ -132,7 +132,7 @@ export default function CompanyProfileDetails({ data }) {
 
 
   return (
-    <Box>
+    <Card sx={{p:4}}>
       <FormProvider methods={methods}>
         {/* -------- Header Section -------- */}
         <Stack direction="row" alignItems="center" justifyContent="space-between">
@@ -300,7 +300,7 @@ export default function CompanyProfileDetails({ data }) {
         onSubmit={handleRejectSubmit}
       />
 
-    </Box>
+    </Card>
   );
 }
 

@@ -89,13 +89,13 @@ export function useNavData() {
           // },
           {
             title: t('Company Profiles'),
-            path: paths.dashboard.companyProfiles.list,
+            path: paths.dashboard.companyProfiles.root,
             icon: ICONS.company,
           },
           {
             title: t('trustee profiles'),
-            path: paths.dashboard.trusteeProfiles.list,
-            icon: ICONS.company,
+            path: paths.dashboard.trusteeProfiles.root,
+            icon: ICONS.user,
           },
           // {
           //   title: t('Document Drafting'),
@@ -380,12 +380,12 @@ export function useNavData() {
           // },
           {
             title: t('Trustee Documents'),
-            path: paths.dashboard.user.root,
+            path: paths.dashboard.debenturetrustees.root,
             icon: ICONS.document,
             children: [
               // { title: t('profile'), path: paths.dashboard.user.root },
               { title: t('list'), path: paths.dashboard.debenturetrustees.debenturetrusteeslist, },
-              { title: t('Create'), path: paths.dashboard.documentdrafting.new },
+              { title: t('Create'), path: paths.dashboard.debenturetrustees.new },
               // { title: t('edit'), path: paths.dashboard.user.demo.edit },
               // { title: t('account'), path: paths.dashboard.user.account },
             ],

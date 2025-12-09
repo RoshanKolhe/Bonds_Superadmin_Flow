@@ -2,21 +2,22 @@ import React, { useState } from 'react';
 import { CircularProgress, Box, Button, Stack, Typography, Grid, Card } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { paths } from 'src/routes/paths';
-import { useGetBankDetails, useGetDetails } from 'src/api/trusteeKyc';
-import KYCBankDetails from './kyc-bank-details';
-import BankDetailsCard from './trustee-bank-cards';
 
-export default function TrusteeBankPage({ trusteeProfile }) {
+
+import CompanyBankCard from './company-bank-cards';
+import CompanyBankDetails from './company-bank-details';
+import { useGetBankDetails } from 'src/api/companyKyc';
+
+export default function CompanyBankPage({ companyProfile }) {
   const navigate = useNavigate();
 
-  const userId = trusteeProfile?.id;
-  const stepperId = trusteeProfile?.kycApplications?.currentProgress?.[2];
+  const userId = companyProfile?.data?.id;
+  const stepperId = companyProfile?.kycApplications?.currentProgress?.[2];
 
   // 🔥 Using your existing hook (no new API request)
   // const { rawData, Loading } = useGetDetails(userId, stepperId);
 
-  const {bankDetails, loading} =useGetBankDetails(userId);
+  const { bankDetails, loading } = useGetBankDetails(userId);
 
   // API returns array → hook returns rawData.data
   // const bankList = rawData?.data || [];
@@ -36,14 +37,14 @@ export default function TrusteeBankPage({ trusteeProfile }) {
   }
 
   return (
-    <Card sx={{p:4}}>
+    <Card sx={{ p: 4 }}>
       {/* Header */}
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
-          Trustee Bank Details
+          Company Bank Details
         </Typography>
-{/* 
-        <Button variant="contained" onClick={() => navigate(paths.dashboard.trusteeProfiles.new)}>
+        {/* 
+        <Button variant="contained" onClick={() => navigate(paths.dashboard.companyProfiles.new)}>
           + Create Bank Details
         </Button> */}
       </Stack>
@@ -57,7 +58,7 @@ export default function TrusteeBankPage({ trusteeProfile }) {
         <Grid container spacing={3}>
           {bankDetails.map((item) => (
             <Grid key={item.id} item xs={12} md={6}>
-              <BankDetailsCard bank={item} onViewRow={() => handleViewRow(item)} />
+              <CompanyBankCard bank={item} onViewRow={() => handleViewRow(item)} />
             </Grid>
           ))}
         </Grid>
@@ -68,8 +69,8 @@ export default function TrusteeBankPage({ trusteeProfile }) {
             Bank Details Preview
           </Typography>
 
-          <KYCBankDetails
-            trusteeProfile={{
+          <CompanyBankDetails
+            companyProfile={{
               usersId: userId,
             }}
           />

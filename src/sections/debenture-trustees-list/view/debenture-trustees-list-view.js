@@ -39,11 +39,14 @@ import {
   TablePaginationCustom,
 } from 'src/components/table';
 //
-import DesignationTableRow from '../designation-table-row';
-import DesignationTableToolbar from '../Designation-table-toolbar';
-import DesignationTableFiltersResult from '../designation-table-filters-result';
+
+
+
 import { useFilterDocumentTypes } from 'src/api/document-type';
 import { buildFilter } from 'src/utils/filters';
+import DebentureTrusteeTableRow from '../debenture-trustee-table-row';
+import DebentureTrusteeTableToolbar from '../debenture-trustee-table-toolbar';
+import DebentureTrusteeTableFiltersResult from '../debenture-trustee-table-filters-result';
 
 
 
@@ -100,7 +103,7 @@ export default function DebentureTrusteesListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.documentdrafting.edit(id));
+      router.push(paths.dashboard.debenturetrustees.edit(id));
     },
     [router]
   );
@@ -187,10 +190,10 @@ export default function DebentureTrusteesListView() {
             ))}
           </Tabs>
 
-          <DesignationTableToolbar filters={filters} onFilters={handleFilters} />
+          <DebentureTrusteeTableToolbar filters={filters} onFilters={handleFilters} />
 
           {canReset && (
-            <DesignationTableFiltersResult
+            <DebentureTrusteeTableFiltersResult
               filters={filters}
               onFilters={handleFilters}
               onResetFilters={handleResetFilters}
@@ -240,7 +243,7 @@ export default function DebentureTrusteesListView() {
 
                 <TableBody>
                   {dataFiltered.map((row) => (
-                    <DesignationTableRow
+                    <DebentureTrusteeTableRow
                       key={row.id}
                       row={row}
                       selected={table.selected.includes(row.id)}

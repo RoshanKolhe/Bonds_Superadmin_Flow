@@ -10,7 +10,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function DesignationTableFiltersResult({
+export default function DebentureTrusteeTableFiltersResult({
   filters,
   onFilters,
   onResetFilters,
@@ -49,7 +49,7 @@ export default function DesignationTableFiltersResult({
   );
 }
 
-DesignationTableFiltersResult.propTypes = {
+DebentureTrusteeTableFiltersResult.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
   onResetFilters: PropTypes.func,

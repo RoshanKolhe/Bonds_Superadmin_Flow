@@ -12,7 +12,7 @@ import CustomPopover, { usePopover } from 'src/components/custom-popover';
 
 // ----------------------------------------------------------------------
 
-export default function DesignationTableToolbar({ filters, onFilters }) {
+export default function DebentureTrusteeTableToolbar({ filters, onFilters }) {
   const popover = usePopover();
 
   const handleFilterName = useCallback(
@@ -82,7 +82,7 @@ export default function DesignationTableToolbar({ filters, onFilters }) {
   );
 }
 
-DesignationTableToolbar.propTypes = {
+DebentureTrusteeTableToolbar.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
 };

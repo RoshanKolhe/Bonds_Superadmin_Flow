@@ -12,7 +12,7 @@ import Label from 'src/components/label';
 
 // ----------------------------------------------------------------------
 
-export default function DesignationTableRow({ row, selected, onSelectRow, onViewRow, onEditRow }) {
+export default function DebentureTrusteeTableRow({ row, selected, onSelectRow, onViewRow, onEditRow }) {
   const { name, description, isActive, createdAt } = row;
 
   return (
@@ -56,7 +56,7 @@ export default function DesignationTableRow({ row, selected, onSelectRow, onView
   );
 }
 
-DesignationTableRow.propTypes = {
+DebentureTrusteeTableRow.propTypes = {
   onSelectRow: PropTypes.func,
   row: PropTypes.object,
   selected: PropTypes.bool,

@@ -15,12 +15,13 @@ import KYCBasicInfo from '../kyc-basic-info';
 import KYCCompanyDetails from '../kyc-company-details';
 import KYCSignatories from '../kyc-signatories';
 import TrusteeBankPage from '../bank-detail-view';
+import TrusteeProfileDetails from '../trustee-profiles-details';
 
 // ----------------------------------------------------------------------
 
 const TABS = [
-  { value: 'basic', label: 'Company Basic Info' },
-  { value: 'details', label: 'Company Details' },
+  { value: 'basic', label: 'Basic Info' },
+  { value: 'details', label: 'Documents' },
   { value: 'bank', label: 'Bank Details' },
   { value: 'signatories', label: 'Signatories' },
 ];
@@ -58,7 +59,7 @@ export default function TrusteeProfilesDetailsView() {
       </Tabs>
 
       {/* ------------ TAB CONTENT ------------ */}
-      {currentTab === 'basic' && <KYCBasicInfo trusteeProfile={trusteeProfile.data} />}
+      {currentTab === 'basic' && <TrusteeProfileDetails data={trusteeProfile.data} />}
 
       {currentTab === 'details' && <KYCCompanyDetails trusteeProfile={trusteeProfile.data} />}
 

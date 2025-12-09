@@ -15,13 +15,14 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 import Iconify from 'src/components/iconify';
-import { useGetSignatories, useGetSignatoriess } from 'src/api/trusteeKyc';
-import RejectReasonDialog from './reject-signatory';
+
 import axiosInstance from 'src/utils/axios';
 import { enqueueSnackbar } from 'notistack';
 import Label from 'src/components/label';
 import { TableNoData } from 'src/components/table';
 import { Card } from '@mui/material';
+import RejectReasonDialog from 'src/components/reject dialog box/reject-dialog-box';
+import { useGetSignatories } from 'src/api/companyKyc';
 
 // ----------------------------------------------------------------------
 
@@ -40,13 +41,12 @@ const StyledSearch = styled(TextField)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function KYCSignatories({ trusteeProfile }) {
-  const userId = trusteeProfile?.id;
-  const stepperId = trusteeProfile?.kycApplications?.currentProgress?.[3];
+export default function CompanySignatories({ companyProfile }) {
+  const userId = companyProfile?.data?.id;
+  // const stepperId = companyProfile?.kycApplications?.currentProgress?.[3];
 
   const [searchTerm, setSearchTerm] = useState('');
-  // const { signatories, refreshSignatories } = useGetSignatories(userId, stepperId);
-  const {signatories, refreshSignatories}= useGetSignatories(userId);
+  const { signatories, refreshSignatories } = useGetSignatories(userId);
 
   // ---------------- REJECT DIALOG STATES ----------------
   const [rejectOpen, setRejectOpen] = useState(false);
@@ -62,7 +62,7 @@ export default function KYCSignatories({ trusteeProfile }) {
     try {
       if (!selectedSignatoryId) return;
 
-      await axiosInstance.patch('/trustee-profiles/authorize-signatory-verification', {
+      await axiosInstance.patch('/company-profiles/authorize-signatory-verification', {
         status: 2,
         signatoryId: selectedSignatoryId,
         reason: rejectReason,
@@ -80,7 +80,7 @@ export default function KYCSignatories({ trusteeProfile }) {
   // APPROVE handler
   const handleApprove = async (signatoryId) => {
     try {
-      await axiosInstance.patch('/trustee-profiles/authorize-signatory-verification', {
+      await axiosInstance.patch('/company-profiles/authorize-signatory-verification', {
         status: 1,
         signatoryId,
         reason: '',
@@ -117,7 +117,7 @@ export default function KYCSignatories({ trusteeProfile }) {
             gap: { xs: 2, sm: 0 },
           }}
         >
-          <Typography variant="h4">Add Signatories</Typography>
+          <Typography variant="h4">Signatories</Typography>
 
           <StyledSearch
             placeholder="Search signatories..."

@@ -18,17 +18,20 @@ import {
 import Iconify from 'src/components/iconify';
 import { enqueueSnackbar } from 'notistack';
 import axiosInstance from 'src/utils/axios';
-import { useGetDocuments, useGetSignatories } from 'src/api/trusteeKyc';
 
-import RejectReasonDialog from './reject-signatory';
+
+
 import Label from 'src/components/label';
 import { TableNoData } from 'src/components/table';
+import RejectReasonDialog from 'src/components/reject dialog box/reject-dialog-box';
+import { useGetDocuments } from 'src/api/companyKyc';
 
-export default function KYCCompanyDetails({ trusteeProfile }) {
-  const trusteeId = trusteeProfile?.id;
-  const stepperId = trusteeProfile?.kycApplications?.currentProgress?.[3];
+export default function CompanyDocumentDetails({ companyProfile }) {
+  const companyId = companyProfile?.data?.id;
 
-  const { documents = [], refreshDocuments } = useGetDocuments(trusteeId);
+  const { documents = [], refreshDocuments } = useGetDocuments(companyId);
+
+  console.log(documents)
 
   const [rejectOpen, setRejectOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState('');
@@ -37,7 +40,7 @@ export default function KYCCompanyDetails({ trusteeProfile }) {
   // APPROVE DOCUMENT
   const handleApprove = async (documentId) => {
     try {
-      await axiosInstance.patch('/trustee-profiles/document-verification', {
+      await axiosInstance.patch('/company-profiles/document-verification', {
         status: 1,
         documentId,
         reason: '',
@@ -64,7 +67,7 @@ export default function KYCCompanyDetails({ trusteeProfile }) {
     }
 
     try {
-      await axiosInstance.patch('/trustee-profiles/document-verification', {
+      await axiosInstance.patch('/company-profiles/document-verification', {
         status: 2,
         documentId: selectedDocumentId,
         reason: rejectReason,

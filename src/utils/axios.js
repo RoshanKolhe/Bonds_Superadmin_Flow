@@ -82,6 +82,11 @@ export const endpoints = {
     filterList: (filter) => `/company-profiles?filter=${filter}`,
     details: (id) => `/company-profiles/${id}`,
   },
+  CompanyKyc: {
+    getDocuments: (companyId) => `/company-profiles/${companyId}/documents`,
+    getBankDetails: (companyId) => `/company-profiles/${companyId}/bank-details`,
+    getCompanySignatories: (companyId) => `/company-profiles/${companyId}/authorize-signatory`,
+  },
   trusteeProfiles: {
     list: '/trustee-profiles',
     filterList: (filter) => `/trustee-profiles?filter=${filter}`,
@@ -97,6 +102,8 @@ export const endpoints = {
       `/trustee-profiles/kyc-progress/${userId}?step=${encodeURIComponent(stepperId)}`,
     getSection: (stepperId, userId, route = '') =>
       `/trustee-profiles/kyc-get-data/${stepperId}/${userId}?route=${encodeURIComponent(route)}`,
-    getDocuments: (trusteeId) =>`/trustee-profiles/${trusteeId}/documents`
+    getDocuments: (trusteeId) => `/trustee-profiles/${trusteeId}/documents`,
+    getBankDetails: (trusteeId) => `/trustee-profiles/${trusteeId}/bank-details`,
+    getTrusteeSignatories: (trusteeId) => `/trustee-profiles/${trusteeId}/authorize-signatory`,
   },
 };
