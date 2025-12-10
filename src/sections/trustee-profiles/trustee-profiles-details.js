@@ -62,7 +62,7 @@ export default function TrusteeProfileDetails({ data }) {
         rejectReason: reason || null,
       };
 
-      await axiosInstance.patch('/auth/handle-kyc-application', payload);
+      await axiosInstance.patch('/kyc/handle-kyc-application', payload);
 
       enqueueSnackbar(
         `Trustee KYC ${String(type) === '2' ? 'Approved' : 'Rejected'}`,

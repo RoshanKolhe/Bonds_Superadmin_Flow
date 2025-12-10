@@ -61,7 +61,7 @@ export default function CompanyProfileDetails({ data }) {
         rejectReason: reason || null,   
       };
 
-      await axiosInstance.patch('/auth/handle-kyc-application', payload);
+      await axiosInstance.patch('/kyc/handle-kyc-application', payload);
 
       enqueueSnackbar(
         `Company KYC ${String(type) === '2' ? 'Approved' : 'Rejected'}`,
