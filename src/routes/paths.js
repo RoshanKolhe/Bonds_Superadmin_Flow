@@ -141,6 +141,13 @@ export const paths = {
       list: `${ROOTS.DASHBOARD}/companyProfiles/list`,
       details: (id) => `${ROOTS.DASHBOARD}/companyProfiles/${id}`,
     },
+    signatory: {
+      root: `${ROOTS.DASHBOARD}/signatory`,
+
+      companydetails: (id) => `${ROOTS.DASHBOARD}/signatory/company/${id}`,
+      trusteedetails: (id) => `${ROOTS.DASHBOARD}/signatory/trustee/${id}`,
+    },
+
     trusteeProfiles: {
       root: `${ROOTS.DASHBOARD}/trusteeProfiles`,
       new: `${ROOTS.DASHBOARD}/trusteeProfiles/new`,

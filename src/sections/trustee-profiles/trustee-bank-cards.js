@@ -34,6 +34,12 @@ export default function BankDetailsCard({ bank, onViewRow }) {
         display: 'flex',
         flexDirection: 'column',
         gap: 2,
+        cursor: 'pointer',
+        transition: '0.2s',
+        '&:hover': {
+          transform: 'scale(1.01)',
+          boxShadow: '0 6px 18px rgba(0,0,0,0.12)',
+        },
       }}
       onClick={() =>
         navigate(paths.dashboard.trusteeProfiles.new, {

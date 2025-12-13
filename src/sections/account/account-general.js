@@ -42,7 +42,7 @@ export default function AccountGeneral() {
       email: user?.email || '',
       isActive: user?.isActive || true,
       avatarUrl: user?.avatar?.fileUrl || null,
-      phoneNumber: user?.phoneNumber || '',
+      phone: user?.phone || '',
       fullAddress: user?.fullAddress || '',
       city: user?.city || '',
       state: user?.state || '',
@@ -69,7 +69,7 @@ export default function AccountGeneral() {
       const inputData = {
         fullName: formData.fullName,
         email: formData.email,
-        phoneNumber: formData.phoneNumber,
+        phone: formData.phone,
         isActive: formData.isActive,
         fullAddress: formData.fullAddress,
         city: formData.city,
@@ -180,7 +180,7 @@ export default function AccountGeneral() {
             >
               <RHFTextField name="fullName" label="First Name" />
               <RHFTextField name="email" label="Email Address" disabled />
-              <RHFTextField name="phoneNumber" label="Phone Number" type="number"  disabled/>
+              <RHFTextField name="phone" label="Phone Number" type="number"  disabled/>
               {/* <Controller
                 name="dob"
                 control={control}
@@ -201,9 +201,9 @@ export default function AccountGeneral() {
                   />
                 )}
               /> */}
-              <RHFTextField name="fullAddress" label="Full Address" />
+              {/* <RHFTextField name="fullAddress" label="Full Address" />
                <RHFTextField name="state" label="State" />
-              <RHFTextField name="city" label="City" />
+              <RHFTextField name="city" label="City" /> */}
             </Box>
 
             <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
@@ -211,12 +211,6 @@ export default function AccountGeneral() {
                 type="submit"
                 variant="contained"
                 loading={isSubmitting}
-                style={{
-                  backgroundColor: '#00554E',
-                  width: '250px',
-                  height: '40px',
-                  marginTop: '20px',
-                }}
               >
                 Save Changes
               </LoadingButton>

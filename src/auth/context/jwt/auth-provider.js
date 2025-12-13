@@ -65,7 +65,7 @@ export function AuthProvider({ children }) {
 
         const response = await axios.get(endpoints.auth.me);
 
-        const  user  = response.data;
+        const user = response.data;
 
         dispatch({
           type: 'INITIAL',
@@ -97,10 +97,11 @@ export function AuthProvider({ children }) {
   }, [initialize]);
 
   // LOGIN
-  const login = useCallback(async (email, password) => {
+  const login = useCallback(async (email, password, rememberMe) => {
     const data = {
       email,
       password,
+      rememberMe
     };
 
     const response = await axios.post(endpoints.auth.login, data);
@@ -115,7 +116,7 @@ export function AuthProvider({ children }) {
           user,
         },
       });
-    }else throw new Error("User Doesn't have permission");
+    } else throw new Error("User Doesn't have permission");
   }, []);
 
   // REGISTER
@@ -155,6 +156,26 @@ export function AuthProvider({ children }) {
 
   const status = state.loading ? 'loading' : checkAuthenticated;
 
+  const forgotPassword = useCallback(async (email) => {
+    const payload = {
+      email,
+      role: 'super_admin', 
+    };
+
+    await axios.post(endpoints.auth.forgotPassword, payload);
+  }, []);
+
+  const newPassword = useCallback(async (email, otp, newPassword) => {
+    const payload = {
+      email,
+      otp,
+      role: 'super_admin',
+      newPassword,
+    };
+
+    await axios.post(endpoints.auth.newPassword, payload);
+  }, []);
+
   const memoizedValue = useMemo(
     () => ({
       user: state.user,
@@ -166,6 +187,9 @@ export function AuthProvider({ children }) {
       login,
       register,
       logout,
+      forgotPassword,
+      newPassword
+      
     }),
     [login, logout, register, state.user, status]
   );

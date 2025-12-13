@@ -47,13 +47,23 @@ export function useGetCompanyProfile(id) {
 
 // ----------------------------------------------------------------------
 
-export function useFilterCompanyProfiles(queryString) {
-    const URL = queryString ? endpoints.companyProfiles.filterList(queryString) : null;
+export function useFilterCompanyProfiles(params) {
+    let URL = null;
+
+    if (params.filter && params.status !== undefined) {
+        URL = endpoints.companyProfiles.filterStatusList(params.filter, params.status);
+    }
+    else if (params.filter) {
+        URL = endpoints.companyProfiles.filterList(params.filter);
+    }
+    else if (params.status !== undefined) {
+        URL = endpoints.companyProfiles.statusList(params.status);
+    }
 
     const { data, isLoading, error, isValidating } = useSWR(URL, fetcher, {
         keepPreviousData: true,
     });
-
+   
     return useMemo(
         () => ({
             filteredCompanyProfiles: data?.data?.profiles || [],

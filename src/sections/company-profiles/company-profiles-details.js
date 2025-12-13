@@ -10,6 +10,7 @@ import FormProvider, { RHFTextField } from 'src/components/hook-form';
 import Label from 'src/components/label';
 import { MultiFilePreview } from 'src/components/upload';
 import RejectReasonDialog from 'src/components/reject dialog box/reject-dialog-box';
+import Iconify from 'src/components/iconify';
 
 const STATUS_DISPLAY = {
   0: { label: 'Pending', color: 'warning' },
@@ -58,7 +59,7 @@ export default function CompanyProfileDetails({ data }) {
       const payload = {
         applicationId: data?.data?.kycApplicationsId,
         status: type,
-        rejectReason: reason || null,   
+        rejectReason: reason || null,
       };
 
       await axiosInstance.patch('/kyc/handle-kyc-application', payload);
@@ -80,7 +81,7 @@ export default function CompanyProfileDetails({ data }) {
       setLoading(false);
     }
   };
-  
+
 
 
   const [openPreview, setOpenPreview] = useState(false);
@@ -132,25 +133,15 @@ export default function CompanyProfileDetails({ data }) {
 
 
   return (
-    <Card sx={{p:4}}>
+    <Card sx={{ p: 4 }}>
       <FormProvider methods={methods}>
         {/* -------- Header Section -------- */}
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           {/* Avatar + Name */}
           <Stack direction="row" alignItems="center" spacing={2}>
             <Avatar
-              sx={{
-                width: 60,
-                height: 60,
-                bgcolor: '#FFC107',
-                color: '#000',
-                fontSize: 30,
-                fontWeight: 600,
-                textTransform: 'uppercase',
-              }}
-            >
-              {data?.data?.companyName?.charAt(0) || '?'}
-            </Avatar>
+              alt={data?.data?.companyName}
+            />
 
             <Stack spacing={0.8}>
               <Typography variant="h5" fontWeight={600}>
@@ -178,23 +169,47 @@ export default function CompanyProfileDetails({ data }) {
             </Grid>
           ))}
         </Grid>
-
-
-        <Typography variant="h6" sx={{ mt: 3, mb: 1, fontWeight: 600 }}>
-          PAN Card Details
-        </Typography>
-
-
-        {panFile && (
-          <Button
-            variant="outlined"
-            sx={{ mb: 2 }}
-            onClick={handleViewFile}
+        <Grid item xs={12}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              gap: 2,
+              mt: 3,
+              mb: 1,
+            }}
           >
-            View File
-          </Button>
-        )}
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              PAN Card Details
+            </Typography>
 
+            {data?.data?.companyPanCards?.panCardDocument?.fileUrl ? (
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  const url = data?.data?.companyPanCards?.panCardDocument?.fileUrl;
+                  if (url) {
+                    window.open(url, '_blank');
+                  } else {
+                    enqueueSnackbar('PAN preview file not found!', { variant: 'error' });
+                  }
+                }}
+                sx={{
+                  height: 36,
+                  textTransform: 'none',
+                  fontWeight: 600,
+                }}
+                startIcon={<Iconify icon="mdi:eye" />}
+              >
+                Preview PAN Card
+              </Button>
+            ) : (
+              <Typography color="text.secondary">No PAN file uploaded.</Typography>
+            )}
+          </Box>
+        </Grid>
 
 
         <TableContainer
@@ -269,21 +284,21 @@ export default function CompanyProfileDetails({ data }) {
 
         {/* -------- Action Buttons -------- */}
         <Stack direction="row" spacing={2} justifyContent="flex-end">
-          <Button variant="outlined" onClick={() => router.back()} disabled={loading}>
+          <Button variant="soft" onClick={() => router.back()} disabled={loading}>
             Close
           </Button>
 
           <Button
-            variant="contained"
+            variant="soft"
             color="error"
             onClick={() => setRejectOpen(true)}
             disabled={loading || data?.data?.kycApplications?.status === 2}
           >
-            Reject
+            Decline
           </Button>
 
           <Button
-            variant="contained"
+            variant="soft"
             color="success"
             onClick={() => handleStatusUpdate(2)}
             disabled={loading || data?.data?.kycApplications?.status === 2}
@@ -293,6 +308,7 @@ export default function CompanyProfileDetails({ data }) {
         </Stack>
       </FormProvider>
       <RejectReasonDialog
+      title= "Decline Company Profile"
         open={rejectOpen}
         onClose={() => setRejectOpen(false)}
         reason={rejectReason}

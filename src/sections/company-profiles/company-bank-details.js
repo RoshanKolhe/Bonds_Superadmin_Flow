@@ -458,7 +458,7 @@ export default function CompanyBankDetails({ companyProfile }) {
           >
             {/* REJECT BUTTON */}
             <Button
-              variant="outlined"
+              variant="soft"
               color="error"
               onClick={() => setRejectOpen(true)}
               disabled={bankDetails?.status === 1 || bankDetails?.status === 2}
@@ -471,7 +471,7 @@ export default function CompanyBankDetails({ companyProfile }) {
 
             {/* APPROVE BUTTON */}
             <Button
-              variant="contained"
+              variant="soft"
               color="success"
               onClick={handleApprove}
               disabled={bankDetails?.status === 1 || bankDetails?.status === 2}

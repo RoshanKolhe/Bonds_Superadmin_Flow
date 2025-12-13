@@ -13,19 +13,20 @@ export default function RejectReasonDialog({
   onSubmit,
   reason,
   setReason,
+  title,
 }) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Reject Signatory</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
 
       <DialogContent>
         <TextField
           fullWidth
           multiline
           rows={4}
-          label="Reason for rejection"
+          label="Reason for Decline"
           value={reason}
-          sx={{mt: 1}}
+          sx={{ mt: 1 }}
           onChange={(e) => setReason(e.target.value)}
         />
       </DialogContent>
@@ -33,8 +34,8 @@ export default function RejectReasonDialog({
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
 
-        <Button color="error" variant="contained" onClick={onSubmit}>
-          Reject
+        <Button color="error" variant="soft" onClick={onSubmit}>
+          Decline
         </Button>
       </DialogActions>
     </Dialog>

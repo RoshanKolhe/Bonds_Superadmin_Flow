@@ -1,5 +1,5 @@
 import * as Yup from 'yup';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 // @mui
@@ -24,11 +24,14 @@ import { SentIcon } from 'src/assets/icons';
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField, RHFCode } from 'src/components/hook-form';
 import { Card } from '@mui/material';
+import { enqueueSnackbar } from 'notistack';
 
 // ----------------------------------------------------------------------
 
 export default function JwtNewPasswordView() {
   const { newPassword, forgotPassword } = useAuthContext();
+  const [otpError, setOtpError] = useState(false);
+  const [otpSuccess, setOtpSuccess] = useState(false);
 
   const router = useRouter();
 
@@ -41,10 +44,10 @@ export default function JwtNewPasswordView() {
   const { countdown, counting, startCountdown } = useCountdownSeconds(60);
 
   const VerifySchema = Yup.object().shape({
-    code: Yup.string().min(6, 'Code must be at least 6 characters').required('Code is required'),
+    code: Yup.string().min(4, 'Code must be at least 4 characters').required('Code is required'),
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
     password: Yup.string()
-      .min(6, 'Password must be at least 6 characters')
+      .min(4, 'Password must be at least 6 characters')
       .required('Password is required'),
     confirmPassword: Yup.string()
       .required('Confirm password is required')
@@ -76,11 +79,22 @@ export default function JwtNewPasswordView() {
     try {
       await newPassword?.(data.email, data.code, data.password);
 
+      setOtpError(false);
+      setOtpSuccess(true);
+
+      enqueueSnackbar("OTP verified successfully!", { variant: "success" });
+
       router.push(paths.auth.jwt.login);
     } catch (error) {
-      console.error(error);
+      console.error("OTP Error:", error);
+
+      setOtpSuccess(false);
+      setOtpError(true);
+
+      enqueueSnackbar(error?.error?.message || "Invalid OTP", { variant: "error" });
     }
   });
+
 
   const handleResendCode = useCallback(async () => {
     try {

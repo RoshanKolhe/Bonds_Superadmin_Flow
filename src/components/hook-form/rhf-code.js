@@ -19,7 +19,7 @@ export default function RHFCode({ name, ...other }) {
             {...field}
             autoFocus
             gap={1.5}
-            length={6}
+            length={4}
             TextFieldsProps={{
               error: !!error,
               placeholder: '-',

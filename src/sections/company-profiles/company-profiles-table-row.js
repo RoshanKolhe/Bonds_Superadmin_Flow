@@ -77,7 +77,7 @@ export default function CompanyProfilesTableRow({ row, selected, onEditRow, onVi
         </TableCell>
 
 
-        <TableCell  sx={{ px: 1, whiteSpace: 'nowrap' }}>
+        <TableCell sx={{ px: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', whiteSpace: 'nowrap' }}>
           <Tooltip title="Details" placement="top" arrow>
             <IconButton onClick={onViewRow}>
               <Iconify icon="solar:eye-bold" />

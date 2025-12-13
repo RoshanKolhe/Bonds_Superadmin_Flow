@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import Container from '@mui/material/Container';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import { useParams } from 'src/routes/hook';
+import { useParams, useRouter } from 'src/routes/hook';
 import { paths } from 'src/routes/paths';
 
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
@@ -16,6 +16,7 @@ import KYCCompanyDetails from '../kyc-company-details';
 import KYCSignatories from '../kyc-signatories';
 import TrusteeBankPage from '../bank-detail-view';
 import TrusteeProfileDetails from '../trustee-profiles-details';
+import { useSearchParams } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -33,11 +34,17 @@ export default function TrusteeProfilesDetailsView() {
   const { id } = useParams();
 
   const { trusteeProfile } = useGetTrusteeProfile(id);
+  const router = useRouter();
 
-  const [currentTab, setCurrentTab] = useState('basic');
+  const [searchParams]= useSearchParams();
+
+  const tab = searchParams.get('tab');
+
+  const [currentTab, setCurrentTab] = useState(tab || 'basic' ) ;
 
   const handleChangeTab = useCallback((event, newValue) => {
     setCurrentTab(newValue);
+    router.push({search : '?tab='+newValue});
   }, []);
 
   return (
@@ -45,7 +52,7 @@ export default function TrusteeProfilesDetailsView() {
       <CustomBreadcrumbs
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'Details', href: paths.dashboard.trusteeProfiles.root },
+          { name: 'Trustee Profile', href: paths.dashboard.trusteeProfiles.root },
           { name: trusteeProfile?.data?.legalEntityName || 'Trustee Profile' },
         ]}
         sx={{ mb: { xs: 3, md: 5 } }}

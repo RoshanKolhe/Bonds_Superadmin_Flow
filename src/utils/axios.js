@@ -34,6 +34,8 @@ export const endpoints = {
     me: '/auth/me',
     login: '/auth/super-admin-login',
     register: '/register',
+    forgotPassword:'/auth/forget-password/send-email-otp',
+    newPassword:'/auth/forget-password/verify-email-otp',
   },
   mail: {
     list: '/api/mail/list',
@@ -80,16 +82,23 @@ export const endpoints = {
   companyProfiles: {
     list: '/company-profiles',
     filterList: (filter) => `/company-profiles?filter=${filter}`,
+    statusList: (status) => `/company-profiles?status=${status}`,
+    filterStatusList: (filter, status) => `/company-profiles?filter=${filter}&status=${status}`,
     details: (id) => `/company-profiles/${id}`,
   },
   CompanyKyc: {
     getDocuments: (companyId) => `/company-profiles/${companyId}/documents`,
     getBankDetails: (companyId) => `/company-profiles/${companyId}/bank-details`,
+    // getFilteredBankDetails: (companyId) => `/company-profiles/${companyId}/bank-details?filter=${filter}`,
     getCompanySignatories: (companyId) => `/company-profiles/${companyId}/authorize-signatory`,
+    getCompanySignatoriesWithFilter: (companyId, queryString) => `/company-profiles/${companyId}/authorize-signatory?filter=${queryString}`,
   },
+
   trusteeProfiles: {
     list: '/trustee-profiles',
     filterList: (filter) => `/trustee-profiles?filter=${filter}`,
+    statusList: (status) => `/trustee-profiles?status=${status}`,
+    filterStatusList: (filter, status) => `/trustee-profiles?filter=${filter}&status=${status}`,
     details: (id) => `/trustee-profiles/${id}`,
   },
   trusteeEntityType: {
@@ -105,5 +114,7 @@ export const endpoints = {
     getDocuments: (trusteeId) => `/trustee-profiles/${trusteeId}/documents`,
     getBankDetails: (trusteeId) => `/trustee-profiles/${trusteeId}/bank-details`,
     getTrusteeSignatories: (trusteeId) => `/trustee-profiles/${trusteeId}/authorize-signatory`,
+    getTrusteeSignatoriesWithFilter: (trusteeId, queryString) => `/trustee-profiles/${trusteeId}/authorize-signatory?filter=${queryString}`,
   },
 };
+

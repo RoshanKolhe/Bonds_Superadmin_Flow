@@ -44,22 +44,38 @@ export function buildFilter({
   }
 
   // Search text filter
+  // if (searchTextValue?.trim()) {
+  //   const text = searchTextValue.trim();
+
+
+  //   // Other fields
+  //   validSortFields.forEach((field) => {
+  //     if (['',].includes(field)) {
+  //       // Only search numeric fields if input is a valid number
+  //       if (!Number.isNaN(Number(text))) {
+  //         orConditions.push({ [field]: Number(text) });
+  //       }
+  //     } else {
+  //       orConditions.push({ [field]: { like: `%${text}%` } });
+  //     }
+  //   });
+  // }
+
+  
   if (searchTextValue?.trim()) {
-    const text = searchTextValue.trim();
+    const text = searchTextValue.trim().toLowerCase();
 
-
-    // Other fields
     validSortFields.forEach((field) => {
-      if (['',].includes(field)) {
-        // Only search numeric fields if input is a valid number
-        if (!Number.isNaN(Number(text))) {
-          orConditions.push({ [field]: Number(text) });
+      orConditions.push({
+        [field]: {
+          ilike: `%${text}%`    
         }
-      } else {
-        orConditions.push({ [field]: { like: `%${text}%` } });
-      }
+      });
     });
   }
+
+
+
 
 
 
@@ -121,7 +137,7 @@ export function buildFilter({
   console.log('where.or 1', where?.or);
   const filter = { skip, limit, where };
 
-    // Sorting
+  // Sorting
   if (orderBy && order) {
     filter.order = [`${orderBy} ${order.toUpperCase()}`];
   }

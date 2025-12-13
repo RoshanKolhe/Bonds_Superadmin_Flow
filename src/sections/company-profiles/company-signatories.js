@@ -13,11 +13,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-
 import Iconify from 'src/components/iconify';
-import { useGetSignatories, useGetSignatoriess } from 'src/api/trusteeKyc';
-
-import axiosInstance from 'src/utils/axios';
 import { enqueueSnackbar } from 'notistack';
 import Label from 'src/components/label';
 import { TableNoData } from 'src/components/table';
@@ -25,10 +21,8 @@ import { Card, Tooltip } from '@mui/material';
 import { paths } from 'src/routes/paths';
 import { useRouter } from 'src/routes/hook';
 import PropTypes from 'prop-types';
-import { tr } from 'date-fns/locale';
-import RejectReasonDialog from 'src/components/reject dialog box/reject-dialog-box';
 import { useNavigate } from 'react-router';
-import { buildFilter } from 'src/utils/filters';
+import { useGetSignatories } from 'src/api/companyKyc';
 
 // ----------------------------------------------------------------------
 
@@ -47,9 +41,9 @@ const StyledSearch = styled(TextField)(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function KYCSignatories({ trusteeProfile }) {
-  const userId = trusteeProfile?.id;
-  const stepperId = trusteeProfile?.kycApplications?.currentProgress?.[3];
+export default function CompanySignatories({ companyProfile }) {
+   const userId = companyProfile?.data?.id;
+  const stepperId = companyProfile?.kycApplications?.currentProgress?.[3];
 
   function useDebounce(value, delay = 500) {
     const [debouncedValue, setDebouncedValue] = useState(value);
@@ -195,7 +189,7 @@ export default function KYCSignatories({ trusteeProfile }) {
                         }}
                       >
                         <Tooltip title="View" placement="top" arrow>
-                          <IconButton onClick={() => navigate(paths.dashboard.signatory.trusteedetails(row.id), {
+                          <IconButton onClick={() => navigate(paths.dashboard.signatory.companydetails(row.id), {
                             state: { signatoryData: row }
                           })}>
                             <Iconify icon="mdi:eye" width={20} />
@@ -215,7 +209,6 @@ export default function KYCSignatories({ trusteeProfile }) {
   );
 }
 
-KYCSignatories.propTypes = {
-
-  trusteeProfile: PropTypes.object,
+CompanySignatories.propTypes = {
+  companyProfile: PropTypes.object,
 };

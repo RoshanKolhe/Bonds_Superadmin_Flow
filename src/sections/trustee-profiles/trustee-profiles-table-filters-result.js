@@ -8,12 +8,14 @@ import Stack from '@mui/material/Stack';
 
 // components
 import Iconify from 'src/components/iconify';
+import { status } from 'nprogress';
 
 // ----------------------------------------------------------------------
 
 export default function TrusteeProfileTableFiltersResult({
   filters,
   onFilters,
+  statusOptions,
   //
   onResetFilters,
   //
@@ -23,6 +25,7 @@ export default function TrusteeProfileTableFiltersResult({
   const handleRemoveStatus = () => {
     onFilters('status', 'all');
   };
+  const statusValue = filters.status !== 'all' ? Number(filters.status) : 'all';
 
   const handleRemoveRole = (inputValue) => {
     const newValue = filters.role.filter((item) => item !== inputValue);
@@ -38,10 +41,14 @@ export default function TrusteeProfileTableFiltersResult({
         </Box>
       </Box>
 
-      <Stack flexGrow={1} spacing={1} direction="row" flexWrap="wrap" alignItems="center">
+      <Stack flexGrow={1} spacing={1} direction="row" flexWrap="wrap">
         {filters.status !== 'all' && (
           <Block label="Status:">
-            <Chip size="small" label={filters.status} onDelete={handleRemoveStatus} />
+            <Chip
+              size="small"
+              label={statusOptions.find((s) => s.value === statusValue)?.label}
+              onDelete={handleRemoveStatus}
+            />
           </Block>
         )}
 
@@ -70,6 +77,7 @@ TrusteeProfileTableFiltersResult.propTypes = {
   onFilters: PropTypes.func,
   onResetFilters: PropTypes.func,
   results: PropTypes.number,
+  statusOptions: PropTypes.array,
 };
 
 // ----------------------------------------------------------------------

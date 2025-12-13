@@ -46,13 +46,13 @@ export default function JwtLoginView() {
   const LoginSchema = Yup.object().shape({
     email: Yup.string().required('Email is required').email('Email must be a valid email address'),
     password: Yup.string().required('Password is required'),
-    remember: Yup.boolean(),
+    rememberMe: Yup.boolean(),
   });
 
   const defaultValues = {
     email: '',
     password: '',
-    remember: false,
+    rememberMe: false,
   };
 
   const methods = useForm({
@@ -68,7 +68,7 @@ export default function JwtLoginView() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      await login?.(data.email, data.password);
+      await login?.(data.email, data.password , data.rememberMe);
 
       router.push(returnTo || PATH_AFTER_LOGIN);
     } catch (error) {
@@ -86,8 +86,6 @@ export default function JwtLoginView() {
       } else {
         setErrorMsg(message);
       }
-
-      reset();
     }
   });
 
@@ -106,13 +104,12 @@ export default function JwtLoginView() {
   );
 
   const renderForm = (
-    <Stack spacing={2.5}>
+    <Stack spacing={2}>
       {!!errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-
-      <Typography variant="h4" sx={{ display: 'flex', justifyContent: 'center' }}>
-        Login
+      <Typography variant="h4" >
+       Sign In To Superadmin Portal
       </Typography>
-      <Typography variant="body1" sx={{ textAlign: 'center' }}>
+      <Typography variant="body1" >
         Log in securely to manage your account, protect your personal information, and stay safe
         with advanced security features
       </Typography>
@@ -134,7 +131,7 @@ export default function JwtLoginView() {
         }}
       />
       <Stack direction="row" alignItems="center" justifyContent="space-between">
-        <RHFCheckbox name="remember" label="Remember me" sx={{ m: 0 }} />
+        <RHFCheckbox name="rememberMe" label="Remember me" sx={{ m: 0 }} />
         <Link
           variant="body2"
           color="inherit"

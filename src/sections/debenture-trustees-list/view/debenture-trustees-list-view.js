@@ -85,7 +85,7 @@ export default function DebentureTrusteesListView() {
     orderBy: table.orderBy,
     startDate: filters.startDate,
     endDate: filters.endDate,
-    validSortFields: ['name', 'CIN', 'GSTIN'],
+    validSortFields: ['name', 'description', 'isActive'],
     searchTextValue: filters.name,
     status: filters.status,
 

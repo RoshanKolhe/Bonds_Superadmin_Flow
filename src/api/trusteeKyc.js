@@ -131,9 +131,35 @@ export function useGetBankDetails(trusteeId) {
   };
 }
 
-export function useGetSignatories(trusteeId) {
+// export function useGetSignatories(trusteeId) {
+//   const URL =
+//     trusteeId ? endpoints.trusteeKyc.getTrusteeSignatories(String(trusteeId))
+//       : null;
+
+//   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
+//     keepPreviousData: true,
+//   });
+
+//   const refreshSignatories = () => {
+//     mutate(); // <-- trigger re-fetch
+//   };
+
+//   return {
+//     signatories: data?.signatories || [],   // <-- ALWAYS ARRAY
+//     loading: isLoading,
+//     error,
+//     validating: isValidating,
+//     empty: !isLoading && (!data?.signatories || data.signatories.length === 0),
+//     refreshSignatories,
+//   };
+// }
+
+
+export function useGetSignatories(trusteeId, queryString) {
   const URL =
-    trusteeId ? endpoints.trusteeKyc.getTrusteeSignatories(String(trusteeId))
+    trusteeId ?
+      queryString ? endpoints.trusteeKyc.getTrusteeSignatoriesWithFilter(String(trusteeId), queryString)
+        : endpoints.trusteeKyc.getTrusteeSignatories(String(trusteeId))
       : null;
 
   const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
@@ -153,4 +179,5 @@ export function useGetSignatories(trusteeId) {
     refreshSignatories,
   };
 }
+
 

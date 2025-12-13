@@ -118,13 +118,38 @@ export default function CompanyDocumentDetails({ companyProfile }) {
                   <TableRow key={doc.id}>
                     <TableCell>{doc.documents?.name || 'NA'}</TableCell>
                     <TableCell>
-                      <Button
+                      {/* <Button
                         variant="outlined"
                         startIcon={<Iconify icon="mdi:eye" />}
                         onClick={() => window.open(doc.documentsFile?.fileUrl, '_blank')}
                       >
                         Preview
-                      </Button>
+                      </Button> */}
+
+                      {doc.documentsFile?.fileUrl ? (
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={() => {
+                            const url = doc.documentsFile?.fileUrl;
+                            if (url) {
+                              window.open(url, '_blank');
+                            } else {
+                              enqueueSnackbar('PAN preview file not found!', { variant: 'error' });
+                            }
+                          }}
+                          sx={{
+                            height: 36,
+                            textTransform: 'none',
+                            fontWeight: 600,
+                          }}
+                          startIcon={<Iconify icon="mdi:eye" />}
+                        >
+                          {doc.documentsFile?.fileName || 'Preview Document'}
+                        </Button>
+                      ) : (
+                        <Typography color="text.secondary">No PAN file uploaded.</Typography>
+                      )}
                     </TableCell>
                     <TableCell>
                       <Label

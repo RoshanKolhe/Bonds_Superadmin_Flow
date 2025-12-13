@@ -69,6 +69,9 @@ const SchedulerNewPage = lazy(() => import('src/pages/dashboard/scheduler/new'))
 const SchedulerListPage = lazy(() => import('src/pages/dashboard/scheduler/list'));
 const SchedulerEditPage = lazy(() => import('src/pages/dashboard/scheduler/edit'));
 const SchedulerViewPage = lazy(() => import('src/pages/dashboard/scheduler/view'));
+// SIGNATORY
+const TrusteeSignatoryDetailsPage = lazy(() => import('src/pages/dashboard/signatories/trustee-signatory-details'));
+const CompanySignatoryDetailsPage = lazy(() => import('src/pages/dashboard/signatories/company-signatory-details'));
 // DESIGNATION
 const DesignationNewPage = lazy(() => import('src/pages/dashboard/designation/new'));
 const DesignationListPage = lazy(() => import('src/pages/dashboard/designation/list'));
@@ -238,6 +241,17 @@ export const dashboardRoutes = [
           { path: 'new', element: <DesignationNewPage /> },
         ],
       },
+      {
+        path: 'signatory',
+        children: [
+          { element: <CompanySignatoryDetailsPage />, index: true },
+
+          { path: 'company/:id', element: <CompanySignatoryDetailsPage /> },
+
+          { path: 'trustee/:id', element: <TrusteeSignatoryDetailsPage /> },
+        ],
+      },
+
       {
         path: 'invoice',
         children: [

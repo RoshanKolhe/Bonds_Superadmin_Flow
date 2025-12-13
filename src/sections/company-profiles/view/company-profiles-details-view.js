@@ -3,7 +3,7 @@ import { addYears, format } from 'date-fns';
 import Container from '@mui/material/Container';
 // routes
 import { paths } from 'src/routes/paths';
-import { useParams } from 'src/routes/hook';
+import { useParams, useRouter } from 'src/routes/hook';
 // components
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
@@ -16,7 +16,8 @@ import { useCallback, useState } from 'react';
 import { Tab, Tabs } from '@mui/material';
 import CompanyDocumentDetails from '../company-document-details';
 import CompanyBankPage from '../company-bank-page';
-import CompanySignatories from '../company-signatories-details';
+import CompanySignatories from '../company-signatories';
+import { useSearchParams } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
@@ -31,20 +32,25 @@ export default function CompanyProfilesDetailsView() {
   const settings = useSettingsContext();
   const { id } = useParams();
 
-
+  const router = useRouter();
   const { companyProfile } = useGetCompanyProfile(id);
   console.log(companyProfile);
-  const [currentTab, setCurrentTab] = useState('basic');
 
+  const [searchParams] = useSearchParams();
+  const tab = searchParams.get('tab');
+  const [currentTab, setCurrentTab] = useState(tab || 'basic' ) ;
   const handleChangeTab = useCallback((event, newValue) => {
     setCurrentTab(newValue);
+    router.push({
+      search: `?tab=${newValue}`
+    });
   }, []);
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
-          { name: 'Details', href: paths.dashboard.companyProfiles.root },
+          { name: 'Company Profile', href: paths.dashboard.companyProfiles.root },
           {
             name: companyProfile?.data?.companyName || 'Company Profile'
 

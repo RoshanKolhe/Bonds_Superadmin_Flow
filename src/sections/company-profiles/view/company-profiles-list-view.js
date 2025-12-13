@@ -46,13 +46,20 @@ import CompanyProfileTableToolbar from '../company-profiles-table-toolbar';
 import CompanyProfileTableFiltersResult from '../company-profiles-table-filters-result';
 import { useFilterCompanyProfiles, useGetCompanyProfiles } from 'src/api/company-profiles';
 import { buildFilter } from 'src/utils/filters';
+import { fi } from 'date-fns/locale';
 
 
 
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }];
+const STATUS_OPTIONS = [
+  { value: 'all', label: 'All', color: 'default' },
+  { value: 0, label: 'Pending', color: 'warning' },
+  { value: 1, label: 'Under Review', color: 'info' },
+  { value: 2, label: 'Approved', color: 'success' },
+  { value: 3, label: 'Rejected', color: 'error' },
+];
 
 const TABLE_HEAD = [
   { id: 'companyName', label: 'Company Name' },
@@ -88,11 +95,16 @@ export default function CompanyProfileListView() {
     endDate: filters.endDate,
     validSortFields: ['companyName', 'CIN', 'GSTIN'],
     searchTextValue: filters.name,
-    status: filters.status,
-
   })
 
-  const { filteredCompanyProfiles, totalCount, } = useFilterCompanyProfiles(encodeURIComponent(JSON.stringify(filter)));
+  const filterJson = encodeURIComponent(JSON.stringify(filter));
+
+  const params = {
+    filter: filterJson,
+    status: filters.status === 'all' ? undefined : Number(filters.status),
+  }
+
+  const { filteredCompanyProfiles, totalCount, } = useFilterCompanyProfiles(params);
 
   const handleViewRow = useCallback(
     (id) => {
@@ -174,7 +186,20 @@ export default function CompanyProfileListView() {
             }}
           >
             {STATUS_OPTIONS.map((tab) => (
-              <Tab key={tab.value} value={tab.value} label={tab.label} />
+              <Tab
+                key={tab.value}
+                value={tab.value}
+                label={tab.label}
+                icon={
+                  <Label
+                    variant={filters.status === tab.value ? 'filled' : 'soft'}
+                    color={tab.color}
+                  >
+                    {tab.value === 'all' ? totalCount.total : totalCount[tab.value]}
+                  </Label>
+                }
+                iconPosition="end"
+              />
             ))}
           </Tabs>
 
@@ -186,6 +211,7 @@ export default function CompanyProfileListView() {
               onFilters={handleFilters}
               onResetFilters={handleResetFilters}
               results={filteredCompanyProfiles.length}
+              statusOptions={STATUS_OPTIONS}
               sx={{ p: 2.5, pt: 0 }}
             />
           )}

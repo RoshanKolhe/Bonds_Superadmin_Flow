@@ -47,8 +47,18 @@ export function useGetTrusteeProfile(id) {
 
 // ----------------------------------------------------------------------
 
-export function useFilterTrusteeProfiles(queryString) {
-    const URL = queryString ? endpoints.trusteeProfiles.filterList(queryString) : null;
+export function useFilterTrusteeProfiles(params) {
+    let URL = null;
+
+    if (params.filter && params.status !== undefined) {
+        URL = endpoints.trusteeProfiles.filterStatusList(params.filter, params.status);
+    }
+    else if (params.filter) {
+        URL = endpoints.trusteeProfiles.filterList(params.filter);
+    }
+    else if (params.status !== undefined) {
+        URL = endpoints.trusteeProfiles.statusList(params.status);
+    }
 
     const { data, isLoading, error, isValidating } = useSWR(URL, fetcher, {
         keepPreviousData: true,

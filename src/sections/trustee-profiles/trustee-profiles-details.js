@@ -131,25 +131,15 @@ export default function TrusteeProfileDetails({ data }) {
 
 
   return (
-    <Card sx={{p:4}}>
+    <Card sx={{ p: 4 }}>
       <FormProvider methods={methods}>
         {/* -------- Header Section -------- */}
         <Stack direction="row" alignItems="center" justifyContent="space-between">
           {/* Avatar + Name */}
           <Stack direction="row" alignItems="center" spacing={2}>
             <Avatar
-              sx={{
-                width: 60,
-                height: 60,
-                bgcolor: '#FFC107',
-                color: '#000',
-                fontSize: 30,
-                fontWeight: 600,
-                textTransform: 'uppercase',
-              }}
-            >
-              {data?.legalEntityName?.charAt(0) || '?'}
-            </Avatar>
+              alt={data?.legalEntityName} 
+            />
 
             <Stack spacing={0.8}>
               <Typography variant="h5" fontWeight={600}>
@@ -177,47 +167,47 @@ export default function TrusteeProfileDetails({ data }) {
             </Grid>
           ))}
         </Grid>
-
-
-        <Typography variant="h6" sx={{ mt: 3, mb: 1, fontWeight: 600 }}>
-          PAN Card Details
-        </Typography>
-
-
-        {/* {panFile && (
-          <Button
-            variant="outlined"
-            sx={{ mb: 2 }}
-            onClick={handleViewFile}
-          >
-            View File
-          </Button>
-        )} */}
-        {data?.trusteePanCards?.panCardDocument?.fileUrl ? (
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() => {
-              const url = data?.trusteePanCards?.panCardDocument?.fileUrl;
-              if (url) {
-                window.open(url, '_blank');
-              } else {
-                enqueueSnackbar('PAN preview file not found!', { variant: 'error' });
-              }
-            }}
+        <Grid item xs={12}>
+          <Box
             sx={{
-              height: 36,
-              textTransform: 'none',
-              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              gap: 2,
+              mt: 3,
+              mb: 1,
             }}
-            startIcon={<Iconify icon="mdi:eye" />}
           >
-            Preview PAN Card
-          </Button>
-        ) : (
-          <Typography color="text.secondary">No PAN file uploaded.</Typography>
-        )}
+            <Typography variant="h6" sx={{ fontWeight: 600 }}>
+              PAN Card Details
+            </Typography>
 
+            {data?.trusteePanCards?.panCardDocument?.fileUrl ? (
+              <Button
+                variant="outlined"
+                color="primary"
+                onClick={() => {
+                  const url = data?.trusteePanCards?.panCardDocument?.fileUrl;
+                  if (url) {
+                    window.open(url, '_blank');
+                  } else {
+                    enqueueSnackbar('PAN preview file not found!', { variant: 'error' });
+                  }
+                }}
+                sx={{
+                  height: 36,
+                  textTransform: 'none',
+                  fontWeight: 600,
+                }}
+                startIcon={<Iconify icon="mdi:eye" />}
+              >
+                Preview PAN Card
+              </Button>
+            ) : (
+              <Typography color="text.secondary">No PAN file uploaded.</Typography>
+            )}
+          </Box>
+        </Grid>
 
 
         <TableContainer
@@ -301,7 +291,7 @@ export default function TrusteeProfileDetails({ data }) {
             onClick={() => setRejectOpen(true)}
             disabled={loading || data?.kycApplications?.status === 2}
           >
-            Reject
+            Decline
           </Button>
 
           <Button
@@ -315,6 +305,7 @@ export default function TrusteeProfileDetails({ data }) {
         </Stack>
       </FormProvider>
       <RejectReasonDialog
+      title={'Decline Profile'}
         open={rejectOpen}
         onClose={() => setRejectOpen(false)}
         reason={rejectReason}

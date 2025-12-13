@@ -46,16 +46,24 @@ import TrusteeProfileTableToolbar from '../trustee-profiles-table-toolbar';
 import TrusteeProfileTableFiltersResult from '../trustee-profiles-table-filters-result';
 import { useFilterTrusteeProfiles } from 'src/api/trustee-profiles';
 import { buildFilter } from 'src/utils/filters';
+import { status } from 'nprogress';
 
 
 
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }];
+const STATUS_OPTIONS = [
+  { value: 'all', label: 'All', color: 'default' },
+  { value: 0, label: 'Pending', color: 'warning' },
+  { value: 1, label: 'Under Review', color: 'info' },
+  { value: 2, label: 'Approved', color: 'success' },
+  { value: 3, label: 'Rejected', color: 'error' },
+];
+
 
 const TABLE_HEAD = [
-  { id: 'trusteeName', label: 'Trustee Name' },
+  { id: 'legalEntityName', label: 'Trustee Name' },
   { id: 'CIN', label: 'CIN' },
   { id: 'GSTIN', label: 'GSTIN' },
   { id: 'isActive', label: 'Status' },
@@ -86,13 +94,18 @@ export default function TrusteeProfileListView() {
     orderBy: table.orderBy,
     startDate: filters.startDate,
     endDate: filters.endDate,
-    validSortFields: ['trusteeName', 'CIN', 'GSTIN'],
+    validSortFields: ['legalEntityName', 'CIN', 'GSTIN'],
     searchTextValue: filters.name,
-    status: filters.status,
+  });
 
-  })
+  const filterJson = encodeURIComponent(JSON.stringify(filter));
 
-  const { filteredTrusteeProfiles, totalCount, } = useFilterTrusteeProfiles(encodeURIComponent(JSON.stringify(filter)));
+  const params = {
+    filter: filterJson,
+    status: filters.status !== 'all' ? filters.status : undefined,
+  }
+
+  const { filteredTrusteeProfiles, totalCount, } = useFilterTrusteeProfiles(params);
 
   const handleViewRow = useCallback(
     (id) => {
@@ -100,7 +113,7 @@ export default function TrusteeProfileListView() {
     },
     [router]
   );
-  console.log("filteredTrusteeProfiles",filteredTrusteeProfiles);
+  console.log("filteredTrusteeProfiles", filteredTrusteeProfiles);
 
   const handleEditRow = useCallback(
     (id) => {
@@ -175,9 +188,23 @@ export default function TrusteeProfileListView() {
             }}
           >
             {STATUS_OPTIONS.map((tab) => (
-              <Tab key={tab.value} value={tab.value} label={tab.label} />
+              <Tab
+                key={tab.value}
+                value={tab.value}
+                label={tab.label}
+                icon={
+                  <Label
+                    variant={filters.status === tab.value ? 'filled' : 'soft'}
+                    color={tab.color}
+                  >
+                    {tab.value === 'all' ? totalCount.total : totalCount[tab.value]}
+                  </Label>
+                }
+                iconPosition="end"
+              />
             ))}
           </Tabs>
+
 
           <TrusteeProfileTableToolbar filters={filters} onFilters={handleFilters} />
 
@@ -187,6 +214,8 @@ export default function TrusteeProfileListView() {
               onFilters={handleFilters}
               onResetFilters={handleResetFilters}
               results={filteredTrusteeProfiles.length}
+              statusOptions={STATUS_OPTIONS}   
+
               sx={{ p: 2.5, pt: 0 }}
             />
           )}

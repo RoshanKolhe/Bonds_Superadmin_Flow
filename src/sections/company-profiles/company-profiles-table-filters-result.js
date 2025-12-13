@@ -14,15 +14,20 @@ import Iconify from 'src/components/iconify';
 export default function CompanyProfileTableFiltersResult({
   filters,
   onFilters,
+  statusOptions,
   //
   onResetFilters,
   //
   results,
   ...other
 }) {
+
+
   const handleRemoveStatus = () => {
     onFilters('status', 'all');
   };
+
+  const statusValue = filters.status !== 'all' ? Number(filters.status) : 'all';
 
   const handleRemoveRole = (inputValue) => {
     const newValue = filters.role.filter((item) => item !== inputValue);
@@ -41,7 +46,8 @@ export default function CompanyProfileTableFiltersResult({
       <Stack flexGrow={1} spacing={1} direction="row" flexWrap="wrap" alignItems="center">
         {filters.status !== 'all' && (
           <Block label="Status:">
-            <Chip size="small" label={filters.status} onDelete={handleRemoveStatus} />
+
+            <Chip size="small" label={statusOptions.find((s) => s.value === statusValue)?.label} onDelete={handleRemoveStatus} />
           </Block>
         )}
 
@@ -105,4 +111,5 @@ Block.propTypes = {
   children: PropTypes.node,
   label: PropTypes.string,
   sx: PropTypes.object,
+  statusOptions: PropTypes.array,
 };
