@@ -122,11 +122,6 @@ export default function TrusteeProfileDetails({ data }) {
       extracted: data?.trusteePanCards?.extractedTrusteeName || "—",
       submitted: data?.trusteePanCards?.submittedTrusteeName || "—",
     },
-    {
-      parameter: "Date of Birth / Incorporation",
-      extracted: data?.trusteePanCards?.extractedDateOfBirth ? new Date(data?.trusteePanCards?.extractedDateOfBirth).toLocaleDateString() : "—",
-      submitted: data?.trusteePanCards?.submittedDateOfBirth ? new Date(data?.trusteePanCards?.submittedDateOfBirth).toLocaleDateString() : "—",
-    },
   ];
 
 
@@ -138,7 +133,7 @@ export default function TrusteeProfileDetails({ data }) {
           {/* Avatar + Name */}
           <Stack direction="row" alignItems="center" spacing={2}>
             <Avatar
-              alt={data?.legalEntityName} 
+              alt={data?.legalEntityName}
             />
 
             <Stack spacing={0.8}>
@@ -195,9 +190,12 @@ export default function TrusteeProfileDetails({ data }) {
                   }
                 }}
                 sx={{
-                  height: 36,
-                  textTransform: 'none',
+                  height: 32,
+                  px: 1.5,
+                  fontSize: 12,
                   fontWeight: 600,
+                  textTransform: 'none',
+                  whiteSpace: 'nowrap',
                 }}
                 startIcon={<Iconify icon="mdi:eye" />}
               >
@@ -218,9 +216,15 @@ export default function TrusteeProfileDetails({ data }) {
             overflow: "hidden",
             boxShadow: "0px 3px 8px rgba(0,0,0,0.1)",
             border: "1px solid #BDBDBD",
+            overflowX: 'auto',
+            WebkitOverflowScrolling: 'touch'
           }}
         >
-          <Table>
+          <Table
+
+            sx={{ minWidth: 600 }}
+
+          >
             <TableHead>
               <TableRow>
                 <TableCell sx={{ backgroundColor: "#2F2F2F", color: "#fff", fontWeight: 600 }}>
@@ -281,12 +285,12 @@ export default function TrusteeProfileDetails({ data }) {
 
         {/* -------- Action Buttons -------- */}
         <Stack direction="row" spacing={2} justifyContent="flex-end" sx={{ mt: 4 }}>
-          <Button variant="outlined" onClick={() => router.back()} disabled={loading}>
+          <Button variant="soft" onClick={() => router.back()} disabled={loading}>
             Close
           </Button>
 
           <Button
-            variant="contained"
+            variant="soft"
             color="error"
             onClick={() => setRejectOpen(true)}
             disabled={loading || data?.kycApplications?.status === 2}
@@ -295,7 +299,7 @@ export default function TrusteeProfileDetails({ data }) {
           </Button>
 
           <Button
-            variant="contained"
+            variant="soft"
             color="success"
             onClick={() => handleStatusUpdate(2)}
             disabled={loading || data?.kycApplications?.status === 2}
@@ -305,7 +309,7 @@ export default function TrusteeProfileDetails({ data }) {
         </Stack>
       </FormProvider>
       <RejectReasonDialog
-      title={'Decline Profile'}
+        title={'Decline Profile'}
         open={rejectOpen}
         onClose={() => setRejectOpen(false)}
         reason={rejectReason}

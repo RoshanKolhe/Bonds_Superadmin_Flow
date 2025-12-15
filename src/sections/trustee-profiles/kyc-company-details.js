@@ -128,13 +128,16 @@ export default function KYCCompanyDetails({ trusteeProfile }) {
                             }
                           }}
                           sx={{
-                            height: 36,
-                            textTransform: 'none',
+                            height: 32,
+                            px: 1.5,
+                            fontSize: 12,
                             fontWeight: 600,
+                            textTransform: 'none',
+                            whiteSpace: 'nowrap',
                           }}
                           startIcon={<Iconify icon="mdi:eye" />}
                         >
-                        Preview Document
+                          Preview Document
                         </Button>
                       ) : (
                         <Typography color="text.secondary">No PAN file uploaded.</Typography>
