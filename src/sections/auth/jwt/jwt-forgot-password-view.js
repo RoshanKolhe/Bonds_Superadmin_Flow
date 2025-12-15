@@ -17,12 +17,14 @@ import { PasswordIcon } from 'src/assets/icons';
 // components
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField } from 'src/components/hook-form';
-import { Card } from '@mui/material';
+import { Alert, Card } from '@mui/material';
+import { useState } from 'react';
 
 // ----------------------------------------------------------------------
 
 export default function JwtForgotPasswordView() {
   const { forgotPassword } = useAuthContext();
+  const [errorMsg, setErrorMsg] = useState('');
 
   const router = useRouter();
 
@@ -53,12 +55,21 @@ export default function JwtForgotPasswordView() {
       const href = `${paths.auth.jwt.newPassword}?${searchParams}`;
       router.push(href);
     } catch (error) {
-      console.error(error);
+
+      const message =
+        typeof error === 'string'
+          ? error
+          : error?.error?.message || error?.message || 'Login failed';
+
+      setErrorMsg(message);
     }
+
   });
 
   const renderForm = (
     <Stack spacing={3} alignItems="center">
+
+
       <RHFTextField name="email" label="Email address" />
 
       <LoadingButton
@@ -89,6 +100,12 @@ export default function JwtForgotPasswordView() {
 
   const renderHead = (
     <>
+
+      {!!errorMsg && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {errorMsg}
+        </Alert>
+      )}
       <PasswordIcon sx={{ height: 96 }} />
 
       <Stack spacing={1} sx={{ my: 5 }}>

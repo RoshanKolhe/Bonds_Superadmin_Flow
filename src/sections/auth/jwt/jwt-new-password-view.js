@@ -23,8 +23,9 @@ import { SentIcon } from 'src/assets/icons';
 // components
 import Iconify from 'src/components/iconify';
 import FormProvider, { RHFTextField, RHFCode } from 'src/components/hook-form';
-import { Card } from '@mui/material';
+import { Alert,Card } from '@mui/material';
 import { enqueueSnackbar } from 'notistack';
+
 
 // ----------------------------------------------------------------------
 
@@ -32,6 +33,7 @@ export default function JwtNewPasswordView() {
   const { newPassword, forgotPassword } = useAuthContext();
   const [otpError, setOtpError] = useState(false);
   const [otpSuccess, setOtpSuccess] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const router = useRouter();
 
@@ -88,10 +90,11 @@ export default function JwtNewPasswordView() {
     } catch (error) {
       console.error("OTP Error:", error);
 
-      setOtpSuccess(false);
-      setOtpError(true);
-
-      enqueueSnackbar(error?.error?.message || "Invalid OTP", { variant: "error" });
+     const message =
+        typeof error === 'string'
+          ? error
+          : error?.error?.message || error?.message || 'Login failed';
+       setErrorMsg(message);
     }
   });
 
@@ -191,6 +194,12 @@ export default function JwtNewPasswordView() {
 
   const renderHead = (
     <>
+
+      {!!errorMsg && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {errorMsg}
+        </Alert>
+      )}
       <SentIcon sx={{ height: 96 }} />
 
       <Stack spacing={1} sx={{ my: 5 }}>
