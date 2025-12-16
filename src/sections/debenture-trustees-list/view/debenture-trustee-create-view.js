@@ -6,8 +6,7 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
-import DesignationNewEditForm from '../debenture-trustee-new-edit-form';
-import DocumentFields from '../debenture-trustee-new-edit-form';
+import AdminDocumentFormBuilder from '../debenture-trustee-new-edit-form';
 
 // ----------------------------------------------------------------------
 
@@ -33,7 +32,7 @@ export default function DebentureTrusteeCreateView() {
         }}
       />
 
-      <DocumentFields/>
+      <AdminDocumentFormBuilder />
     </Container>
   );
 }

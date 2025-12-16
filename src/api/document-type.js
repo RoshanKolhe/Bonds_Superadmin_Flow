@@ -34,7 +34,7 @@ export function useGetDocumentType(id) {
 
     const memoizedValue = useMemo(
         () => ({
-            documentType: data || null,
+            documentType: data?.data || null,
             documentTypeLoading: isLoading,
             documentTypeError: error,
             documentTypeValidating: isValidating,

@@ -6,8 +6,7 @@ import { paths } from 'src/routes/paths';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 //
-import DesignationNewEditForm from '../document-new-edit-form';
-import DocumentFields from '../document-new-edit-form';
+import AdminDocumentFormBuilder from '../document-new-edit-form';
 
 // ----------------------------------------------------------------------
 
@@ -33,7 +32,7 @@ export default function DocumentCreateView() {
         }}
       />
 
-      <DocumentFields/>
+      <AdminDocumentFormBuilder />
     </Container>
   );
 }

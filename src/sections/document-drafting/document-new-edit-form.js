@@ -1,435 +1,251 @@
-import { useEffect, useMemo, useState } from "react";
-import {
-  useFieldArray,
-  useForm,
-  useFormContext,
-} from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect, useMemo } from 'react';
+import * as Yup from 'yup';
+import { useForm, useFieldArray, FormProvider } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Box, Grid, Button, Typography, MenuItem, Card } from '@mui/material';
+import { RHFTextField, RHFSelect } from 'src/components/hook-form';
+import { LoadingButton } from '@mui/lab';
+import slugify from 'slugify';
+import axiosInstance from 'src/utils/axios';
 import { useSnackbar } from 'src/components/snackbar';
-import { Grid, Button, Typography, Checkbox, FormControlLabel, IconButton, Stack, MenuItem, Card } from "@mui/material";
-import * as Yup from "yup";
-import FormProvider, { RHFAutocomplete, RHFEditor, RHFSelect, RHFTextField } from "src/components/hook-form";
-import Iconify from "src/components/iconify";
-import { LoadingButton } from "@mui/lab";
-import { paths } from "src/routes/paths";
-import { useNavigate } from "react-router";
-import axiosInstance from "src/utils/axios";
-import { useRouter } from "src/routes/hook";
-import slugify from "slugify";
-import { useGetRoles } from "src/api/role";
-import { object } from "prop-types";
 
-
-const requiredOptions = [
-  { label: "False", value: false },
-  { label: "True", value: true },
-
-];
-
+const generateId = () => Math.random().toString(36).substring(2, 10);
 
 const fieldTypes = [
   { label: 'Text', value: 'text' },
-  { label: 'Select', value: 'select' }
-]
+  { label: 'Select', value: 'select' },
+  { label: 'Section', value: 'section' },
+  { label: 'Upload', value: 'upload' },
+];
 
+const DocumentFormSchema = Yup.object({
+  name: Yup.string().required('Document name is required'),
+  description: Yup.string(),
+  formFields: Yup.array().of(
+    Yup.object({
+      id: Yup.string().required(),
+      label: Yup.string().required('Label is required'),
+      type: Yup.string().oneOf(['text', 'select', 'section', 'upload']).required(),
+      requiredFor: Yup.string().nullable(),
+      options: Yup.array().when('type', {
+        is: 'select',
+        then: (schema) => schema.of(
+          Yup.object({
+            id: Yup.string().required(),
+            option: Yup.string().required(),
+            value: Yup.string().required(),
+            nestedFields: Yup.array(),
+          })
+        ).min(1, 'At least one option required'),
+        otherwise: (schema) => schema.notRequired(),
+      }),
+    })
+  ).min(1, 'At least one field is required'),
+});
 
-function OptionsField({ name }) {
-  const { control, watch } = useFormContext();
-  const { fields, append, remove } = useFieldArray({ control, name });
+function FormRenderer({ data, parentPath, control, setValue }) {
+  if (!data?.length) return null;
 
-  // Watch this field options array
-  const optionValues = watch(name) || [];
-
-  // Auto-add first option if none exist
-  useEffect(() => {
-    if (optionValues.length === 0 && fields.length === 0) {
-      append({ option: "", value: "" });
-    }
-  }, [optionValues.length, fields.length, append]);
-
-  return (
-    <Grid container spacing={2} sx={{ p: 2, background: "#f6f6f6", borderRadius: 1 }}>
-
-      {fields.map((item, index) => {
-        const path = `${name}[${index}]`;
-        return (
-          <Grid container spacing={2} key={item.id} alignItems="center">
-            <Grid item xs={5}>
-              <RHFTextField name={`${path}.option`} label="Option" />
-            </Grid>
-
-            <Grid item xs={5}>
-              <RHFTextField name={`${path}.value`} label="Option Value" />
-            </Grid>
-            {optionValues?.length > 1 &&
-              <Grid item xs={2}>
-                <IconButton color="error" onClick={() => remove(index)}>
-                  <Iconify icon="mdi:trash-outline" />
-                </IconButton>
-              </Grid>
-            }
-          </Grid>
-        );
-      })}
-
-      <Grid item xs={12}>
-        <Button
-          variant="outlined"
-          size="small"
-          type="button"
-          onClick={() => append({ option: "", value: "" })}
-        >
-          + Add Option
-        </Button>
-      </Grid>
-    </Grid>
-  );
-}
-
-
-
-
-function RenderFields({ name }) {
-  const { control, watch } = useFormContext();
-  const { fields, append, remove } = useFieldArray({ control, name });
-
-  const values = watch(name);
-
-  useEffect(() => {
-    if (!values?.length) {
-      append({
-        fieldType: "",
-        fieldName: "",
-        fieldValue: "",
-        description: "",
-        isRequired: true,
-        options: [],
-      });
-    }
-  }, [values, append]);
-
-  return (
-    <Grid container direction="column" spacing={2} sx={{ mt: 2 }}>
-      {fields.map((field, index) => {
-        const fieldPath = `${name}[${index}]`;
-        const isfieldType = watch(`${fieldPath}.fieldType`);
-
-
-
-        return (
-          <Grid key={field.id} item xs={12} sx={{ p: 2, backgroundColor: "#f6f6f6", borderRadius: 1 }}>
-            <Grid container spacing={2}>
-
-              {/* Label */}
-              <Grid item xs={12} sm={4}>
-                <RHFTextField name={`${fieldPath}.fieldName`} label="Label" />
-              </Grid>
-
-              {/* Value */}
-              <Grid item xs={12} sm={4}>
-                <RHFTextField name={`${fieldPath}.fieldValue`} label="Value" />
-              </Grid>
-
-              {/* Description */}
-              <Grid item xs={12} sm={4}>
-                <RHFTextField name={`${fieldPath}.description`} label="Description" />
-              </Grid>
-
-              {/* Field Type */}
-              <Grid item xs={12} sm={4}>
-                <RHFSelect name={`${fieldPath}.fieldType`} label="Field Type">
-                  {fieldTypes.map((option) => (
-                    <MenuItem key={String(option.value)} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </RHFSelect>
-              </Grid>
-
-              {/* Required */}
-              <Grid item xs={12} sm={4}>
-                <RHFSelect name={`${fieldPath}.isRequired`} label="Required" fullWidth>
-                  {requiredOptions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </RHFSelect>
-              </Grid>
-
-              {/* Delete Field Button */}
-              {values?.length > 1 && (
-                <Grid item xs={12} sm={2} display="flex" alignItems="center" justifyContent="flex-end">
-                  <IconButton color="error" onClick={() => remove(index)}>
-                    <Iconify icon="mdi:trash-outline" width={22} />
-                  </IconButton>
-                </Grid>
-              )}
-
-              {/* Dynamic options if type = select */}
-              {isfieldType === "select" && (
-                <Grid item xs={12} sx={{ mt: 2 }}>
-                  <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                    Select Options
-                  </Typography>
-
-                  <OptionsField name={`${fieldPath}.options`} />
-                </Grid>
-              )}
-            </Grid>
-          </Grid>
-        );
-      })}
-
-      {/* Add New Field Button */}
-      <Grid item>
-        <Button
-          variant="outlined"
-          size="small"
-          type="button"
-          onClick={() =>
-            append({
-              fieldType: "",
-              fieldName: "",
-              fieldValue: "",
-              description: "",
-              isRequired: true,
-              options: [],
-            })
-          }
-        >
-          + Add Field
-        </Button>
-      </Grid>
-    </Grid>
-  );
-}
-
-
-
-export default function DocumentFields({ currentFields }) {
-
-  const DocumentFieldSchema = Yup.object().shape({
-    roles: Yup.array().of(
-      Yup.object().required('Role is required')
-    ).min(1, 'Atleast one role is rquired'),
-    name: Yup.string().required("Document type is required"),
-    description: Yup.string(),
-    documentPlaceholders: Yup.array()
-      .of(
-        Yup.object().shape({
-          fieldName: Yup.string().required("Field label is required"),
-          fieldValue: Yup.string().required("Field value is required"),
-          description: Yup.string().required("Description is required"),
-          fieldType: Yup.string()
-            .oneOf(["text", "select"], "Invalid field type")
-            .required("Field type is required"),
-          isRequired: Yup.boolean().default(true),
-          options: Yup.array().when("fieldType", {
-            is: "select",
-            then: (schema) =>
-              schema
-                .of(
-                  Yup.object().shape({
-                    option: Yup.string().required("Option label is required"),
-                    value: Yup.string().required("Option value is required"),
-                  })
-                )
-                .min(1, "At least one option is required"),
-            otherwise: (schema) => schema.optional().notRequired(),
-          }),
-        })
-      )
-      .min(1, "At least one field is required"),
-  });
-
-  const [getRoles, setGetRoles] = useState([]);
-  const { roles, rolesEmpty } = useGetRoles();
-
-  useEffect(() => {
-    if (roles && !rolesEmpty) {
-      setGetRoles(roles);
-    } else {
-      setGetRoles([]);
-    }
-  }, [roles, rolesEmpty]);
-
-  const defaultValues = useMemo(
-    () => ({
-      roles: currentFields?.roles || [],
-      name: currentFields?.name || "",
-      value: currentFields?.value || '',
-      description: currentFields?.description || "",
-      documentPlaceholders: currentFields?.documentPlaceholders?.length
-        ? currentFields.documentPlaceholders.map((item) => ({
-          fieldName: item.fieldName || "",
-          fieldValue: item.fieldValue || "",
-          description: item.description || "",
-          fieldType: item.fieldType || "text",
-          isRequired: item.isRequired ?? true,
-          options: item.options || [],
-        }))
-        : [
-          {
-            fieldName: "",
-            fieldValue: "",
-            description: "",
-            fieldType: "text",
-            isRequired: true,
-            options: [],
-          },
-        ],
-    }),
-    [currentFields]
-  );
-
-
-  const methods = useForm({
-    resolver: yupResolver(DocumentFieldSchema),
-    defaultValues,
-    mode: "onChange",
-  });
-
-
-  const {
-    reset,
-    watch,
-    handleSubmit,
-    formState: { isSubmitting, errors },
-  } = methods;
-
-  const nameValue = watch("name");
-
-  useEffect(() => {
-    if (nameValue) {
-      const generatedSlug = slugify(nameValue, {
-        lower: true,
-        strict: true,
-        trim: true,
-      });
-
-      methods.setValue("value", generatedSlug);
-    }
-  }, [nameValue, methods]);
-
-  const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
-  const { router } = useRouter();
-
-  const onSubmit = handleSubmit(async (formData) => {
-    try {
-      const inputData = {
-        roles: formData?.roles?.map((role) => role.id),
-        name: formData.name,
-        value: slugify(formData.name, { lower: true, strict: true, trim: true }),
-        description: formData.description || "",
-        documentPlaceholders: formData.documentPlaceholders.map(item => ({
-          fieldName: item.fieldName,
-          fieldValue: item.fieldValue,
-          description: item.description,
-          fieldType: item.fieldType,
-          isRequired: item.isRequired,
-          options:
-            item.fieldType === "select"
-              ? item.options.map((opt) => ({
-                option: opt.option,
-                value: opt.value,
-              }))
-              : [],
+  const addNestedField = (parentId, fields, newField, optionId) =>
+    fields.map((f) => {
+      if (f.id === parentId) {
+        return {
+          ...f,
+          options: f.options.map((o) =>
+            o.id === optionId
+              ? { ...o, nestedFields: [...o.nestedFields, newField] }
+              : o
+          ),
+        };
+      }
+      return {
+        ...f,
+        options: f.options?.map((o) => ({
+          ...o,
+          nestedFields: addNestedField(parentId, o.nestedFields || [], newField, optionId),
         })),
       };
+    });
 
-      if (!currentFields) {
-        await axiosInstance.post('/document-types/', inputData);
-      } else {
-        await axiosInstance.patch(`/document-types/${currentFields.id}`, inputData);
-      }
+  return data.map((field, index) => {
+    const path = `${parentPath}[${index}]`;
 
-      reset();
-      enqueueSnackbar(
-        currentFields ? 'Document updated successfully!' : 'Document created successfully!'
-      );
+    return (
+      <Card key={field.id} sx={{ p: 2, mb: 2, bgcolor: '#f9f9f9' }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={3}>
+            <RHFSelect name={`${path}.type`} label="Field Type">
+              {fieldTypes.map((t) => (
+                <MenuItem key={t.value} value={t.value}>{t.label}</MenuItem>
+              ))}
+            </RHFSelect>
+          </Grid>
 
-      navigate(paths.dashboard.debenturetrustees.debenturetrusteeslist);
+          <Grid item xs={12} md={4}>
+            <RHFTextField name={`${path}.label`} label="Label" />
+          </Grid>
 
-    } catch (error) {
-      console.error(error);
+          {field.type !== 'section' && (
+            <Grid item xs={12} md={3}>
+              <RHFSelect name={`${path}.requiredFor`} label="Required For">
+                <MenuItem value="customer">Customer</MenuItem>
+                <MenuItem value="admin">Admin</MenuItem>
+                <MenuItem value="both">Both</MenuItem>
+              </RHFSelect>
+            </Grid>
+          )}
 
-      const message =
-        error?.error?.message ||
-        error?.message ||
-        error?.message ||
-        "Something went wrong";
+          <Grid item xs={12} md={2}>
+            <Button color="error" variant="outlined" onClick={() => {
+              setValue('formFields', data.filter((_, i) => i !== index));
+            }}>
+              Remove
+            </Button>
+          </Grid>
 
-      enqueueSnackbar(message, { variant: "error" });
-    }
+          {field.type === 'select' && field.options.map((opt, optIndex) => {
+            const optPath = `${path}.options[${optIndex}]`;
+            return (
+              <Grid container key={opt.id} spacing={2} sx={{ pl: 2, mt: 1 }}>
+                <Grid item xs={4}><RHFTextField name={`${optPath}.option`} label="Option" /></Grid>
+                <Grid item xs={4}><RHFTextField name={`${optPath}.value`} label="Value" /></Grid>
+                <Grid item xs={4}>
+                  <Button color="error" onClick={() => {
+                    field.options.splice(optIndex, 1);
+                    setValue('formFields', [...data]);
+                  }}>Remove Option</Button>
+                </Grid>
+
+                {opt.nestedFields?.length > 0 && (
+                  <FormRenderer
+                    data={opt.nestedFields}
+                    parentPath={`${optPath}.nestedFields`}
+                    control={control}
+                    setValue={setValue}
+                  />
+                )}
+
+                {fieldTypes.map((t) => (
+                  <Grid item xs={3} key={t.value}>
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        const newField = {
+                          id: generateId(),
+                          label: '',
+                          type: t.value,
+                          requiredFor: '',
+                          options: t.value === 'select'
+                            ? [{ id: generateId(), option: '', value: '', nestedFields: [] }]
+                            : [],
+                        };
+
+                        setValue('formFields', addNestedField(field.id, data, newField, opt.id));
+                      }}
+                    >+ {t.label}</Button>
+                  </Grid>
+                ))}
+              </Grid>
+            );
+          })}
+
+          {field.type === 'select' && (
+            <Button
+              sx={{ mt: 2 }}
+              onClick={() => {
+                field.options.push({ id: generateId(), option: '', value: '', nestedFields: [] });
+                setValue('formFields', [...data]);
+              }}
+            >+ Add Option</Button>
+          )}
+        </Grid>
+      </Card>
+    );
+  });
+}
+
+export default function AdminDocumentFormBuilder({ currentDocument }) {
+  const { enqueueSnackbar } = useSnackbar();
+
+  const defaultValues = useMemo(() => ({
+    name: currentDocument?.name || '',
+    description: currentDocument?.description || '',
+    formFields: currentDocument?.formFields || [],
+  }), [currentDocument]);
+
+  const methods = useForm({
+    resolver: yupResolver(DocumentFormSchema),
+    defaultValues,
   });
 
+  const { watch, setValue, handleSubmit } = methods;
+  const values = watch();
 
+  const onSubmit = async (data) => {
+    const payload = {
+      name: data.name,
+      value: slugify(data.name, { lower: true }),
+      description: data.description,
+      formFields: data.formFields,
+    };
 
-  useEffect(() => {
-    if (currentFields) {
-      reset(defaultValues);
+    try {
+      if (currentDocument) {
+        await axiosInstance.patch(`/document-types/${currentDocument.id}`, payload);
+      } else {
+        await axiosInstance.post('/document-types', payload);
+      }
+      enqueueSnackbar('Document saved successfully');
+    } catch (e) {
+      enqueueSnackbar('Something went wrong', { variant: 'error' });
     }
-  }, [currentFields, defaultValues, reset]);
-
-
+  };
 
   return (
-    <Card sx={{p:4}}>
-    <FormProvider methods={methods} onSubmit={onSubmit}>
+    <Card sx={{ p: 4 }}>
+      <FormProvider {...methods}>
+        <Grid container spacing={3}>
+          <Grid item xs={12} md={6}><RHFTextField name="name" label="Document Name" /></Grid>
+          <Grid item xs={12}><RHFTextField name="description" label="Description" multiline rows={3} /></Grid>
 
-      <Grid container spacing={2} sx={{ mb: 3, mt: 1 }}>
-        <Grid container spacing={2} sx={{ mt: 1 }}>
-          <Grid item xs={12} md={6}>
-            <RHFAutocomplete
-              name="roles"
-              label="Select Roles"
-              autoHighlight
-              multiple
-              disableClearable={false}
-              options={getRoles}
-              getOptionLabel={(option) => option?.label || ''}
-              filterOptions={(x) => x}
-              isOptionEqualToValue={(option, value) => option?.id === value?.id}
-              fullWidth
+          <Grid item xs={12}>
+            <Typography variant="h6">Form Fields</Typography>
+            <FormRenderer
+              data={values.formFields}
+              parentPath="formFields"
+              control={methods.control}
+              setValue={setValue}
             />
           </Grid>
 
-          <Grid item xs={12} md={6}>
-            <RHFTextField
-              name="name"
-              label="Document Type"
-              fullWidth
-            />
+          <Grid item xs={12}>
+            <Typography variant="subtitle1">Add Field</Typography>
+            <Grid container spacing={2}>
+              {fieldTypes.map((t) => (
+                <Grid item xs={3} key={t.value}>
+                  <Button variant="contained" fullWidth onClick={() => {
+                    setValue('formFields', [...values.formFields, {
+                      id: generateId(),
+                      label: '',
+                      type: t.value,
+                      requiredFor: '',
+                      options: t.value === 'select'
+                        ? [{ id: generateId(), option: '', value: '', nestedFields: [] }]
+                        : [],
+                    }]);
+                  }}>+ {t.label}</Button>
+                </Grid>
+              ))}
+            </Grid>
           </Grid>
-          <Grid item xs={12} >
-            <RHFTextField
-              name="description"
-              label="Description"
-              multiline
-              rows={4}
 
-            />
+          <Grid item xs={12} textAlign="right">
+            <LoadingButton variant="contained" onClick={handleSubmit(onSubmit)}>
+              Save Document
+            </LoadingButton>
           </Grid>
         </Grid>
-      </Grid>
-
-      <Typography variant="h6">Placeholders</Typography>
-
-      <RenderFields name="documentPlaceholders" />
-      <Stack
-        alignItems="flex-end"
-        sx={{ mt: 3, display: "flex", gap: "10px" }}
-      >
-        <LoadingButton type="submit" variant="contained" loading={isSubmitting}>
-          {currentFields ? 'Save Changes' : 'Create Document'}
-        </LoadingButton>
-
-      </Stack>
-
-
-    </FormProvider >
+      </FormProvider>
     </Card>
   );
 }
