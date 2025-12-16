@@ -12,12 +12,8 @@ import { useGetDesignation } from 'src/api/designation';
 import { useSettingsContext } from 'src/components/settings';
 import CustomBreadcrumbs from 'src/components/custom-breadcrumbs';
 
-import DocumentFields from '../debenture-trustee-new-edit-form';
 import { useGetDocumentType } from 'src/api/document-type';
-
-
-//
-
+import AdminDocumentFormBuilder from '../debenture-trustee-new-edit-form';
 
 // ----------------------------------------------------------------------
 
@@ -28,9 +24,7 @@ export default function DebentureTrusteeEditView() {
 
   const { id } = params;
 
-
-  const{documentType:currentDocument}= useGetDocumentType(id)
- 
+  const { documentType: currentDocument } = useGetDocumentType(id)
 
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
@@ -42,19 +36,19 @@ export default function DebentureTrusteeEditView() {
             href: paths.dashboard.root,
           },
           {
-            name: 'Edit Document',
-            href: paths.dashboard.documentdrafting.root,
+            name: 'Documents',
+            href: paths.dashboard.debenturetrustees.debenturetrusteeslist,
           },
-          // {
-          //   name: currentDesignation?.designation,
-          // },
+          {
+            name: currentDocument?.name,
+          },
         ]}
         sx={{
           mb: { xs: 3, md: 5 },
         }}
       />
 
-      <DocumentFields currentFields={currentDocument} />
+      <AdminDocumentFormBuilder currentDocumentWithForm={currentDocument} />
     </Container>
   );
 }
