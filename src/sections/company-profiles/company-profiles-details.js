@@ -124,11 +124,11 @@ export default function CompanyProfileDetails({ data }) {
       extracted: data?.data?.companyPanCards?.extractedCompanyName || "—",
       submitted: data?.data?.companyPanCards?.submittedCompanyName || "—",
     },
-    {
-      parameter: "Date of Birth / Incorporation",
-      extracted: data?.data?.companyPanCards?.extractedDateOfBirth ? new Date(data?.data?.companyPanCards?.extractedDateOfBirth).toLocaleDateString() : "—",
-      submitted: data?.data?.companyPanCards?.submittedDateOfBirth ? new Date(data?.data?.companyPanCards?.submittedDateOfBirth).toLocaleDateString() : "—",
-    },
+    // {
+    //   parameter: "Date of Birth / Incorporation",
+    //   extracted: data?.data?.companyPanCards?.extractedDateOfBirth ? new Date(data?.data?.companyPanCards?.extractedDateOfBirth).toLocaleDateString() : "—",
+    //   submitted: data?.data?.companyPanCards?.submittedDateOfBirth ? new Date(data?.data?.companyPanCards?.submittedDateOfBirth).toLocaleDateString() : "—",
+    // },
   ];
 
 
@@ -197,9 +197,12 @@ export default function CompanyProfileDetails({ data }) {
                   }
                 }}
                 sx={{
-                  height: 36,
-                  textTransform: 'none',
+                  height: 32,
+                  px: 1.5,
+                  fontSize: 12,
                   fontWeight: 600,
+                  textTransform: 'none',
+                  whiteSpace: 'nowrap',
                 }}
                 startIcon={<Iconify icon="mdi:eye" />}
               >
@@ -220,6 +223,8 @@ export default function CompanyProfileDetails({ data }) {
             overflow: "hidden",
             boxShadow: "0px 3px 8px rgba(0,0,0,0.1)",
             border: "1px solid #BDBDBD",
+            overflowX: 'auto',
+            WebkitOverflowScrolling: 'touch'
           }}
         >
           <Table>
@@ -308,7 +313,7 @@ export default function CompanyProfileDetails({ data }) {
         </Stack>
       </FormProvider>
       <RejectReasonDialog
-      title= "Decline Company Profile"
+        title="Decline Company Profile"
         open={rejectOpen}
         onClose={() => setRejectOpen(false)}
         reason={rejectReason}
