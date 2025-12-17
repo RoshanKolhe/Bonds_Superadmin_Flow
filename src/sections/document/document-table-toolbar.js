@@ -9,15 +9,25 @@ import MenuItem from '@mui/material/MenuItem';
 // components
 import Iconify from 'src/components/iconify';
 import CustomPopover, { usePopover } from 'src/components/custom-popover';
+import { Checkbox, FormControl, InputLabel, OutlinedInput, Select } from '@mui/material';
 
 // ----------------------------------------------------------------------
 
-export default function DebentureTrusteeTableToolbar({ filters, onFilters }) {
+export default function DocumentTableToolbar({ filters, onFilters, roleOptions }) {
   const popover = usePopover();
 
   const handleFilterName = useCallback(
     (event) => {
       onFilters('name', event.target.value);
+    },
+    [onFilters]
+  );
+  const handleFilterRole = useCallback(
+    (event) => {
+      onFilters(
+        'role',
+        typeof event.target.value === 'string' ? event.target.value.split(',') : event.target.value
+      );
     },
     [onFilters]
   );
@@ -36,6 +46,34 @@ export default function DebentureTrusteeTableToolbar({ filters, onFilters }) {
           pr: { xs: 2.5, md: 1 },
         }}
       >
+        <FormControl
+          sx={{
+            flexShrink: 0,
+            width: { xs: 1, md: 200 },
+          }}
+        >
+          <InputLabel>Role</InputLabel>
+
+          <Select
+            multiple
+            value={filters.role}
+            onChange={handleFilterRole}
+            input={<OutlinedInput label="Role" />}
+            renderValue={(selected) => selected?.map((value) => value).join(', ')}
+            MenuProps={{
+              PaperProps: {
+                sx: { maxHeight: 240 },
+              },
+            }}
+          >
+            {roleOptions.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                <Checkbox disableRipple size="small" checked={filters.role.includes(option.value)} />
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
         <Stack direction="row" alignItems="center" spacing={2} flexGrow={1} sx={{ width: 1 }}>
           <TextField
             fullWidth
@@ -82,7 +120,8 @@ export default function DebentureTrusteeTableToolbar({ filters, onFilters }) {
   );
 }
 
-DebentureTrusteeTableToolbar.propTypes = {
+DocumentTableToolbar.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
+  roleOptions: PropTypes.array,
 };

@@ -12,7 +12,7 @@ import Label from 'src/components/label';
 
 // ----------------------------------------------------------------------
 
-export default function DebentureTrusteeTableRow({ row, selected, onSelectRow, onViewRow, onEditRow }) {
+export default function DocumentTableRow({ row, selected, onSelectRow, onViewRow, onEditRow }) {
   const { name, description, isActive, createdAt } = row;
 
   return (
@@ -46,7 +46,7 @@ export default function DebentureTrusteeTableRow({ row, selected, onSelectRow, o
               <Iconify icon="carbon:view-filled" />
             </IconButton>
           </Tooltip> */}
-        <Tooltip title="Edit" placement="top" arrow>
+        <Tooltip title="Edit" placement="top">
           <IconButton onClick={onEditRow}>
             <Iconify icon="solar:pen-bold" />
           </IconButton>
@@ -56,7 +56,7 @@ export default function DebentureTrusteeTableRow({ row, selected, onSelectRow, o
   );
 }
 
-DebentureTrusteeTableRow.propTypes = {
+DocumentTableRow.propTypes = {
   onSelectRow: PropTypes.func,
   row: PropTypes.object,
   selected: PropTypes.bool,

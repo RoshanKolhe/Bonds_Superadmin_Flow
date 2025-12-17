@@ -9,7 +9,7 @@ import {
   MenuItem,
   Card,
 } from '@mui/material';
-import { RHFTextField, RHFSelect, RHFAutocomplete } from 'src/components/hook-form';
+import { RHFTextField, RHFSelect, RHFAutocomplete, RHFCustomFileUploadBox } from 'src/components/hook-form';
 import { LoadingButton } from '@mui/lab';
 import slugify from 'slugify';
 import axiosInstance from 'src/utils/axios';
@@ -17,6 +17,8 @@ import { useSnackbar } from 'src/components/snackbar';
 import { useGetRoles } from 'src/api/role';
 import DocumentFormPreview from './document-form-preview';
 import RHFFileUploadBox from 'src/components/custom-file-upload/file-upload';
+import { paths } from 'src/routes/paths';
+import { useRouter } from 'src/routes/hook';
 
 /* ------------------------------------------------------------------ */
 /* HELPERS */
@@ -317,6 +319,7 @@ export default function AdminDocumentFormBuilder({ currentDocumentWithForm }) {
   const { roles, rolesLoading } = useGetRoles();
   const [rolesData, setRolesData] = useState([]);
   const [previewMode, setPreviewMode] = useState(false);
+  const router = useRouter();
 
   const handlePreviewClick = () => {
     setPreviewMode(true);
@@ -367,6 +370,7 @@ export default function AdminDocumentFormBuilder({ currentDocumentWithForm }) {
     try {
       await axiosInstance.post('/document-types', payload);
       enqueueSnackbar('Document created successfully');
+      router.push(paths.dashboard.document.list);
     } catch {
       enqueueSnackbar('Something went wrong', { variant: 'error' });
     }
@@ -449,12 +453,14 @@ export default function AdminDocumentFormBuilder({ currentDocumentWithForm }) {
             </Grid>
 
             <Grid item xs={12}>
-              <RHFFileUploadBox
+              <RHFCustomFileUploadBox
                 name="fileTemplate"
-                label={'Upload template'}
-                acceptedTypes=""
-                maxSizeMB={10}
-                onDrop={async (acceptedFiles) => handleDrop(acceptedFiles)}
+                label="Upload template"
+                icon="mdi:file-document-outline"
+                accept={{
+                  'application/msword': ['.doc'],
+                  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+                }}
               />
             </Grid>
 

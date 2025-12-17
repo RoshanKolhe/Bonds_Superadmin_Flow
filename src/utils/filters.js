@@ -61,14 +61,14 @@ export function buildFilter({
   //   });
   // }
 
-  
+
   if (searchTextValue?.trim()) {
     const text = searchTextValue.trim().toLowerCase();
 
     validSortFields.forEach((field) => {
       orConditions.push({
         [field]: {
-          ilike: `%${text}%`    
+          ilike: `%${text}%`
         }
       });
     });
@@ -105,6 +105,25 @@ export function buildFilter({
       permissions: { like: `%["${role.toLowerCase()}"]%`, options: 'i' }
     }));
   }
+
+  // Roles filter (Document Types)
+  // if (roles?.length) {
+  //   if (!where.or) {
+  //     where.or = [];
+  //   }
+
+  //   roles.forEach((role) => {
+  //     where.or.push({
+  //       roles: {
+  //         elemMatch: {
+  //           value: role.toLowerCase(),
+  //         },
+  //       },
+  //     });
+  //   });
+  // }
+
+
 
 
 

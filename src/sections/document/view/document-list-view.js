@@ -44,16 +44,19 @@ import {
 
 import { useFilterDocumentTypes } from 'src/api/document-type';
 import { buildFilter } from 'src/utils/filters';
-import DebentureTrusteeTableRow from '../debenture-trustee-table-row';
-import DebentureTrusteeTableToolbar from '../debenture-trustee-table-toolbar';
-import DebentureTrusteeTableFiltersResult from '../debenture-trustee-table-filters-result';
+import DocumentTableFiltersResult from '../document-table-filters-result';
+import DocumentTableRow from '../document-table-row';
+import DocumentTableToolbar from '../document-table-toolbar';
 
 
 
 
 // ----------------------------------------------------------------------
 
-const STATUS_OPTIONS = [{ value: 'all', label: 'All' }];
+const STATUS_OPTIONS = [{ value: 'all', label: 'All' },
+{ value: '1', label: 'Active' },
+{ value: '0', label: 'Inactive' },
+];
 
 const TABLE_HEAD = [
   { id: 'name', label: 'Document Type' },
@@ -63,14 +66,21 @@ const TABLE_HEAD = [
   { id: '', label: 'Actions' },
 ];
 
+export const _roles = [
+  { label: 'Investor', value: 'investor' },
+  { label: 'Trustee', value:  'trustee' },
+];
+
+
 const defaultFilters = {
   name: '',
+  role: [],
   status: 'all',
 };
 
 // ----------------------------------------------------------------------
 
-export default function DebentureTrusteesListView() {
+export default function DocumentListView() {
   const table = useTable();
 
   const settings = useSettingsContext();
@@ -85,15 +95,17 @@ export default function DebentureTrusteesListView() {
     orderBy: table.orderBy,
     startDate: filters.startDate,
     endDate: filters.endDate,
-    validSortFields: ['name', 'description', 'isActive'],
+    roles: filters.role,
+    validSortFields: ['name', 'description'],
     searchTextValue: filters.name,
-    status: filters.status,
+    // status: filters.status,
+    isActive: filters.status,
 
   })
 
   const { filteredDocumentTypes, totalCount, filterEmpty, filterLoading } = useFilterDocumentTypes(encodeURIComponent(JSON.stringify(filter)));
 
-  
+
   const handleViewRow = useCallback(
     (id) => {
       router.push(paths.dashboard.category.details(id));
@@ -103,7 +115,7 @@ export default function DebentureTrusteesListView() {
 
   const handleEditRow = useCallback(
     (id) => {
-      router.push(paths.dashboard.debenturetrustees.edit(id));
+      router.push(paths.dashboard.document.edit(id));
     },
     [router]
   );
@@ -159,7 +171,7 @@ export default function DebentureTrusteesListView() {
           heading="List"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'Trustee Document', href: paths.dashboard.debenturetrustees.debenturetrusteeslist },
+            { name: 'Documents', href: paths.dashboard.document.list },
             { name: 'List' },
           ]}
           // action={
@@ -190,15 +202,16 @@ export default function DebentureTrusteesListView() {
             ))}
           </Tabs>
 
-          <DebentureTrusteeTableToolbar filters={filters} onFilters={handleFilters} />
+          <DocumentTableToolbar filters={filters} onFilters={handleFilters}  roleOptions={_roles} />
 
           {canReset && (
-            <DebentureTrusteeTableFiltersResult
+            <DocumentTableFiltersResult
               filters={filters}
               onFilters={handleFilters}
               onResetFilters={handleResetFilters}
               results={dataFiltered.length}
               sx={{ p: 2.5, pt: 0 }}
+             
             />
           )}
 
@@ -243,7 +256,7 @@ export default function DebentureTrusteesListView() {
 
                 <TableBody>
                   {dataFiltered.map((row) => (
-                    <DebentureTrusteeTableRow
+                    <DocumentTableRow
                       key={row.id}
                       row={row}
                       selected={table.selected.includes(row.id)}

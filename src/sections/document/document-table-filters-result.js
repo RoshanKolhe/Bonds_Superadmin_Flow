@@ -10,7 +10,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function DebentureTrusteeTableFiltersResult({
+export default function DocumentTableFiltersResult({
   filters,
   onFilters,
   onResetFilters,
@@ -19,6 +19,11 @@ export default function DebentureTrusteeTableFiltersResult({
 }) {
   const handleRemoveName = () => {
     onFilters('name', '');
+  };
+
+  const handleRemoveRole = (inputValue) => {
+    const newValue = filters.role.filter((item) => item !== inputValue);
+    onFilters('role', newValue);
   };
 
   return (
@@ -37,6 +42,14 @@ export default function DebentureTrusteeTableFiltersResult({
           </Block>
         )}
 
+        {!!filters.role.length && (
+          <Block label="Role:">
+            {filters.role.map((item) => (
+              <Chip key={item} label={item} size="small" onDelete={() => handleRemoveRole(item)} />
+            ))}
+          </Block>
+        )}
+
         <Button
           color="error"
           onClick={onResetFilters}
@@ -49,7 +62,7 @@ export default function DebentureTrusteeTableFiltersResult({
   );
 }
 
-DebentureTrusteeTableFiltersResult.propTypes = {
+DocumentTableFiltersResult.propTypes = {
   filters: PropTypes.object,
   onFilters: PropTypes.func,
   onResetFilters: PropTypes.func,

@@ -379,13 +379,13 @@ export function useNavData() {
           //   ],
           // },
           {
-            title: t('Trustee Documents'),
-            path: paths.dashboard.debenturetrustees.root,
+            title: t('Documents'),
+            path: paths.dashboard.document.root,
             icon: ICONS.document,
             children: [
               // { title: t('profile'), path: paths.dashboard.user.root },
-              { title: t('list'), path: paths.dashboard.debenturetrustees.debenturetrusteeslist, },
-              { title: t('Create'), path: paths.dashboard.debenturetrustees.new },
+              { title: t('list'), path: paths.dashboard.document.list, },
+              { title: t('Create'), path: paths.dashboard.document.new },
               // { title: t('edit'), path: paths.dashboard.user.demo.edit },
               // { title: t('account'), path: paths.dashboard.user.account },
             ],

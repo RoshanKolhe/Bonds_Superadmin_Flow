@@ -57,13 +57,15 @@ const ROIFundFormPage = lazy(() => import('src/pages/dashboard/issure-services/r
 const AfterCompleteRoiStagePage = lazy(() => import('src/pages/dashboard/issure-services/view'));
 // WORKFLOW
 const ReactFlowPage = lazy(() => import('src/pages/dashboard/react-flow/board'));
-// Debenture Trustees
-const DocumentEditPage = lazy(() => import('src/pages/dashboard/documents-drafting/edit'))
-const NewDocumentPage = lazy(() => import('src/pages/dashboard/documents-drafting/new'));
-const DebentureTrusteeEditPage = lazy(() => import('src/pages/dashboard/debenture-trustees/edit'))
-const NewDebentureTrusteesPage = lazy(() => import('src/pages/dashboard/debenture-trustees/new'));
-const DebentureTrusteesListPage = lazy(() => import('src/pages/dashboard/debenture-trustees/debenture-trustees-list'));
-const DebentureTrusteesDocumentDraftPage = lazy(() => import('src/pages/dashboard/debenture-trustees/debenture-trustees-document-draft'))
+// Document
+const NewDocumentPage = lazy(()=> import('src/pages/dashboard/documents/new')); 
+const DocumentEditPage = lazy(()=> import('src/pages/dashboard/documents/edit'));
+const DocumentListPage = lazy(()=> import('src/pages/dashboard/documents/list'));
+// DEBENTURE TRUSTEES
+// const DebentureTrusteeEditPage = lazy(() => import('src/pages/dashboard/debenture-trustees/edit'))
+// const NewDebentureTrusteesPage = lazy(() => import('src/pages/dashboard/debenture-trustees/new'));
+// const DebentureTrusteesListPage = lazy(() => import('src/pages/dashboard/debenture-trustees/debenture-trustees-list'));
+// const DebentureTrusteesDocumentDraftPage = lazy(() => import('src/pages/dashboard/debenture-trustees/debenture-trustees-document-draft'))
 // SCHEDULER
 const SchedulerNewPage = lazy(() => import('src/pages/dashboard/scheduler/new'));
 const SchedulerListPage = lazy(() => import('src/pages/dashboard/scheduler/list'));
@@ -200,26 +202,26 @@ export const dashboardRoutes = [
           // { path: 'new', element: <InvoiceCreatePage /> },
         ],
       },
-      // {
-      //   path: 'documentdrafting',
-      //   children: [
-      //     { element: <NewDocumentPage />, index: true },
-      //     { path: 'new', element: <NewDocumentPage /> },
-      //     // { path: ':id', element: <InvoiceDetailsPage /> },
-      //     { path: ':id/edit', element: <DocumentEditPage /> },
-      //     // { path: 'new', element: <InvoiceCreatePage /> },
-      //   ],
-      // },
       {
-        path: 'debenturetrustees',
+        path: 'document',
         children: [
-          { element: <DebentureTrusteesListPage />, index: true },
-          { path: 'debenture-trustees-list', element: <DebentureTrusteesListPage /> },
-          { path: ':id', element: <DebentureTrusteesDocumentDraftPage /> },
-          { path: ':id/edit', element: <DebentureTrusteeEditPage /> },
-          { path: 'new', element: <NewDebentureTrusteesPage /> },
+          { element: <DocumentListPage />, index: true },
+          { path: 'new', element: <NewDocumentPage /> },
+          { path: 'list', element: <DocumentListPage /> },
+          { path: ':id/edit', element: <DocumentEditPage /> },
+          // { path: 'new', element: <InvoiceCreatePage /> },
         ],
       },
+      // {
+      //   path: 'debenturetrustees',
+      //   children: [
+      //     { element: <DebentureTrusteesListPage />, index: true },
+      //     { path: 'debenture-trustees-list', element: <DebentureTrusteesListPage /> },
+      //     { path: ':id', element: <DebentureTrusteesDocumentDraftPage /> },
+      //     { path: ':id/edit', element: <DebentureTrusteeEditPage /> },
+      //     { path: 'new', element: <NewDebentureTrusteesPage /> },
+      //   ],
+      // },
 
       {
         path: 'scheduler',

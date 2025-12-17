@@ -1,7 +1,9 @@
 import { Helmet } from 'react-helmet-async';
-import DocumentCreateView from 'src/sections/document-drafting/view/document-create-view';
+
+import { DocumentCreateView } from 'src/sections/document/view';
+
 // sections
-import { JobCreateView } from 'src/sections/job/view';
+
 
 // ----------------------------------------------------------------------
 
@@ -9,10 +11,10 @@ export default function NewDocumentPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Create New Document</title>
+        <title> Dashboard: Create  Document</title>
       </Helmet>
 
-      <DocumentCreateView />
+      <DocumentCreateView/>
     </>
   );
 }

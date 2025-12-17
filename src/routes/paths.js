@@ -160,19 +160,26 @@ export const paths = {
       roifundform: `${ROOTS.DASHBOARD}/issureservices/fund-position-form`,
       view: `${ROOTS.DASHBOARD}/issureservices/view`,
     },
-    documentdrafting: {
-      root: `${ROOTS.DASHBOARD}/documentdrafting`,
-      new: `${ROOTS.DASHBOARD}/documentdrafting/new`,
-      edit: (id) => `${ROOTS.DASHBOARD}/documentdrafting/${id}/edit`,
+    // documentdrafting: {
+    //   root: `${ROOTS.DASHBOARD}/documentdrafting`,
+    //   new: `${ROOTS.DASHBOARD}/documentdrafting/new`,
+    //   edit: (id) => `${ROOTS.DASHBOARD}/documentdrafting/${id}/edit`,
+
+    // },
+    document: {
+      root: `${ROOTS.DASHBOARD}/document`,
+      new: `${ROOTS.DASHBOARD}/document/new`,
+      edit: (id) => `${ROOTS.DASHBOARD}/document/${id}/edit`,
+      list: `${ROOTS.DASHBOARD}/document/list`,
 
     },
-    debenturetrustees: {
-      root: `${ROOTS.DASHBOARD}/debenturetrustees`,
-      new: `${ROOTS.DASHBOARD}/debenturetrustees/new`,
-      edit: (id) => `${ROOTS.DASHBOARD}/debenturetrustees/${id}/edit`,
-      debenturetrusteeslist: `${ROOTS.DASHBOARD}/debenturetrustees/debenture-trustees-list`,
-      draft: (id) => `${ROOTS.DASHBOARD}/debenturetrustees/${id}`,
-    },
+    // debenturetrustees: {
+    //   root: `${ROOTS.DASHBOARD}/debenturetrustees`,
+    //   new: `${ROOTS.DASHBOARD}/debenturetrustees/new`,
+    //   edit: (id) => `${ROOTS.DASHBOARD}/debenturetrustees/${id}/edit`,
+    //   debenturetrusteeslist: `${ROOTS.DASHBOARD}/debenturetrustees/debenture-trustees-list`,
+    //   draft: (id) => `${ROOTS.DASHBOARD}/debenturetrustees/${id}`,
+    // },
     //   product: {
     //     root: `${ROOTS.DASHBOARD}/product`,
     //     new: `${ROOTS.DASHBOARD}/product/new`,
