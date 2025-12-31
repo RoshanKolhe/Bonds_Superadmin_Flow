@@ -6,7 +6,7 @@ import { useSnackbar } from 'notistack';
 import { useRouter } from 'src/routes/hook';
 
 import axiosInstance from 'src/utils/axios';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFCustomFileUploadBox, RHFTextField } from 'src/components/hook-form';
 import Label from 'src/components/label';
 import { MultiFilePreview } from 'src/components/upload';
 import Iconify from 'src/components/iconify';
@@ -39,6 +39,7 @@ export default function TrusteeProfileDetails({ data }) {
     { name: 'stateOfIncorporation', label: 'State Of Incorporation', value: data?.stateOfIncorporation },
     { name: 'countryOfIncorporation', label: 'Country Of Incorporation', value: data?.countryOfIncorporation },
     { name: 'udyamRegistrationNumber', label: 'Udyam Registration Number', value: data?.udyamRegistrationNumber },
+    {name:'panFile', label: 'Pan File', value: data?.trusteePanCards?.panCardDocument},
     { name: 'createdAt', label: 'Created At', value: data?.createdAt ? new Date(data?.createdAt).toLocaleDateString() : '—' },
   ];
 
@@ -163,7 +164,12 @@ export default function TrusteeProfileDetails({ data }) {
           ))}
         </Grid>
         <Grid item xs={12}>
-          <Box
+          <RHFCustomFileUploadBox 
+          name="panFile"
+          label= "Upload pan"
+          disabled
+          />
+          {/* <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
@@ -204,7 +210,7 @@ export default function TrusteeProfileDetails({ data }) {
             ) : (
               <Typography color="text.secondary">No PAN file uploaded.</Typography>
             )}
-          </Box>
+          </Box> */}
         </Grid>
 
 

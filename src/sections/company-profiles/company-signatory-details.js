@@ -19,7 +19,7 @@ import { DatePicker } from '@mui/x-date-pickers';
 import { useSnackbar } from 'src/components/snackbar';
 import Iconify from 'src/components/iconify';
 import RHFFileUploadBox from 'src/components/custom-file-upload/file-upload';
-import FormProvider, { RHFSelect, RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFCustomFileUploadBox, RHFSelect, RHFTextField } from 'src/components/hook-form';
 import axiosInstance from 'src/utils/axios';
 import { useLocation } from 'react-router';
 import { useRouter } from 'src/routes/hook';
@@ -245,13 +245,12 @@ const router = useRouter();
 
                     {/* PAN Upload */}
                     <Grid item xs={12}>
-                        {/* <RHFFileUploadBox
+                        <RHFCustomFileUploadBox
                             name="panCard"
                             label="Upload PAN*"
-                            accept="application/pdf,image/*"
-                            onDrop={(files) => handlePanUpload(files[0])}
-                        /> */}
-                        <Box sx={{ mb: 3 }}>
+                           disabled
+                        />
+                        {/* <Box sx={{ mb: 3 }}>
                             <Box
                                 sx={{
                                     display: 'flex',
@@ -286,7 +285,7 @@ const router = useRouter();
                                     <Typography color="text.secondary">No file uploaded.</Typography>
                                 )}
                             </Box>
-                        </Box>
+                        </Box> */}
                     </Grid>
 
                     <Grid item xs={12} sm={6}>
@@ -315,8 +314,12 @@ const router = useRouter();
                     </Grid>
 
                     <Grid item xs={12}>
-                        {/* <RHFFileUploadBox name="boardResolution" label="Board Resolution*" accept="application/pdf,image/*" /> */}
-                        <Box sx={{ mb: 3 }}>
+                        <RHFCustomFileUploadBox
+                            name="boardResolution"
+                            label="Board Resolution*"
+                           disabled
+                        />
+                        {/* <Box sx={{ mb: 3 }}>
                             <Box
                                 sx={{
                                     display: 'flex',
@@ -350,7 +353,7 @@ const router = useRouter();
                                     <Typography color="text.secondary">No file uploaded.</Typography>
                                 )}
                             </Box>
-                        </Box>
+                        </Box> */}
                     </Grid>
                 </Grid>
                 <Stack direction="row" spacing={2} justifyContent="flex-end">

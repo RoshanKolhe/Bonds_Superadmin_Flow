@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 // components
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
-import FormProvider, { RHFTextField, RHFSelect } from 'src/components/hook-form';
+import FormProvider, { RHFTextField, RHFSelect, RHFCustomFileUploadBox } from 'src/components/hook-form';
 import { useForm, useWatch } from 'react-hook-form';
 
 import * as Yup from 'yup';
@@ -130,13 +130,12 @@ export default function KYCBankDetails({ trusteeProfile }) {
 
   const existingProof = bankDetails?.bankAccountProof
     ? {
-        id: bankDetails.bankAccountProof.id,
-        name: bankDetails.bankAccountProof.fileOriginalName,
-        url: bankDetails.bankAccountProof.fileUrl,
-        status: bankDetails.status === 1 ? 'approved' : 'pending',
-        isServerFile: true,
-      }
+      id: bankDetails.bankAccountProof.id,
+      name: bankDetails.bankAccountProof.fileOriginalName,
+      url: bankDetails.bankAccountProof.fileUrl,
+    }
     : null;
+
 
   const onSubmit = handleSubmit(async (data) => {
     try {
@@ -224,13 +223,20 @@ export default function KYCBankDetails({ trusteeProfile }) {
         accountNumber: bankDetails.accountNumber || '',
         ifscCode: bankDetails.ifscCode || '',
         accountType: bankDetails.accountType === 1 ? 'CURRENT' : 'SAVINGS',
-        addressProof: null,
+        addressProof: bankDetails.bankAccountProof
+          ? {
+            id: bankDetails.bankAccountProof.id,
+            name: bankDetails.bankAccountProof.fileOriginalName,
+            url: bankDetails.bankAccountProof.fileUrl,
+          }
+          : null,
         accountHolderName: bankDetails.accountHolderName || '',
         bankAddress: bankDetails.bankAddress || '',
         bankShortCode: bankDetails.bankShortCode || '',
       });
     }
   }, [bankDetails, reset]);
+
 
   return (
     <Container>
@@ -260,52 +266,16 @@ export default function KYCBankDetails({ trusteeProfile }) {
             </RHFSelect>
           </Box>
 
-          <Box sx={{ mb: 3 }}>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 2,
-                flexWrap: 'wrap',
-                mb: 1,
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Typography sx={{ fontWeight: 600 }}>
-                  Uploaded {documentType === 'cheque' ? 'Cheque' : 'Bank Statement'} :
-                </Typography>
-              </Box>
+          {/* ---------------- DOCUMENT SECTION ---------------- */}
 
-              {existingProof?.url ? (
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  startIcon={<Iconify icon="mdi:eye" />}
-                  sx={{
-                    height: 36,
-                    textTransform: 'none',
-                    fontWeight: 600,
-                  }}
-                  onClick={() => window.open(existingProof.url, '_blank')}
-                >
-                  Preview {documentType === 'cheque' ? 'Cheque' : 'Statement'}
-                </Button>
-              ) : (
-                <Typography color="text.secondary">No file uploaded.</Typography>
-              )}
-            </Box>
-          </Box>
-          {/* <RHFFileUploadBox
+
+          <RHFCustomFileUploadBox
             name="addressProof"
             label={`Upload ${documentType === 'cheque' ? 'Cheque' : 'Bank Statement'}`}
-            icon="mdi:file-document-outline"
-            color="#1e88e5"
-            acceptedTypes="pdf,xls,docx,jpeg"
-            maxSizeMB={10}
-            existing={existingProof}
-            onDrop={(files) => handleDrop(files)}
             disabled
-          /> */}
+          />
+
+
 
           {/* ---------------- BANK FIELDS ---------------- */}
           <Box sx={{ py: 4 }}>

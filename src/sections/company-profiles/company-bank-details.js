@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper';
 // components
 import { RouterLink } from 'src/routes/components';
 import { paths } from 'src/routes/paths';
-import FormProvider, { RHFTextField, RHFSelect } from 'src/components/hook-form';
+import FormProvider, { RHFTextField, RHFSelect, RHFCustomFileUploadBox } from 'src/components/hook-form';
 import { useForm, useWatch } from 'react-hook-form';
 
 import * as Yup from 'yup';
@@ -217,7 +217,13 @@ export default function CompanyBankDetails({ companyProfile }) {
         accountNumber: bankDetails.accountNumber || '',
         ifscCode: bankDetails.ifscCode || '',
         accountType: bankDetails.accountType === 1 ? 'CURRENT' : 'SAVINGS',
-        addressProof: null,
+        addressProof: bankDetails.bankAccountProof
+          ? {
+            id: bankDetails.bankAccountProof.id,
+            name: bankDetails.bankAccountProof.fileOriginalName,
+            url: bankDetails.bankAccountProof.fileUrl,
+          }
+          : null,
         accountHolderName: bankDetails.accountHolderName || '',
         bankAddress: bankDetails.bankAddress || '',
         bankShortCode: bankDetails.bankShortCode || '',
@@ -253,7 +259,7 @@ export default function CompanyBankDetails({ companyProfile }) {
             </RHFSelect>
           </Box>
 
-          <Box sx={{ mb: 3 }}>
+          {/* <Box sx={{ mb: 3 }}>
             <Box
               sx={{
                 display: 'flex',
@@ -287,18 +293,12 @@ export default function CompanyBankDetails({ companyProfile }) {
                 <Typography color="text.secondary">No file uploaded.</Typography>
               )}
             </Box>
-          </Box>
-          {/* <RHFFileUploadBox
+          </Box> */}
+          <RHFCustomFileUploadBox
             name="addressProof"
             label={`Upload ${documentType === 'cheque' ? 'Cheque' : 'Bank Statement'}`}
-            icon="mdi:file-document-outline"
-            color="#1e88e5"
-            acceptedTypes="pdf,xls,docx,jpeg"
-            maxSizeMB={10}
-            existing={existingProof}
-            onDrop={(files) => handleDrop(files)}
             disabled
-          /> */}
+          />
 
           {/* ---------------- BANK FIELDS ---------------- */}
           <Box sx={{ py: 4 }}>

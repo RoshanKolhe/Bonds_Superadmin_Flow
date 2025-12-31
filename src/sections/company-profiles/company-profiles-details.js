@@ -6,7 +6,7 @@ import { useSnackbar } from 'notistack';
 import { useRouter } from 'src/routes/hook';
 
 import axiosInstance from 'src/utils/axios';
-import FormProvider, { RHFTextField } from 'src/components/hook-form';
+import FormProvider, { RHFCustomFileUploadBox, RHFTextField } from 'src/components/hook-form';
 import Label from 'src/components/label';
 import { MultiFilePreview } from 'src/components/upload';
 import RejectReasonDialog from 'src/components/reject dialog box/reject-dialog-box';
@@ -39,10 +39,13 @@ export default function CompanyProfileDetails({ data }) {
     { name: 'stateOfIncorporation', label: 'State Of Incorporation', value: data?.data?.stateOfIncorporation },
     { name: 'countryOfIncorporation', label: 'Country Of Incorporation', value: data?.data?.countryOfIncorporation },
     { name: 'udyamRegistrationNumber', label: 'Udyam Registration Number', value: data?.data?.udyamRegistrationNumber },
+    { name: 'panFile', label: 'Pan file', value: data?.data?.companyPanCards?.panCardDocument },
     { name: 'createdAt', label: 'Created At', value: data?.data?.createdAt ? new Date(data?.data?.createdAt).toLocaleDateString() : '—' },
   ];
 
   const defaultValues = Object.fromEntries(fields.map((f) => [f.name, f.value || '']));
+
+  console.log('DefaultValues', defaultValues)
 
   const methods = useForm({ defaultValues });
 
@@ -81,8 +84,6 @@ export default function CompanyProfileDetails({ data }) {
       setLoading(false);
     }
   };
-
-
 
   const [openPreview, setOpenPreview] = useState(false);
 
@@ -170,7 +171,13 @@ export default function CompanyProfileDetails({ data }) {
           ))}
         </Grid>
         <Grid item xs={12}>
-          <Box
+          <RHFCustomFileUploadBox
+            name='panFile'
+            label="Upload Pan"
+            disabled
+          />
+
+          {/* <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
@@ -184,12 +191,12 @@ export default function CompanyProfileDetails({ data }) {
               PAN Card Details
             </Typography>
 
-            {data?.data?.companyPanCards?.panCardDocument?.fileUrl ? (
+            {data?.data?.companyPanCards?.panCardDocument ? (
               <Button
                 variant="outlined"
                 color="primary"
                 onClick={() => {
-                  const url = data?.data?.companyPanCards?.panCardDocument?.fileUrl;
+                  const url = data?.data?.companyPanCards?.panCardDocument;
                   if (url) {
                     window.open(url, '_blank');
                   } else {
@@ -211,7 +218,7 @@ export default function CompanyProfileDetails({ data }) {
             ) : (
               <Typography color="text.secondary">No PAN file uploaded.</Typography>
             )}
-          </Box>
+          </Box> */}
         </Grid>
 
 
