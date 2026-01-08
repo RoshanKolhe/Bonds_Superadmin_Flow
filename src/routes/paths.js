@@ -173,6 +173,22 @@ export const paths = {
       list: `${ROOTS.DASHBOARD}/document/list`,
 
     },
+    rta: {
+      root: `${ROOTS.DASHBOARD}/rta`,
+      list: `${ROOTS.DASHBOARD}/rta/list`,
+      details: (id) => `${ROOTS.DASHBOARD}/rta/${id}`,
+      view: `${ROOTS.DASHBOARD}/rta/view`,
+    },
+    valuer: {
+      root: `${ROOTS.DASHBOARD}/valuer`,
+      list: `${ROOTS.DASHBOARD}/valuer/list`,
+      view: `${ROOTS.DASHBOARD}/valuer/view`
+    },
+    creditRating: {
+      root: `${ROOTS.DASHBOARD}/creditRating`,
+      list: `${ROOTS.DASHBOARD}/creditRating/list`,
+      view: `${ROOTS.DASHBOARD}/creditRating/view`,
+    },
     // debenturetrustees: {
     //   root: `${ROOTS.DASHBOARD}/debenturetrustees`,
     //   new: `${ROOTS.DASHBOARD}/debenturetrustees/new`,

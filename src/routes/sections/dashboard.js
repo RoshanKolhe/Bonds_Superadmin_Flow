@@ -58,9 +58,9 @@ const AfterCompleteRoiStagePage = lazy(() => import('src/pages/dashboard/issure-
 // WORKFLOW
 const ReactFlowPage = lazy(() => import('src/pages/dashboard/react-flow/board'));
 // Document
-const NewDocumentPage = lazy(()=> import('src/pages/dashboard/documents/new')); 
-const DocumentEditPage = lazy(()=> import('src/pages/dashboard/documents/edit'));
-const DocumentListPage = lazy(()=> import('src/pages/dashboard/documents/list'));
+const NewDocumentPage = lazy(() => import('src/pages/dashboard/documents/new'));
+const DocumentEditPage = lazy(() => import('src/pages/dashboard/documents/edit'));
+const DocumentListPage = lazy(() => import('src/pages/dashboard/documents/list'));
 // DEBENTURE TRUSTEES
 // const DebentureTrusteeEditPage = lazy(() => import('src/pages/dashboard/debenture-trustees/edit'))
 // const NewDebentureTrusteesPage = lazy(() => import('src/pages/dashboard/debenture-trustees/new'));
@@ -94,6 +94,15 @@ const TourDetailsPage = lazy(() => import('src/pages/dashboard/tour/details'));
 const TourListPage = lazy(() => import('src/pages/dashboard/tour/list'));
 const TourCreatePage = lazy(() => import('src/pages/dashboard/tour/new'));
 const TourEditPage = lazy(() => import('src/pages/dashboard/tour/edit'));
+// VALUER
+const ValuerListPage = lazy(() => import('src/pages/dashboard/valuer/list'));
+const ValuerViewPage = lazy(() => import('src/pages/dashboard/valuer/view'));
+// RTA
+const RtaListPage = lazy(() => import('src/pages/dashboard/Rta/list'));
+const RtaViewPage = lazy(() => import('src/pages/dashboard/Rta/view'))
+// CREDIT RATING
+const CredtingRatingListPage = lazy(() => import('src/pages/dashboard/credit-rating/list'));
+const CreditRatingViewPage = lazy(()=> import('src/pages/dashboard/credit-rating/view'));
 // FILE MANAGER
 const FileManagerPage = lazy(() => import('src/pages/dashboard/file-manager'));
 // APP
@@ -197,6 +206,39 @@ export const dashboardRoutes = [
         children: [
           { element: <ReactFlowPage />, index: true },
           { path: 'list', element: <ReactFlowPage /> },
+          // { path: ':id', element: <InvoiceDetailsPage /> },
+          // { path: ':id/edit', element: <InvoiceEditPage /> },
+          // { path: 'new', element: <InvoiceCreatePage /> },
+        ],
+      },
+      {
+        path: 'valuer',
+        children: [
+          { element: <ValuerListPage />, index: true },
+          { path: 'list', element: <ValuerListPage /> },
+          { path: 'view', element: <ValuerViewPage /> },
+          // { path: ':id', element: <InvoiceDetailsPage /> },
+          // { path: ':id/edit', element: <InvoiceEditPage /> },
+          // { path: 'new', element: <InvoiceCreatePage /> },
+        ],
+      },
+      {
+        path: 'rta',
+        children: [
+          { element: <RtaListPage />, index: true },
+          { path: 'list', element: <RtaListPage /> },
+          // { path: ':id', element: <RtaViewPage /> },
+          { path: 'view', element: <RtaViewPage /> },
+          // { path: ':id/edit', element: <InvoiceEditPage /> },
+          // { path: 'new', element: <InvoiceCreatePage /> },
+        ],
+      },
+      {
+        path: 'creditRating',
+        children: [
+          { element: <CredtingRatingListPage />, index: true },
+          { path: 'list', element: <CredtingRatingListPage /> },
+          {path: 'view', element:<CreditRatingViewPage/>}
           // { path: ':id', element: <InvoiceDetailsPage /> },
           // { path: ':id/edit', element: <InvoiceEditPage /> },
           // { path: 'new', element: <InvoiceCreatePage /> },

@@ -45,6 +45,9 @@ const ICONS = {
   ecommerce: icon('ic_ecommerce'),
   analytics: icon('ic_analytics'),
   dashboard: icon('ic_dashboard'),
+  rta: icon('ic_rta'),
+  valuer: icon('ic_valuer'),
+  rating: icon('ic_rating')
 };
 
 // ----------------------------------------------------------------------
@@ -97,6 +100,35 @@ export function useNavData() {
             path: paths.dashboard.trusteeProfiles.root,
             icon: ICONS.user,
           },
+           {
+            title: t('Rta'),
+            path: paths.dashboard.rta.root,
+            // icon: <Iconify icon="mdi:file-document-multiple-outline" />
+
+            icon: ICONS.rta,
+            // children: [
+            //   { title: t('bond issue list'), path: paths.dashboard.rta.list, },
+            // ],
+          },
+          {
+            title: t('Valuer'),
+            path: paths.dashboard.valuer.root,
+            // icon: <Iconify icon="mdi:scale-balance" />
+            icon: ICONS.valuer,
+            // children: [
+            //   { title: t('bond issue list'), path: paths.dashboard.valuer.list, },
+            // ],
+          },
+          {
+            title: t('Credit Rating'),
+            path: paths.dashboard.creditRating.root,
+            // icon: <Iconify icon="mdi:shield-check-outline" />
+            icon: ICONS.rating,
+            // children: [
+            //   { title: t('bond issue list'), path: paths.dashboard.creditRating.list, },
+            // ],
+          },
+
           // {
           //   title: t('Document Drafting'),
           //   path: paths.dashboard.documentdrafting.root,

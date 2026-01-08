@@ -34,8 +34,8 @@ export const endpoints = {
     me: '/auth/me',
     login: '/auth/super-admin-login',
     register: '/register',
-    forgotPassword:'/auth/forget-password/send-email-otp',
-    newPassword:'/auth/forget-password/verify-email-otp',
+    forgotPassword: '/auth/forget-password/send-email-otp',
+    newPassword: '/auth/forget-password/verify-email-otp',
   },
   mail: {
     list: '/api/mail/list',
@@ -58,11 +58,20 @@ export const endpoints = {
     filterList: (filter) => `/schedulers?filter=${filter}`,
     details: (id) => `/schedulers/${id}`,
   },
-
+  bondApplications: {
+    list: '/bond-applications',
+    filterList: (filter) => `/bond-applications?filter=${filter}`,
+    details: (applicationId) => `/bond-applications/${applicationId}`,
+    dataByStatus: (applicationId, statusValue) => `/bond-applications/${applicationId}/data-by-status/${statusValue}`
+  },
   companyInfo: {
     list: '/api/kyc/issuer_kyc/company-info/',
     filterList: (filter) => `/api/kyc/issuer_kyc/company-info/?filter=${filter}`,
     details: (id) => `/api/kyc/issuer_kyc/company-info/${id}`,
+  },
+  creditRatingAgencies: {
+    list: '/credit-rating-agencies',
+    details:(id)=>`/credit-rating-agencies/${id}`
   },
   designation: {
     list: '/designations',
