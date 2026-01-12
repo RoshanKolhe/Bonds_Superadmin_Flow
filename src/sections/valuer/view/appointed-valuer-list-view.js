@@ -43,6 +43,7 @@ import AppointedValuerTableToolbar from '../appointed-valuer-table-toolbar';
 import AppointedValuerTableFiltersResult from '../appointed-valuer-table-filters-result';
 import AppointedValuerTableRow from '../appointed-valuer-table-row';
 import PropTypes from 'prop-types';
+import ValuatorApprovalCard from '../valuer-appointed-card';
 
 // ----------------------------------------------------------------------
 
@@ -63,21 +64,23 @@ const defaultFilters = {
 
 // ----------------------------------------------------------------------
 
-export default function AppointedValuerListView({currentValuer}) {
+export default function AppointedValuerListView({ currentValuer }) {
   const table = useTable();
 
   const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
+  const [openApproval, setOpenApproval] = useState(false);
+  const [selectedApplicationId, setSelectedApplicationId] = useState(null);
 
-  const handleViewRow = useCallback(
-    (id) => {
-      router.push(paths.dashboard.category.details(id));
-    },
-    [router]
-  );
 
-   const handleEditRow = useCallback(
+  const handleViewRow = useCallback((row) => {
+    setSelectedApplicationId(row.id);
+    setOpenApproval(true);
+  }, []);
+
+
+  const handleEditRow = useCallback(
     (id) => {
       router.push(paths.dashboard.scheduler.edit(id));
     },
@@ -86,7 +89,7 @@ export default function AppointedValuerListView({currentValuer}) {
 
   const [filters, setFilters] = useState(defaultFilters);
 
-  const VALUERS = currentValuer;
+  const VALUERS = Array.isArray(currentValuer) ? currentValuer : [];
 
   const dataFiltered = applyFilter({
     inputData: VALUERS,
@@ -239,7 +242,7 @@ export default function AppointedValuerListView({currentValuer}) {
                         selected={table.selected.includes(row.id)}
                         onSelectRow={() => table.onSelectRow(row.id)}
                         onDeleteRow={() => handleDeleteRow(row.id)}
-                        onViewRow={() => handleViewRow(row.id)}
+                        onViewRow={() => handleViewRow(row)}
                         onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}
@@ -266,7 +269,13 @@ export default function AppointedValuerListView({currentValuer}) {
           />
         </Card>
       </Container>
-
+      {openApproval && (
+        <ValuatorApprovalCard
+          open={openApproval}
+          onClose={() => setOpenApproval(false)}
+          applicationId={selectedApplicationId}
+        />
+      )}
       <ConfirmDialog
         open={confirm.value}
         onClose={confirm.onFalse}

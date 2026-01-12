@@ -62,7 +62,9 @@ export const endpoints = {
     list: '/bond-applications',
     filterList: (filter) => `/bond-applications?filter=${filter}`,
     details: (applicationId) => `/bond-applications/${applicationId}`,
-    dataByStatus: (applicationId, statusValue) => `/bond-applications/${applicationId}/data-by-status/${statusValue}`
+    dataByStatus: (applicationId, statusValue) => `/bond-applications/${applicationId}/data-by-status/${statusValue}`,
+    byIntermediary: (intermediaryType, id) =>
+      `/bond-applications/by-intermediaries/${intermediaryType}/${id}`,
   },
   companyInfo: {
     list: '/api/kyc/issuer_kyc/company-info/',
@@ -71,7 +73,10 @@ export const endpoints = {
   },
   creditRatingAgencies: {
     list: '/credit-rating-agencies',
-    details:(id)=>`/credit-rating-agencies/${id}`
+    details: (id) => `/credit-rating-agencies/${id}`
+  },
+  creditRatings: {
+    list: '/credit-ratings',
   },
   designation: {
     list: '/designations',

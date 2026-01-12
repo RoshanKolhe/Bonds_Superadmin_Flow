@@ -1,17 +1,19 @@
 import { useGetCreditRatingAgencies } from "src/api/creditRatingsAndAgencies"
 import AppointedCreditRatingListView from "./appointed-credit-rating-list-view";
 import { useParams } from "src/routes/hook";
-import { useGetBondApplications } from "src/api/bondApplications";
+import { useGetBondApplication, useGetBondApplications } from "src/api/bondApplications";
 
 export default function CreditRatingView(){
 
     const params = useParams();
 
-    const {bondApplications}= useGetBondApplications();
+    const {id , intermediaryType} = params;
+
+    const {bondApplication}= useGetBondApplication(id, intermediaryType);
 
     return(
         <>
-        <AppointedCreditRatingListView currentCreditRating={bondApplications}/>
+        <AppointedCreditRatingListView currentCreditRating={bondApplication}/>
         </>
     )
 }

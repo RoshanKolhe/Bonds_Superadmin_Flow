@@ -182,12 +182,17 @@ export const paths = {
     valuer: {
       root: `${ROOTS.DASHBOARD}/valuer`,
       list: `${ROOTS.DASHBOARD}/valuer/list`,
-      view: `${ROOTS.DASHBOARD}/valuer/view`
+      view: `${ROOTS.DASHBOARD}/valuer/view`,
+      details: (intermediaryType, id) =>
+        `${ROOTS.DASHBOARD}/valuer/${intermediaryType}/${id}`,
+
     },
     creditRating: {
       root: `${ROOTS.DASHBOARD}/creditRating`,
       list: `${ROOTS.DASHBOARD}/creditRating/list`,
       view: `${ROOTS.DASHBOARD}/creditRating/view`,
+      details: (intermediaryType, id) =>
+        `${ROOTS.DASHBOARD}/creditRating/${intermediaryType}/${id}`,
     },
     // debenturetrustees: {
     //   root: `${ROOTS.DASHBOARD}/debenturetrustees`,

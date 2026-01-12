@@ -100,12 +100,13 @@ export default function ValuerListView() {
   const confirm = useBoolean();
 
   const handleViewRow = useCallback(
-    () => {
-      router.push(paths.dashboard.valuer.view);
+    (id) => {
+      router.push(
+        paths.dashboard.valuer.details('valuer', id)
+      );
     },
     [router]
   );
-
   //  const handleViewRow = useCallback(
   //   (id) => {
   //     router.push(paths.dashboard.category.details(id));
@@ -273,7 +274,7 @@ export default function ValuerListView() {
                         selected={table.selected.includes(row.id)}
                         onSelectRow={() => table.onSelectRow(row.id)}
                         onDeleteRow={() => handleDeleteRow(row.id)}
-                        onView={() => handleViewRow(row)}
+                        onView={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}

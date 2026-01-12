@@ -29,12 +29,12 @@ export default function AppointedValuerTableRow({ row, selected, onViewRow, onSe
   const popover = usePopover();
 
   const localStatusMapper = [
-    {label: 'Regulatory Filing', code: 'Regulatory_filings'},
-    {label: 'Trustee Due Diligence', code: 'trustee_due_diligence'},
-    {label: 'Principle Listing Approval', code: 'principle_listing_approval'},
-    {label: 'ISIN Activation', code: 'isin_activation'},
-    {label: 'Execute Documents', code: 'execute_document'},
-    {label: 'Launch Issue', code: 'launch_issue'}
+    { label: 'Regulatory Filing', code: 'Regulatory_filings' },
+    { label: 'Trustee Due Diligence', code: 'trustee_due_diligence' },
+    { label: 'Principle Listing Approval', code: 'principle_listing_approval' },
+    { label: 'ISIN Activation', code: 'isin_activation' },
+    { label: 'Execute Documents', code: 'execute_document' },
+    { label: 'Launch Issue', code: 'launch_issue' }
   ]
 
   const getColor = () => {
@@ -72,9 +72,9 @@ export default function AppointedValuerTableRow({ row, selected, onViewRow, onSe
 
         {/* Actions */}
         <TableCell align="center" sx={{ px: 1, whiteSpace: 'nowrap' }}>
-          <Tooltip title="View Application">
-            <IconButton onClick={() => navigate(paths.dashboard.mybond.bondIssue(id))}>
-              <Iconify icon="carbon:view-filled" />
+          <Tooltip title="View">
+            <IconButton onClick={onViewRow}>
+              <Iconify icon="solar:eye-bold" />
             </IconButton>
           </Tooltip>
           {/* <IconButton color={popover.open ? 'inherit' : 'default'} onClick={popover.onOpen}>

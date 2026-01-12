@@ -73,8 +73,8 @@ export default function CreditRatingListView() {
   const confirm = useBoolean();
 
   const handleViewRow = useCallback(
-    () => {
-      router.push(paths.dashboard.creditRating.view);
+    (id) => {
+      router.push(paths.dashboard.creditRating.details('cra', id));
     },
     [router]
   );
@@ -248,7 +248,7 @@ export default function CreditRatingListView() {
                         selected={table.selected.includes(row.id)}
                         onSelectRow={() => table.onSelectRow(row.id)}
                         onDeleteRow={() => handleDeleteRow(row.id)}
-                        onView={() => handleViewRow(row)}
+                        onView={() => handleViewRow(row.id)}
                         onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}

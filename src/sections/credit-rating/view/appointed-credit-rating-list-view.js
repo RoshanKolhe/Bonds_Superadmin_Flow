@@ -14,7 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import TableContainer from '@mui/material/TableContainer';
 // routes
 import { paths } from 'src/routes/paths';
-import { useRouter } from 'src/routes/hook';
+import { useParams, useRouter } from 'src/routes/hook';
 
 // hooks
 import { useBoolean } from 'src/hooks/use-boolean';
@@ -39,10 +39,11 @@ import {
 } from 'src/components/table';
 //
 
-import PropTypes from 'prop-types';
+import PropTypes, { array } from 'prop-types';
 import AppointedCreditRatingTableRow from '../appointed-credit-rating-table-row';
 import AppointedCreditRatingTableFiltersResult from '../appointed-credit-rating-table-filters-result';
 import AppointedCreditRatingTableToolbar from '../appointed-credit-rating-table-toolbar';
+import CreditRatingApprovalCard from '../credit-rating-appointed-card';
 
 
 
@@ -67,18 +68,22 @@ const defaultFilters = {
 // ----------------------------------------------------------------------
 
 export default function AppointedCreditRatingListView({ currentCreditRating }) {
+
+  const params = useParams();
+  const {id} = params;
   const table = useTable();
 
   const settings = useSettingsContext();
   const router = useRouter();
   const confirm = useBoolean();
+  const [openApproval, setOpenApproval] = useState(false);
+  const [selectedApplicationId, setSelectedApplicationId] = useState(null);
 
-  const handleViewRow = useCallback(
-    (id) => {
-      router.push(paths.dashboard.category.details(id));
-    },
-    [router]
-  );
+
+  const handleViewRow = useCallback((row) => {
+    setSelectedApplicationId(row.id);
+    setOpenApproval(true);
+  }, []);
 
   const handleEditRow = useCallback(
     (id) => {
@@ -89,7 +94,7 @@ export default function AppointedCreditRatingListView({ currentCreditRating }) {
 
   const [filters, setFilters] = useState(defaultFilters);
 
-  const creditRatingAgencies = currentCreditRating;
+  const creditRatingAgencies = Array.isArray(currentCreditRating) ? currentCreditRating : [];
 
 
 
@@ -244,7 +249,7 @@ export default function AppointedCreditRatingListView({ currentCreditRating }) {
                         selected={table.selected.includes(row.id)}
                         onSelectRow={() => table.onSelectRow(row.id)}
                         onDeleteRow={() => handleDeleteRow(row.id)}
-                        onViewRow={() => handleViewRow(row.id)}
+                        onViewRow={() => handleViewRow(row)}
                         onEditRow={() => handleEditRow(row.id)}
                       />
                     ))}
@@ -271,6 +276,18 @@ export default function AppointedCreditRatingListView({ currentCreditRating }) {
           />
         </Card>
       </Container>
+
+      {openApproval && (
+        <CreditRatingApprovalCard
+          open={openApproval}
+          onClose={() => setOpenApproval(false)}
+          applicationId={selectedApplicationId}
+          creditRatingAgencyId={id}
+        />
+      )}
+
+
+
 
       <ConfirmDialog
         open={confirm.value}

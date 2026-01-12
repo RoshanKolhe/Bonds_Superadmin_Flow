@@ -131,17 +131,15 @@ import { LoadingButton } from '@mui/lab';
 import { useSnackbar } from 'src/components/snackbar';
 import axiosInstance from 'src/utils/axios';
 
-export default function ValuatorApprovalCard() {
-  const params = useParams();
-  const { applicationId } = params;
+export default function ValuatorApprovalCard({ open, onClose, applicationId }) {
+
   const { enqueueSnackbar } = useSnackbar();
 
-  const [open, setOpen] = useState(true);
   const [isSubmittingApi, setIsSubmittingApi] = useState(false);
 
   const valuatorApprovalSchema = Yup.object().shape({
-    securityDocRef: Yup.string().required('Security document ref is required'),
-    securityDocument: Yup.mixed().required('Security document is required'),
+    // securityDocRef: Yup.string().required('Security document ref is required'),
+    // securityDocument: Yup.mixed().required('Security document is required'),
     assetCoverCertificate: Yup.mixed().required('Asset cover certificate is required'),
     valuationReport: Yup.mixed().required('Valuation report is required'),
     remark: Yup.string(),
@@ -149,8 +147,8 @@ export default function ValuatorApprovalCard() {
 
   const defaultValues = useMemo(
     () => ({
-      securityDocRef: '',
-      securityDocument: null,
+      // securityDocRef: '',
+      // securityDocument: null,
       assetCoverCertificate: null,
       valuationReport: null,
       remark: '',
@@ -172,36 +170,36 @@ export default function ValuatorApprovalCard() {
 
   const values = watch();
 
-  const handleClose = () => setOpen(false);
 
-  const submitData = async (status) => {
+
+  const submitData = async () => {
     try {
       setIsSubmittingApi(true);
 
-    //   if (status === 'REJECTED' && !values.remark) {
-    //     enqueueSnackbar('Remark is mandatory for rejection', { variant: 'error' });
-    //     return;
-    //   }
+      //   if (status === 'REJECTED' && !values.remark) {
+      //     enqueueSnackbar('Remark is mandatory for rejection', { variant: 'error' });
+      //     return;
+      //   }
 
       const payload = {
-        securityDocRef: values.securityDocRef,
-        securityDocument: values.securityDocument?.id,
-        assetCoverCertificate: values.assetCoverCertificate?.id,
-        valuationReport: values.valuationReport?.id,
+        // securityDocRef: values.securityDocRef,
+        // securityDocument: values.securityDocument?.id,
+        assetCoverCertificateId: values.assetCoverCertificate?.id,
+        valuationReportId: values.valuationReport?.id,
         remark: values.remark || '',
-        status, 
+
       };
 
       console.log('Valuator Approval Payload:', payload);
 
-  
-      // await axiosInstance.post(`/oem/valuator-approval/${applicationId}`, payload);
 
-      enqueueSnackbar(`Valuation ${status.toLowerCase()} successfully`, {
-        variant: status === 'APPROVED' ? 'success' : 'warning',
+      await axiosInstance.post(`/bonds-pre-issue/approval/valuator-approval/${applicationId}`, payload);
+
+      enqueueSnackbar(`Valuation approved successfully`, {
+        variant: 'success',
       });
 
-      handleClose();
+      onClose();
       reset(defaultValues);
     } catch (error) {
       console.error(error);
@@ -212,21 +210,21 @@ export default function ValuatorApprovalCard() {
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth scroll="paper">
-      <DialogTitle sx={{ fontWeight: 600, pb:3 }} >
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth scroll="paper">
+      <DialogTitle sx={{ fontWeight: 600, pb: 3 }} >
         Valuator Approval
       </DialogTitle>
 
       <DialogContent dividers>
-        <FormProvider methods={methods} >
-          <Grid container spacing={2} sx={{pt:2}}>
-            <Grid item xs={12} md={4}>
+        <FormProvider methods={methods}  >
+          <Grid container spacing={2} sx={{ pt: 2 }}>
+            {/* <Grid item xs={12} md={4}>
               <RHFTextField name="securityDocRef" label="Security Document Ref" fullWidth />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12}>
               <Stack spacing={2}>
-                <RHFCustomFileUploadBox
+                {/* <RHFCustomFileUploadBox
                   name="securityDocument"
                   label="Security Document"
                   accept={{
@@ -235,7 +233,7 @@ export default function ValuatorApprovalCard() {
                     'image/jpeg': ['.jpg', '.jpeg'],
                   }}
                 />
-                <YupErrorMessage name="securityDocument" />
+                <YupErrorMessage name="securityDocument" /> */}
 
                 <RHFCustomFileUploadBox
                   name="assetCoverCertificate"
@@ -275,7 +273,7 @@ export default function ValuatorApprovalCard() {
       </DialogContent>
 
       <DialogActions sx={{ justifyContent: 'flex-end', gap: 1.5, px: 3, py: 2 }}>
-        <Button variant="soft" onClick={handleClose}>
+        <Button variant="soft" onClick={onClose}>
           Cancel
         </Button>
 
@@ -292,10 +290,11 @@ export default function ValuatorApprovalCard() {
           color="success"
           variant="soft"
           loading={isSubmittingApi}
-          onClick={() => submitData('APPROVED')}
+          onClick={handleSubmit(submitData)}
         >
           Approve
         </LoadingButton>
+
       </DialogActions>
     </Dialog>
   );

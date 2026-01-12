@@ -56,14 +56,14 @@ export function useGetBondApplications() {
 
 // ----------------------------------------------------------------------
 
-export function useGetBondApplication(applicationId) {
-    const URL = applicationId ? endpoints.bondApplications.details(applicationId) : null;
+export function useGetBondApplication(id , intermediaryType) {
+    const URL = id ? endpoints.bondApplications.byIntermediary(intermediaryType, id) : null;
 
     const { data, isLoading, error, isValidating } = useSWR(URL, fetcher);
 
     const memoizedValue = useMemo(
         () => ({
-            bondApplication: data?.applicationData,
+            bondApplication: data?.applications || [],
             bondApplicationLoading: isLoading,
             bondApplicationError: error,
             bondApplicationValidating: isValidating,

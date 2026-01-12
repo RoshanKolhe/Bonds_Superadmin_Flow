@@ -1,5 +1,7 @@
-import { useGetBondApplications } from "src/api/bondApplications";
+import { useGetBondApplication, useGetBondApplications } from "src/api/bondApplications";
 import AppointedValuerListView from "./appointed-valuer-list-view";
+import ValuatorApprovalCard from "../valuer-appointed-card";
+import { useParams } from "src/routes/hook";
 
 const VALUERS = [
   {
@@ -34,11 +36,19 @@ const VALUERS = [
 
 export default function AppointedValuerView(){
 
-  const {bondApplications}= useGetBondApplications();
+  const params = useParams();
+
+  const {id , intermediaryType} = params;
+
+  const {bondApplication}= useGetBondApplication(id, intermediaryType);
+
+  console.log("bondApplications", bondApplication)
+  
 
   return(
     <>
-    <AppointedValuerListView currentValuer={bondApplications} />
+    <AppointedValuerListView currentValuer={bondApplication} />
+    {/* <ValuatorApprovalCard/> */}
     </>
   )
 }

@@ -102,7 +102,7 @@ const RtaListPage = lazy(() => import('src/pages/dashboard/Rta/list'));
 const RtaViewPage = lazy(() => import('src/pages/dashboard/Rta/view'))
 // CREDIT RATING
 const CredtingRatingListPage = lazy(() => import('src/pages/dashboard/credit-rating/list'));
-const CreditRatingViewPage = lazy(()=> import('src/pages/dashboard/credit-rating/view'));
+const CreditRatingViewPage = lazy(() => import('src/pages/dashboard/credit-rating/view'));
 // FILE MANAGER
 const FileManagerPage = lazy(() => import('src/pages/dashboard/file-manager'));
 // APP
@@ -217,7 +217,7 @@ export const dashboardRoutes = [
           { element: <ValuerListPage />, index: true },
           { path: 'list', element: <ValuerListPage /> },
           { path: 'view', element: <ValuerViewPage /> },
-          // { path: ':id', element: <InvoiceDetailsPage /> },
+          { path: ':intermediaryType/:id', element: <ValuerViewPage /> },
           // { path: ':id/edit', element: <InvoiceEditPage /> },
           // { path: 'new', element: <InvoiceCreatePage /> },
         ],
@@ -238,7 +238,8 @@ export const dashboardRoutes = [
         children: [
           { element: <CredtingRatingListPage />, index: true },
           { path: 'list', element: <CredtingRatingListPage /> },
-          {path: 'view', element:<CreditRatingViewPage/>}
+          { path: 'view', element: <CreditRatingViewPage /> },
+           { path: ':intermediaryType/:id', element: <CreditRatingViewPage /> },
           // { path: ':id', element: <InvoiceDetailsPage /> },
           // { path: ':id/edit', element: <InvoiceEditPage /> },
           // { path: 'new', element: <InvoiceCreatePage /> },
