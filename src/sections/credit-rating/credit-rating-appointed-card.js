@@ -28,7 +28,6 @@ import {
 import { useSnackbar } from 'src/components/snackbar';
 import FormProvider, { RHFAutocomplete, RHFCustomFileUploadBox, RHFSelect, RHFTextField } from 'src/components/hook-form';
 import axiosInstance from 'src/utils/axios';
-import RHFFileUploadBox from 'src/components/custom-file-upload/file-upload';
 import YupErrorMessage from 'src/components/error-field/yup-error-messages';
 import { DatePicker } from '@mui/x-date-pickers';
 import { Icon } from '@iconify/react';
@@ -40,38 +39,19 @@ import { h } from '@fullcalendar/core/preact';
 
 export default function CreditRatingApprovalCard({ open, onClose, applicationId, creditRatingAgencyId }) {
 
-
-
     console.log(' Id CreditAgencyId:', creditRatingAgencyId);
     const [agenciesData, setAgenciesData] = useState([]);
     const [ratingsData, setRatingsData] = useState([]);
     const { creditRatingAgencies, creditRatingAgenciesLoading } = useGetCreditRatingAgencies();
     const { creditRatings, creditRatingsLoading } = useGetCreditRatings();
     const { enqueueSnackbar } = useSnackbar();
-    const [ratingList, setRatingList] = useState([]);
-    const [editIndex, setEditIndex] = useState(null);
-    const [isEditing, setIsEditing] = useState(false);
-    const [isApiSubmitting, setIsApiSubmitting] = useState(false);
-    const [isSubmittingApi, setIsSubmittingApi] = useState(false);
-
-
-    // const handleApprove = () => {
-    //     enqueueSnackbar('Approved successfully', { variant: 'success' });
-    //     handleClose();
-    // };
-
-    // const handleReject = () => {
-    //     enqueueSnackbar('Rejected', { variant: 'warning' });
-    //     handleClose();
-    // };
-
 
     const newCreditRatingSchema = Yup.object().shape({
         selectedAgency: Yup.object().required('Please select agency'),
         selectedRating: Yup.object().required('Please select rating'),
         validFrom: Yup.string().required('Valid from is required'),
         creditRatingLetter: Yup.mixed().required('Credit rating letter required'),
-        remark: Yup.string()
+
     });
 
     const defaultValues = useMemo(
@@ -80,7 +60,7 @@ export default function CreditRatingApprovalCard({ open, onClose, applicationId,
             selectedRating: null,
             validFrom: '',
             creditRatingLetter: null,
-            remark: ''
+
         }),
         []
     );
@@ -115,194 +95,31 @@ export default function CreditRatingApprovalCard({ open, onClose, applicationId,
         }
     }, [creditRatingAgencyId, agenciesData, setValue]);
 
-
-    const handleAddRating = handleSubmit((data) => {
-        const newEntry = {
-            agency: data.selectedAgency,
-            rating: data.selectedRating,
-            validFrom: data.validFrom,
-            creditRatingLetter: data.creditRatingLetter,
-        };
-
-        if (isEditing) {
-            const updatedList = [...ratingList];
-            updatedList[editIndex] = newEntry;
-            setRatingList(updatedList);
-            setIsEditing(false);
-            setEditIndex(null);
-        } else {
-            setRatingList([...ratingList, newEntry]);
-        }
-
-        reset({
-            selectedAgency: data.selectedAgency,
-            selectedRating: null,
-            validFrom: '',
-            creditRatingLetter: null,
-            remark: data.remark || '',
-        });
-    });
-
-    const handleDeleteRating = (index) => {
-        setRatingList(ratingList.filter((_, i) => i !== index));
-    };
-
-    const handleFileUpload = async (file) => {
+    const onApprove = async (data) => {
         try {
-            if (!file) return;
-
-            enqueueSnackbar('Uploading File...', { variant: 'info' });
-
-            const uploadFormData = new FormData();
-            uploadFormData.append('file', file);
-
-            const uploadRes = await axiosInstance.post('/files', uploadFormData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
-
-            setValue('creditRatingLetter', uploadRes?.data?.files[0], { shouldValidate: true });
-        } catch (err) {
-            enqueueSnackbar('File upload failed', { variant: 'error' });
-        }
-    };
-
-    // const onSubmit = async () => {
-    //   try {
-    //     setIsApiSubmitting(true);
-    //     if (!ratingList.length || ratingList.length === 0) {
-    //       enqueueSnackbar('Please add at least one rating', { variant: 'error' });
-    //       return;
-    //     }
-
-    //     const payload = {
-    //       creditRatings: ratingList.map((rating) => ({
-    //         validFrom: rating.validFrom,
-    //         creditRatingsId: rating.rating.id,
-    //         creditRatingAgenciesId: rating.agency.id,
-    //         ratingLetterId: rating.creditRatingLetter.id,
-    //         isActive: true
-    //       }))
-    //     };
-
-    //     const response = await axiosInstance.patch(`/bond-estimations/credit-ratings/${applicationId}`, payload);
-
-    //     if (response.data?.success) {
-    //       setProgress(true);
-    //       enqueueSnackbar('Credit ratings updated', { variant: 'success' });
-    //     }
-
-    //   } catch (error) {
-    //     console.error('error while submitting credit ratings :', error);
-    //   } finally {
-    //     setIsApiSubmitting(false);
-    //   }
-    // };
-
-    const onSubmit = async () => {
-        try {
-            setIsApiSubmitting(true);
-
-            if (!ratingList.length) {
-                enqueueSnackbar('Please add at least one rating', { variant: 'error' });
-                return;
-            }
-
-            const payload = {
-                creditRatings: ratingList.map((r) => ({
-                    validFrom: r.validFrom,
-                    creditRatingsId: r.rating?.id,
-                    creditRatingAgenciesId: r.agency?.id,
-                    ratingLetterId: r.creditRatingLetter?.id,
-                    isActive: true,
-                })),
-
-            };
-
-            console.log('📤 Mock Submit Payload:', payload);
-
-            enqueueSnackbar('Credit ratings saved (mock)', { variant: 'success' });
-
-        } catch (error) {
-            console.error('Mock submit error:', error);
-        } finally {
-            setIsApiSubmitting(false);
-        }
-    };
-
-
-
-    const submitData = async () => {
-        try {
-            if (!ratingList.length) {
-                enqueueSnackbar('Please add at least one credit rating', {
-                    variant: 'error',
-                });
-                return;
-            }
-
-            const latestRating = ratingList[ratingList.length - 1];
-
-            if (!latestRating?.validFrom) {
-                enqueueSnackbar('Valid From date is missing', { variant: 'error' });
-                return;
-            }
-
-            setIsSubmittingApi(true);
-
             const payload = {
                 creditRatingAgencyId: creditRatingAgencyId,
-
                 approval: {
-                    validFrom: new Date(latestRating.validFrom).toISOString(),
+                    validFrom: new Date(data.validFrom).toISOString(),
                     isActive: true,
                     isDeleted: false,
                     bondIssueApplicationId: applicationId,
-                    creditRatingsId: latestRating.rating?.id,
-                    ratingLetterId: latestRating.creditRatingLetter?.id,
-                    creditRatingAgenciesId: latestRating.agency?.id,
+                    creditRatingsId: data.selectedRating?.id,
+                    ratingLetterId: data.creditRatingLetter?.id,
+                    creditRatingAgenciesId: data.selectedAgency?.id,
                 },
             };
-
-            console.log('✅ Final Approval Payload:', payload);
-
+            console.log('✅ Approval Payload:', payload);
             await axiosInstance.post(
                 `/bonds-pre-issue/approval/credit-rating-approval/${applicationId}`,
                 payload
             );
-
             enqueueSnackbar('Approved successfully', { variant: 'success' });
             onClose();
         } catch (error) {
-            console.error(error);
-            enqueueSnackbar('Something went wrong', { variant: 'error' });
-        } finally {
-            setIsSubmittingApi(false);
+            enqueueSnackbar(error.error.message, { variant: 'error' });
         }
     };
-
-
-    // const calculatePercent = () => {
-    //     if (!ratingList.length) {
-    //         setPercent?.(0);
-    //         return;
-    //     }
-
-    //     let completed = 0;
-    //     const latest = ratingList[0];
-
-    //     if (latest.agency) completed++;
-    //     if (latest.rating) completed++;
-    //     if (latest.validFrom) completed++;
-    //     if (latest.creditRatingLetter) completed++;
-    //     if (ratingList.length > 0) completed++;
-
-    //     const percentVal = (completed / 5) * 50;
-    //     setPercent?.(percentVal);
-    // };
-
-    // useEffect(() => {
-    //     calculatePercent();
-    // }, [ratingList, values]);
 
     useEffect(() => {
         if (creditRatingAgencies && !creditRatingAgenciesLoading) {
@@ -315,23 +132,6 @@ export default function CreditRatingApprovalCard({ open, onClose, applicationId,
             setRatingsData(creditRatings);
         }
     }, [creditRatings, creditRatingsLoading]);
-
-    // Restore saved list when returning to this step
-    // useEffect(() => {
-    //     if (Array.isArray(currentCreditRatings) && currentCreditRatings.length > 0) {
-    //         setRatingList(
-    //             currentCreditRatings.map((r) => ({
-    //                 agency: r.agency,
-    //                 rating: r.rating,
-    //                 validFrom: r.validFrom,
-    //                 creditRatingLetter: r.creditRatingLetter,
-    //             }))
-
-    //         );
-
-    //         setProgress(true);
-    //     }
-    // }, [currentCreditRatings]);
 
     return (
         <Dialog
@@ -346,7 +146,7 @@ export default function CreditRatingApprovalCard({ open, onClose, applicationId,
             </DialogTitle>
 
             <DialogContent dividers>
-                <FormProvider methods={methods} onSubmit={handleAddRating}>
+                <FormProvider methods={methods} >
                     <Card sx={{ p: 4, borderRadius: 3, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', mb: 4 }}>
                         <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
                             Credit Ratings Available
@@ -424,106 +224,8 @@ export default function CreditRatingApprovalCard({ open, onClose, applicationId,
                             icon="mdi:file-document-outline"
                             maxSizeMB={2}
                         />
-
                         <YupErrorMessage name="creditRatingLetter" />
-
-                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 1, mt: 2 }}>
-                            <LoadingButton type="submit" loading={isSubmitting}>
-                                {isEditing ? 'Update Rating' : 'Add Rating'}
-                            </LoadingButton>
-                        </Box>
-
-                        {/* Rating Table */}
-                        {ratingList.length > 0 && (
-                            <Box sx={{ mt: 4 }}>
-                                <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-                                    Added Ratings
-                                </Typography>
-
-                                <TableContainer component={Card}>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Rating Agency</TableCell>
-                                                <TableCell>Rating</TableCell>
-                                                <TableCell>Valid From</TableCell>
-                                                <TableCell>Letter</TableCell>
-                                                <TableCell align="center">Actions</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-
-                                        <TableBody>
-                                            {ratingList.map((row, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell>{row.agency?.name}</TableCell>
-                                                    <TableCell>{row.rating?.name}</TableCell>
-                                                    <TableCell>
-                                                        {isDate(row.validFrom) ? format(new Date(row.validFrom), 'dd/MM/yyyy') : 'NA'}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Button
-                                                            variant="text"
-                                                            color="primary"
-                                                            onClick={() => window.open(row.creditRatingLetter?.fileUrl, '_blank')}
-                                                        >
-                                                            Preview
-                                                        </Button>
-                                                    </TableCell>
-
-                                                    <TableCell align="center">
-                                                        <Icon
-                                                            icon="mdi:pencil-outline"
-                                                            width="20"
-                                                            style={{ cursor: 'pointer', marginRight: 12 }}
-                                                            onClick={() => {
-                                                                setValue(
-                                                                    'selectedAgency',
-                                                                    agenciesData.find((a) => a.id === row.agency)
-                                                                );
-                                                                setValue(
-                                                                    'selectedRating',
-                                                                    ratingsData.find((r) => r.id === row.rating)
-                                                                );
-                                                                setValue('validFrom', row.validFrom);
-                                                                setValue('additionalRating', row.additionalRating);
-                                                                setValue('creditRatingLetter', row.creditRatingLetter);
-                                                                setIsEditing(true);
-                                                                setEditIndex(index);
-                                                            }}
-                                                        />
-
-                                                        <Icon
-                                                            icon="mdi:delete-outline"
-                                                            width="20"
-                                                            style={{ cursor: 'pointer', color: '#d32f2f' }}
-                                                            onClick={() => handleDeleteRating(index)}
-                                                        />
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </Box>
-                        )}
-
-                        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                            <LoadingButton
-                                loading={isApiSubmitting}
-                                type="button"
-                                variant="contained"
-                                onClick={onSubmit}
-                            >
-                                Save
-                            </LoadingButton>
-                        </Box>
                     </Card>
-                    <RHFTextField
-                        name="remark"
-                        label="Remark"
-                        multiline
-                        row={3}
-                    />
                 </FormProvider>
             </DialogContent>
 
@@ -544,9 +246,8 @@ export default function CreditRatingApprovalCard({ open, onClose, applicationId,
                 <Button
                     variant="soft"
                     color="success"
-                    loading={isSubmittingApi}
-                    onClick={submitData}
-                >
+                    loading={isSubmitting}
+                    onClick={handleSubmit(onApprove)}>
                     Approve
                 </Button>
             </DialogActions>
@@ -555,7 +256,6 @@ export default function CreditRatingApprovalCard({ open, onClose, applicationId,
 }
 
 CreditRatingApprovalCard.propTypes = {
-    // currentCreditRatings: PropTypes.array,
     setPercent: PropTypes.func,
     setProgress: PropTypes.func,
 };
