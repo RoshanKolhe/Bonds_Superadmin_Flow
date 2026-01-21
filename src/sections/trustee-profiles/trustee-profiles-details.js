@@ -157,13 +157,15 @@ export default function TrusteeProfileDetails({ data }) {
 
         {/* -------- Read-Only Form Fields -------- */}
         <Grid container spacing={2}>
-          {fields.map((field) => (
+           {fields
+            .filter((field) => field.name !== 'panFile')
+            .map((field) => (
             <Grid item xs={12} sm={6} key={field.name}>
               <RHFTextField name={field.name} label={field.label} disabled />
             </Grid>
           ))}
         </Grid>
-        <Grid item xs={12}>
+        <Grid item mt={2} xs={12}>
           <RHFCustomFileUploadBox 
           name="panFile"
           label= "Upload pan"

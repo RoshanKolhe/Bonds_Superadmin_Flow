@@ -147,85 +147,67 @@ export default function CreditRatingApprovalCard({ open, onClose, applicationId,
 
             <DialogContent dividers>
                 <FormProvider methods={methods} >
-                    <Card sx={{ p: 4, borderRadius: 3, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', mb: 4 }}>
-                        <Typography variant="h6" sx={{ mb: 3, fontWeight: 600 }}>
-                            Credit Ratings Available
-                        </Typography>
 
-                        <Grid container spacing={4}>
-                            <Grid item xs={12} md={4}>
-                                <RHFAutocomplete
-                                    name="selectedAgency"
-                                    label="Credit Rating Agency"
-                                    options={agenciesData || []}
-                                    getOptionLabel={(option) => option.name}
-                                    isOptionEqualToValue={(option, value) => option.id === value.id}
-                                    disabled   // 🔒 ALWAYS LOCKED
-                                />
+                    <Grid container spacing={4} mt={2} mb={2}>
+                        <Grid item xs={12} md={6}>
+                            <RHFAutocomplete
+                                name="selectedAgency"
+                                label="Credit Rating Agency"
+                                options={agenciesData || []}
+                                getOptionLabel={(option) => option.name}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                                disabled   // 🔒 ALWAYS LOCKED
+                            />
 
-                            </Grid>
-
-                            <Grid item xs={12} md={8}>
-                                <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 2 }}>
-                                    Rating
-                                </Typography>
-                                <Grid container spacing={2}>
-                                    {ratingsData.map((rating) => (
-                                        <Grid item xs={4} key={rating.id}>
-                                            <FormControlLabel
-                                                control={
-                                                    <Radio
-                                                        checked={values.selectedRating?.id === rating?.id}
-                                                        onChange={() =>
-                                                            setValue('selectedRating', rating, { shouldValidate: true })
-                                                        }
-                                                    />
-                                                }
-                                                label={rating.name}
-                                            />
-                                        </Grid>
-                                    ))}
-                                </Grid>
-                                <YupErrorMessage name="selectedRating" />
-                            </Grid>
                         </Grid>
 
-                        <Controller
-                            name="validFrom"
-                            control={control}
-                            render={({ field, fieldState: { error } }) => (
-                                <DatePicker
-                                    sx={{ mb: 2 }}
-                                    {...field}
-                                    label="Valid From"
-                                    value={
-                                        field.value
-                                            ? field.value instanceof Date
-                                                ? field.value
-                                                : new Date(field.value)
-                                            : null
-                                    }
-                                    onChange={(newValue) => field.onChange(newValue)}
-                                    format="dd/MM/yyyy"
-                                    slotProps={{
-                                        textField: {
-                                            fullWidth: true,
-                                            error: !!error,
-                                            helperText: error?.message,
-                                        },
-                                    }}
-                                />
-                            )}
-                        />
+                        <Grid item xs={12} md={6}>
+                            <RHFAutocomplete
+                                name='selectedRating'
+                                label="Credit Rating"
+                                options={creditRatings || []}
+                                getOptionLabel={(option) => option?.name || ''}
+                                isOptionEqualToValue={(option, value) => option.id === value.id}
+                            />
+                        </Grid>
+                    </Grid>
 
-                        <RHFCustomFileUploadBox
-                            name="creditRatingLetter"
-                            label="Upload Credit Rating Letter"
-                            icon="mdi:file-document-outline"
-                            maxSizeMB={2}
-                        />
-                        <YupErrorMessage name="creditRatingLetter" />
-                    </Card>
+                    <Controller
+                        name="validFrom"
+                        control={control}
+                        render={({ field, fieldState: { error } }) => (
+                            <DatePicker
+                                sx={{ mb: 2 }}
+                                {...field}
+                                label="Valid From"
+                                value={
+                                    field.value
+                                        ? field.value instanceof Date
+                                            ? field.value
+                                            : new Date(field.value)
+                                        : null
+                                }
+                                onChange={(newValue) => field.onChange(newValue)}
+                                format="dd/MM/yyyy"
+                                slotProps={{
+                                    textField: {
+                                        fullWidth: true,
+                                        error: !!error,
+                                        helperText: error?.message,
+                                    },
+                                }}
+                            />
+                        )}
+                    />
+
+                    <RHFCustomFileUploadBox
+                        name="creditRatingLetter"
+                        label="Upload Credit Rating Letter"
+                        icon="mdi:file-document-outline"
+                        maxSizeMB={2}
+                    />
+                    <YupErrorMessage name="creditRatingLetter" />
+
                 </FormProvider>
             </DialogContent>
 

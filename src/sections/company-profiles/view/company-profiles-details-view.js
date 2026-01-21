@@ -45,9 +45,13 @@ export default function CompanyProfilesDetailsView() {
       search: `?tab=${newValue}`
     });
   }, []);
+
+  const activeTab = TABS.find((t) => t.value === currentTab);
+
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
+      heading={activeTab?.label || 'Company Profile'}
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
           { name: 'Company Profile', href: paths.dashboard.companyProfiles.root },

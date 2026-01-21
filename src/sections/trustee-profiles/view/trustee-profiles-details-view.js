@@ -46,10 +46,12 @@ export default function TrusteeProfilesDetailsView() {
     setCurrentTab(newValue);
     router.push({search : '?tab='+newValue});
   }, []);
-
+  
+ const activeTab = TABS.find((t)=> t.value === currentTab)
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
+      heading={activeTab?.label}
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
           { name: 'Trustee Profile', href: paths.dashboard.trusteeProfiles.root },
