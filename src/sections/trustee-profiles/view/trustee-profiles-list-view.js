@@ -272,10 +272,10 @@ export default function TrusteeProfileListView() {
                   ))}
 
 
-                  <TableEmptyRows
+                  {/* <TableEmptyRows
                     height={denseHeight}
                     emptyRows={emptyRows(table.page, table.rowsPerPage, tableData.length)}
-                  />
+                  /> */}
 
                   <TableNoData notFound={notFound} />
                 </TableBody>
