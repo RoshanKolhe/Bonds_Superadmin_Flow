@@ -130,5 +130,10 @@ export const endpoints = {
     getTrusteeSignatories: (trusteeId) => `/trustee-profiles/${trusteeId}/authorize-signatory`,
     getTrusteeSignatoriesWithFilter: (trusteeId, queryString) => `/trustee-profiles/${trusteeId}/authorize-signatory?filter=${queryString}`,
   },
+  datasources: {
+    list: '/datasources',
+    filterList: (filter) => `/datasources?filter=${filter}`,
+    details: (id) => `/datasources/${id}`,
+  }
 };
 
