@@ -34,7 +34,7 @@ export default function CompanyProfileDetails({ data }) {
     { name: 'phone', label: 'Contact No', value: data?.data?.users?.phone },
     { name: 'CIN', label: 'CIN', value: data?.data?.CIN },
     { name: 'GSTIN', label: 'GSTIN', value: data?.data?.GSTIN },
-    { name: 'dateOfIncorporation', label: 'Date Of Incorporation', value: data?.data?.dateOfIncorporation },
+    { name: 'dateOfIncorporation', label: 'Date Of Incorporation', value: data?.data?.dateOfIncorporation ?  new Date(data?.data?.dateOfIncorporation).toLocaleDateString() : '—'  },
     { name: 'cityOfIncorporation', label: 'City Of Incorporation', value: data?.data?.cityOfIncorporation },
     { name: 'stateOfIncorporation', label: 'State Of Incorporation', value: data?.data?.stateOfIncorporation },
     { name: 'countryOfIncorporation', label: 'Country Of Incorporation', value: data?.data?.countryOfIncorporation },

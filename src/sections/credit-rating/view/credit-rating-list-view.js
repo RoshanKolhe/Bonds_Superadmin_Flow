@@ -153,7 +153,7 @@ export default function CreditRatingListView() {
           heading="List"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'CreditRating', href: paths.dashboard.creditRating.root },
+            { name: 'Credit Rating', href: paths.dashboard.creditRating.root },
             { name: 'List' },
           ]}
           // action={

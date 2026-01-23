@@ -154,8 +154,8 @@ export default function AppointedCreditRatingListView({ currentCreditRating }) {
           heading="List"
           links={[
             { name: 'Dashboard', href: paths.dashboard.root },
-            { name: 'CreditRating', href: paths.dashboard.creditRating.root },
-            { name: 'BondApplicationsList' },
+            { name: 'Credit Rating', href: paths.dashboard.creditRating.root },
+            { name: 'Bond Applications List' },
           ]}
           // action={
           //   <Button

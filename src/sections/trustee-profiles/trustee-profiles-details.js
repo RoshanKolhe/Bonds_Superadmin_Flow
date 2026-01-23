@@ -34,7 +34,7 @@ export default function TrusteeProfileDetails({ data }) {
     { name: 'CIN', label: 'CIN', value: data?.CIN },
     { name: 'GSTIN', label: 'GSTIN', value: data?.GSTIN },
     { name: 'sebiRegistrationNumber', label: 'Sebi Registration Number', value: data?.sebiRegistrationNumber },
-    { name: 'sebiValidityDate', label: 'Sebi Valid Date', value: data?.sebiValidityDate },
+    { name: 'sebiValidityDate', label: 'Sebi Valid Date', value: data?.sebiValidityDate ? new Date(data?.sebiValidityDate).toLocaleDateString() : '—'  },
     { name: 'cityOfIncorporation', label: 'City Of Incorporation', value: data?.cityOfIncorporation },
     { name: 'stateOfIncorporation', label: 'State Of Incorporation', value: data?.stateOfIncorporation },
     { name: 'countryOfIncorporation', label: 'Country Of Incorporation', value: data?.countryOfIncorporation },
