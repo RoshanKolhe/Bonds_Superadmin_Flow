@@ -66,9 +66,9 @@ export default function TrusteeProfileDetails({ data }) {
       await axiosInstance.patch('/kyc/handle-kyc-application', payload);
 
       enqueueSnackbar(
-        `Trustee KYC ${String(type) === '2' ? 'Approved' : 'Rejected'}`,
+        `Trustee KYC ${String(type) === '1' ? 'Approved' : 'Rejected'}`,
         {
-          variant: String(type) === '2' ? 'success' : 'error',
+          variant: String(type) === '1' ? 'success' : 'error',
         }
       );
 
@@ -89,7 +89,7 @@ export default function TrusteeProfileDetails({ data }) {
       return;
     }
 
-    handleStatusUpdate(3, rejectReason);
+    handleStatusUpdate(2, rejectReason);
     setRejectOpen(false);
     setRejectReason('');
   };
@@ -309,7 +309,7 @@ export default function TrusteeProfileDetails({ data }) {
           <Button
             variant="soft"
             color="success"
-            onClick={() => handleStatusUpdate(2)}
+            onClick={() => handleStatusUpdate(1)}
             disabled={loading || data?.kycApplications?.status === 2}
           >
             Approve

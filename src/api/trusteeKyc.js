@@ -61,6 +61,26 @@ export function useGetDetails(userId, stepperId) {
   };
 }
 
+export function useGetAddressDetails(trusteeId) {
+  const URL = trusteeId
+    ? endpoints.trusteeKyc.getTrusteeAddress(String(trusteeId))
+    : null;
+
+  const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
+    keepPreviousData: true,
+  });
+
+  return {
+    registeredAddress: data?.registeredAddress || null,
+    correspondenceAddress: data?.correspondenceAddress || null,
+    addressDetailsLoading: isLoading,
+    error,
+    validating: isValidating,
+    refreshAddressDetails: mutate,
+  };
+}
+
+
 // export function useGetSignatories(userId, stepperId) {
 //   const URL =
 //     userId && stepperId

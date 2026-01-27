@@ -106,6 +106,7 @@ export const endpoints = {
     // getFilteredBankDetails: (companyId) => `/company-profiles/${companyId}/bank-details?filter=${filter}`,
     getCompanySignatories: (companyId) => `/company-profiles/${companyId}/authorize-signatory`,
     getCompanySignatoriesWithFilter: (companyId, queryString) => `/company-profiles/${companyId}/authorize-signatory?filter=${queryString}`,
+    getCompanyAddress: (companyId) => `/company-profiles/${companyId}/address-details`
   },
 
   trusteeProfiles: {
@@ -129,6 +130,7 @@ export const endpoints = {
     getBankDetails: (trusteeId) => `/trustee-profiles/${trusteeId}/bank-details`,
     getTrusteeSignatories: (trusteeId) => `/trustee-profiles/${trusteeId}/authorize-signatory`,
     getTrusteeSignatoriesWithFilter: (trusteeId, queryString) => `/trustee-profiles/${trusteeId}/authorize-signatory?filter=${queryString}`,
+    getTrusteeAddress: (trusteeId) => `/trustee-profiles/${trusteeId}/address-details`
   },
 };
 

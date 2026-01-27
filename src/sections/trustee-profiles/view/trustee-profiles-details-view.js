@@ -17,11 +17,13 @@ import KYCSignatories from '../kyc-signatories';
 import TrusteeBankPage from '../bank-detail-view';
 import TrusteeProfileDetails from '../trustee-profiles-details';
 import { useSearchParams } from 'react-router-dom';
+import TrusteeAddressNewForm from '../trustee-address-details';
 
 // ----------------------------------------------------------------------
 
 const TABS = [
   { value: 'basic', label: 'Basic Info' },
+  { value: 'address', label: 'Address' },
   { value: 'details', label: 'Documents' },
   { value: 'bank', label: 'Bank Details' },
   { value: 'signatories', label: 'Signatories' },
@@ -36,22 +38,22 @@ export default function TrusteeProfilesDetailsView() {
   const { trusteeProfile } = useGetTrusteeProfile(id);
   const router = useRouter();
 
-  const [searchParams]= useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const tab = searchParams.get('tab');
 
-  const [currentTab, setCurrentTab] = useState(tab || 'basic' ) ;
+  const [currentTab, setCurrentTab] = useState(tab || 'basic');
 
   const handleChangeTab = useCallback((event, newValue) => {
     setCurrentTab(newValue);
-    router.push({search : '?tab='+newValue});
+    router.push({ search: '?tab=' + newValue });
   }, []);
-  
- const activeTab = TABS.find((t)=> t.value === currentTab)
+
+  const activeTab = TABS.find((t) => t.value === currentTab)
   return (
     <Container maxWidth={settings.themeStretch ? false : 'lg'}>
       <CustomBreadcrumbs
-      heading={activeTab?.label}
+        heading={activeTab?.label}
         links={[
           { name: 'Dashboard', href: paths.dashboard.root },
           { name: 'Trustee Profile', href: paths.dashboard.trusteeProfiles.root },
@@ -69,6 +71,8 @@ export default function TrusteeProfilesDetailsView() {
 
       {/* ------------ TAB CONTENT ------------ */}
       {currentTab === 'basic' && <TrusteeProfileDetails data={trusteeProfile.data} />}
+
+        {currentTab === 'address' && <TrusteeAddressNewForm data={trusteeProfile.data}/>}
 
       {currentTab === 'details' && <KYCCompanyDetails trusteeProfile={trusteeProfile.data} />}
 

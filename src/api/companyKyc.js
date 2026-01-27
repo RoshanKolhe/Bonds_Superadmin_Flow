@@ -49,6 +49,26 @@ export function useGetBankDetails(companyId) {
     };
 }
 
+export function useGetAddressDetails(companyId) {
+  const URL = companyId
+    ? endpoints.CompanyKyc.getCompanyAddress(String(companyId))
+    : null;
+
+  const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
+    keepPreviousData: true,
+  });
+
+  return {
+    registeredAddress: data?.registeredAddress || null,
+    correspondenceAddress: data?.correspondenceAddress || null,
+    addressDetailsLoading: isLoading,
+    error,
+    validating: isValidating,
+    refreshAddressDetails: mutate,
+  };
+}
+
+
 // export function useGetSignatories(companyId) {
 //     const URL =
 //         companyId ? endpoints.CompanyKyc.getCompanySignatories(String(companyId))
@@ -74,26 +94,26 @@ export function useGetBankDetails(companyId) {
 
 
 export function useGetSignatories(companyId, queryString) {
-  const URL =
-    companyId ?
-      queryString ? endpoints.CompanyKyc.getCompanySignatoriesWithFilter(String(companyId), queryString)
-        : endpoints.CompanyKyc.getCompanySignatories(String(companyId))
-      : null;
+    const URL =
+        companyId ?
+            queryString ? endpoints.CompanyKyc.getCompanySignatoriesWithFilter(String(companyId), queryString)
+                : endpoints.CompanyKyc.getCompanySignatories(String(companyId))
+            : null;
 
-  const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
-    keepPreviousData: true,
-  });
+    const { data, isLoading, error, isValidating, mutate } = useSWR(URL, fetcher, {
+        keepPreviousData: true,
+    });
 
-  const refreshSignatories = () => {
-    mutate(); // <-- trigger re-fetch
-  };
+    const refreshSignatories = () => {
+        mutate(); // <-- trigger re-fetch
+    };
 
-  return {
-    signatories: data?.signatories || [],   // <-- ALWAYS ARRAY
-    loading: isLoading,
-    error,
-    validating: isValidating,
-    empty: !isLoading && (!data?.signatories || data.signatories.length === 0),
-    refreshSignatories,
-  };
+    return {
+        signatories: data?.signatories || [],   // <-- ALWAYS ARRAY
+        loading: isLoading,
+        error,
+        validating: isValidating,
+        empty: !isLoading && (!data?.signatories || data.signatories.length === 0),
+        refreshSignatories,
+    };
 }

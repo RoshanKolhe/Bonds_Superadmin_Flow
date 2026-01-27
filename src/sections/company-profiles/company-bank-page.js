@@ -12,7 +12,7 @@ export default function CompanyBankPage({ companyProfile }) {
   const navigate = useNavigate();
 
   const userId = companyProfile?.data?.id;
-  const stepperId = companyProfile?.kycApplications?.currentProgress?.[2];
+  // const stepperId = companyProfile?.kycApplications?.currentProgress?.[2];
 
   // 🔥 Using your existing hook (no new API request)
   // const { rawData, Loading } = useGetDetails(userId, stepperId);
